@@ -15,7 +15,7 @@ const Layout = ({children}) => {
 
                     <div className="w-24 text-xl mt-5 mx-auto">
                         <Link to="/" className={`block mb-3 ${navActive === 'home' && "bg-blue-400"}`} onClick={() => setNavActive('home')}>Home</Link>
-                        <Link to="/user" className="block mb-3">User</Link>
+                        <Link to="/user" className="block mb-3" onClick={() => setNavActive('user')}>User</Link>
                     </div>
                 </div>
 
