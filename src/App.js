@@ -1,10 +1,15 @@
 import './App.css';
+import MainRouter from "./router/MainRouter";
+import {BrowserRouter} from "react-router-dom";
+import {NavContextProvider} from "./context/NavContext";
 
 function App() {
     return (
-        <div className="App">
-            <h1 className="text-3xl font-bold underline">Hello World!</h1>
-        </div>
+        <NavContextProvider>
+            <BrowserRouter>
+                <MainRouter/>
+            </BrowserRouter>
+        </NavContextProvider>
     );
 }
 
