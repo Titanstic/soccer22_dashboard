@@ -4,6 +4,7 @@ import NavContext from "../context/NavContext";
 
 const NotFound = () =>{
     const {setNavActive} = useContext(NavContext);
+
     return(
         <div className="w-full h-screen flex justify-center items-center flex-col">
             <p className="text-6xl text-red-500 font-extrabold mb-3">404 Not Found</p>

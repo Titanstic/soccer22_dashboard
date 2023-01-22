@@ -4,9 +4,10 @@ const NavContext = createContext();
 
 export const NavContextProvider = ({children}) => {
     const [navActive, setNavActive] = useState('home');
+    const [mainNav, setMainNav] = useState("");
 
     return (
-        <NavContext.Provider value={{navActive, setNavActive}}>
+        <NavContext.Provider value={{navActive, setNavActive, mainNav, setMainNav}}>
             {children}
         </NavContext.Provider>
     )
