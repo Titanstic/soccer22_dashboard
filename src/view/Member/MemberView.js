@@ -1,5 +1,5 @@
 import {useState} from "react";
-import Layout from "../Layout";
+import LayoutView from "../LayoutView";
 import CreateMember from "../../component/member/memberlist/CreateMember";
 import UpdateMember from "../../component/member/memberlist/UpdateMember";
 
@@ -16,7 +16,7 @@ const MemberView = () => {
     }
 
     return (
-        <Layout>
+        <LayoutView>
             {/*Start Add Member Button*/}
             <div className="flex justify-between items-center mt-5 mx-5">
                 <p className="text-3xl font-bold">Member List</p>
@@ -102,7 +102,7 @@ const MemberView = () => {
                 openUpdate && <UpdateMember updateModalHandle={updateModalHandle}/>
             }
             {/*End Update Member Modal*/}
-        </Layout>
+        </LayoutView>
     )
 };
 export default MemberView;

@@ -1,14 +1,14 @@
 import { Routes, Route} from "react-router-dom";
-import Home from "../view/Home";
 import NotFound from "../view/NotFound";
 import ProfileView from "../view/Account/ProfileView";
 import AgentView from "../view/Member/AgentView";
 import MemberView from "../view/Member/MemberView";
 import SubUserView from "../view/Member/SubUserView";
+import LoginView from "../view/LoginView";
 const MainRouter = () => {
     return (
         <Routes>
-            <Route path="/" element={<Home/>}/>
+            <Route path="/" element={<LoginView/>}/>
             {/*Start Account Route*/}
             <Route path="/profile" element={<ProfileView/>}/>
             {/*End Account Route*/}

@@ -4,15 +4,18 @@ import { BrowserRouter } from "react-router-dom";
 import { NavContextProvider } from "./context/NavContext";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./hasura/config";
+import {AlertContextProvider} from "./context/AlertContext";
 
 function App() {
     return (
         <ApolloProvider client={client}>
-            <NavContextProvider>
-                <BrowserRouter>
-                    <MainRouter/>
-                </BrowserRouter>
-            </NavContextProvider>
+            <AlertContextProvider>
+                <NavContextProvider>
+                    <BrowserRouter>
+                        <MainRouter/>
+                    </BrowserRouter>
+                </NavContextProvider>
+            </AlertContextProvider>
         </ApolloProvider>
     );
 }

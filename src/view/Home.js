@@ -1,10 +1,10 @@
-import Layout from "./Layout";
+import LayoutView from "./LayoutView";
 
 const Home = () => {
     return(
-        <Layout>
+        <LayoutView>
             <h1>Home</h1>
-        </Layout>
+        </LayoutView>
     )
 };
 

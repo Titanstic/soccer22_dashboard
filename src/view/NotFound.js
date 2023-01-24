@@ -3,6 +3,7 @@ import {useContext} from "react";
 import NavContext from "../context/NavContext";
 
 const NotFound = () =>{
+    // useContext
     const {setNavActive} = useContext(NavContext);
 
     return(

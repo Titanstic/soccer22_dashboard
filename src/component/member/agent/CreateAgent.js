@@ -1,6 +1,6 @@
 const CreateAgent = ({addModalHandle}) => {
     return (
-        <div className="w-full h-full bg-gray-50 flex justify-center items-center bg-opacity-80 absolute top-0">
+        <div className="w-full h-full bg-gray-200 flex justify-center items-center bg-opacity-90 absolute top-0">
             <div className="w-11/12 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
                 <div>
                     <p className="text-3xl font-bold leading-4">Create Agent</p>

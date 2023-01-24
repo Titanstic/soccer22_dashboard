@@ -1,9 +1,9 @@
-import Layout from "../Layout";
+import LayoutView from "../LayoutView";
 
 const ProfileView = () => {
 
     return (
-        <Layout>
+        <LayoutView>
             <div className="w-full">
                 {/*Start User's ProfileView Data*/}
                 <div className="w-11/12 bg-white shadow sm:rounded-lg mt-5 mx-auto">
@@ -43,7 +43,7 @@ const ProfileView = () => {
                 </div>
                 {/*End User's ProfileView Data*/}
             </div>
-        </Layout>
+        </LayoutView>
     )
 };
 

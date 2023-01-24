@@ -1,4 +1,4 @@
-import Layout from "../Layout";
+import LayoutView from "../LayoutView";
 import CreateSubUser from "../../component/member/subuser/CreateSubUser";
 import UpdateSubUser from "../../component/member/subuser/UpdateSubUser";
 import {useState} from "react";
@@ -17,7 +17,7 @@ const SubUserView = () => {
 
 
     return (
-        <Layout>
+        <LayoutView>
             {/*Start Add SubUser Button*/}
             <div className="flex justify-between items-center mt-5 mx-5">
                 <p className="text-3xl font-bold">Sub User List</p>
@@ -83,7 +83,7 @@ const SubUserView = () => {
                 openUpdate && <UpdateSubUser updateModalHandle={updateModalHandle}/>
             }
             {/*End Update SubUser Modal*/}
-        </Layout>
+        </LayoutView>
     )
 };
 

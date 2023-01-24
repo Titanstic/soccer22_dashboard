@@ -1,4 +1,4 @@
-import Layout from "../Layout";
+import LayoutView from "../LayoutView";
 import {useState} from "react";
 import CreateAgent from "../../component/member/agent/CreateAgent";
 import UpdateAgent from "../../component/member/agent/UpdateAgent";
@@ -16,7 +16,7 @@ const AgentView = () => {
     }
 
     return (
-        <Layout>
+        <LayoutView>
             {/*Start Add Agent Button*/}
             <div className="flex justify-between items-center mt-5 mx-5">
                 <p className="text-3xl font-bold">Agent List</p>
@@ -102,7 +102,7 @@ const AgentView = () => {
                 openUpdate && <UpdateAgent updateModalHandle={updateModalHandle}/>
             }
             {/*End Update Agent Modal*/}
-        </Layout>
+        </LayoutView>
     )
 };
 
