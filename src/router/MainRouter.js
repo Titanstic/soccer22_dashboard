@@ -1,23 +1,26 @@
 import { Routes, Route} from "react-router-dom";
 import NotFound from "../view/NotFound";
-import ProfileView from "../view/Account/ProfileView";
-import AgentView from "../view/Member/AgentView";
-import MemberView from "../view/Member/MemberView";
-import SubUserView from "../view/Member/SubUserView";
+import ProfileView from "../view/account/ProfileView";
+import AgentView from "../view/member/AgentView";
+import SubUserView from "../view/member/SubUserView";
 import LoginView from "../view/LoginView";
+import PaymentView from "../view/payment/PaymentView";
 const MainRouter = () => {
     return (
         <Routes>
             <Route path="/" element={<LoginView/>}/>
-            {/*Start Account Route*/}
+            {/*Start account Route*/}
             <Route path="/profile" element={<ProfileView/>}/>
-            {/*End Account Route*/}
+            {/*End account Route*/}
 
-            {/*Start Member Route*/}
+            {/*Start member Route*/}
             <Route path="/agent" element={<AgentView/>}/>
-            <Route path="/member" element={<MemberView/>}/>
             <Route path="/subuser" element={<SubUserView/>}/>
-            {/*End Member Route*/}
+            {/*End member Route*/}
+
+            {/*Start Payment Route*/}
+            <Route path="/quickpayment" element={<PaymentView/>}/>
+            {/*End Payment Route*/}
 
             <Route path="*" element={<NotFound/>}/>
         </Routes>

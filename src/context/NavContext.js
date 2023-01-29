@@ -3,7 +3,7 @@ import {createContext, useState} from "react";
 const NavContext = createContext();
 
 export const NavContextProvider = ({children}) => {
-    const [navActive, setNavActive] = useState('home');
+    const [navActive, setNavActive] = useState("");
     const [mainNav, setMainNav] = useState("");
 
     return (

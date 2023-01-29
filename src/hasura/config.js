@@ -3,13 +3,9 @@ import {onError} from "@apollo/client/link/error";
 import {ApolloClient, HttpLink, InMemoryCache} from "@apollo/client";
 
 const authLink = setContext(( _ , { headers }) => {
-    const loggedUser = window.localStorage.getItem("loggedUser");
-    const loggedUserParsed = JSON.parse(loggedUser);
-
     return{
         headers: {
             ...headers,
-            Authorization: loggedUserParsed ? `Bearer ${loggedUserParsed}` : null,
             "x-hasura-admin-secret": "myadminsecretkey"
         }
     };

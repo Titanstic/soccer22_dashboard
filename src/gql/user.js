@@ -1,8 +1,40 @@
 import {gql} from "@apollo/client";
 
+const USERS = gql`
+    query USERS($limit: Int!, $offset: Int!, $where: users_bool_exp) {
+          users(offset: $offset, limit: $limit, order_by: {id: asc}, where: $where) {
+                company_admin
+                balance
+                contact_name
+                id
+                super_code
+                senior_code
+                master_code
+                agent_code
+                user_code
+                username
+                active
+          }
+          users_aggregate(where: $where){
+                aggregate {
+                    count
+                }
+          }
+        }
+`;
+
+const INSERT_USER = gql`
+    mutation SIGNUP($contactName: String!, $password: String!, $username: String!) {
+          SignUp(contactName: $contactName, password: $password, username: $username) {
+                error
+                message
+          }
+    }
+`
+
 const USERS_BY_PK = gql`
-    query MyQuery {
-        users_by_pk(id: 10) {
+    query USER_BY_PK($id: Int!) {
+        users_by_pk(id: $id) {
             active
             agent_code
             balance
@@ -18,4 +50,39 @@ const USERS_BY_PK = gql`
     }
 `;
 
-export { USERS_BY_PK };
+const UPDATE_USER_BY_PK = gql`
+    mutation UPDATE_USERS_BY_PK($id: Int!, $contact_name: String!, $username: String!, $active: Boolean!) {
+          update_users_by_pk(pk_columns: {id: $id} _set: {contact_name: $contact_name, username: $username, active: $active}) {
+                active
+                contact_name
+                username
+          }
+    }
+`;
+
+const UPDATE_USER_BALANCE_BY_PK = gql`
+    mutation UPDATE_USER_BALANCE_BY_PK($balance: Int!, $id: Int!) {
+          update_users_by_pk(pk_columns: {id: $id}, _set: {balance: $balance}) {
+                balance
+                id
+                username
+          }
+    }
+`
+
+const DELETE_USER_BY_PK = gql`
+    mutation DELETE_USERS_BY_PK($id: Int!) {
+          delete_users_by_pk(id: $id) {
+                username
+                user_code
+                updated_at
+                super_code
+                senior_code
+                id
+                agent_code
+                balance
+          }
+    }
+`;
+
+export { USERS, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, UPDATE_USER_BALANCE_BY_PK, DELETE_USER_BY_PK };

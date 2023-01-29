@@ -15,18 +15,7 @@ const LoginView = () => {
     // useNavigate
     const navigate = useNavigate();
     // useContext
-    const {alert, setAlert, setAlertError} = useContext(AlertContext);
-
-    // Start Useful Function
-    const showAlert = (message, bool) => {
-        setAlert(message);
-        setAlertError(bool);
-        setTimeout(() => {
-            setAlert("");
-            setAlertError(false);
-        }, 3000);
-    };
-    // End Useful Function
+    const {alert, showAlert} = useContext(AlertContext);
 
     // Start useEffect
     useEffect(() => {
@@ -35,7 +24,7 @@ const LoginView = () => {
         if(userData){
             navigate("/profile");
         }
-    }, []);
+    });
     // End useEffect
 
     //--------Start Mutation
@@ -101,7 +90,7 @@ const LoginView = () => {
 
                         <div>
                             <label htmlFor="password" className="sr-only">Password</label>
-                            <input type="password" id="password" className={`block w-full rounded-none rounded-t-md border ${error.password ? "border-red-300" : "border-gray-300"}  text-gray-900 relative px-3 py-3 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm`} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"/>
+                            <input type="password" id="password" className={`block w-full rounded-none rounded-b-md border ${error.password ? "border-red-300" : "border-gray-300"}  text-gray-900 relative px-3 py-3 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none sm:text-sm`} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"/>
                         </div>
                     </div>
 
@@ -112,11 +101,11 @@ const LoginView = () => {
                 {/*End Login Form*/}
             </div>
 
-            {/*Start Alert Component*/}
+            {/*Start Alert Modal */}
             {
                 alert && <ShowAlert/>
             }
-            {/*End Alert Component*/}
+            {/*End Alert Modal */}
         </div>
     )
 };

@@ -5,17 +5,23 @@ import { NavContextProvider } from "./context/NavContext";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./hasura/config";
 import {AlertContextProvider} from "./context/AlertContext";
+import {AuthContextProvider} from "./context/AuthContext";
+import {LoadingContextProvider} from "./context/LoadingContext";
 
 function App() {
     return (
         <ApolloProvider client={client}>
-            <AlertContextProvider>
-                <NavContextProvider>
-                    <BrowserRouter>
-                        <MainRouter/>
-                    </BrowserRouter>
-                </NavContextProvider>
-            </AlertContextProvider>
+            <AuthContextProvider>
+                <AlertContextProvider>
+                    <LoadingContextProvider>
+                        <NavContextProvider>
+                            <BrowserRouter>
+                                <MainRouter/>
+                            </BrowserRouter>
+                        </NavContextProvider>
+                    </LoadingContextProvider>
+                </AlertContextProvider>
+            </AuthContextProvider>
         </ApolloProvider>
     );
 }

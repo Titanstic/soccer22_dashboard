@@ -1,35 +1,29 @@
 import {useNavigate} from "react-router-dom";
 import {useContext} from "react";
 import AlertContext from "../../context/AlertContext";
+import NavContext from "../../context/NavContext";
 
 const NavUserData = ({username}) => {
     // useNavigate
     const navigate = useNavigate();
     // useContext
-    const {setAlert, setAlertError} = useContext(AlertContext);
+    const {showAlert} = useContext(AlertContext);
+    const {setNavActive, setMainNav} = useContext(NavContext);
 
-
-    // Start Useful Function
-    const showAlert = (message, bool) => {
-        setAlert(message);
-        setAlertError(bool);
-        setTimeout(() => {
-            setAlert("");
-            setAlertError(false);
-        }, 3000);
-    };
-    // End Useful Function
 
     // Start Function
     const logoutHandle = () => {
-        window.localStorage.removeItem("loggedUser");
         showAlert("Logout Successfully", false);
+
+        window.localStorage.removeItem("loggedUser");
+        setNavActive("");
+        setMainNav("");
         navigate("/");
     };
     // End Function
 
     return (
-        <div className="w-full flex justify-between shadow py-5 pl-3">
+        <div className="w-full flex justify-between items-center shadow py-5 pl-3">
             <p className="text-md font-bold">Welcome Back, {username}</p>
 
             <div className="mr-5">

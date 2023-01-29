@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect} from "react";
 import AlertContext from "../context/AlertContext";
 import ShowAlert from "../component/alert/ShowAlert";
 import {decodeUserToken} from "../composable/login";
@@ -7,20 +7,22 @@ import {useLazyQuery} from "@apollo/client";
 import {USERS_BY_PK} from "../gql/user";
 import Nav from "../component/layout/Nav";
 import NavUserData from "../component/layout/NavUserData";
+import AuthContext from "../context/AuthContext";
+import {checkUserRow, whereUserRow} from "../composable/user";
 
 const LayoutView = ({children}) => {
-    // useState
-    const [user, setUser] = useState({});
     // useNavigate
     const navigate = useNavigate();
     // useContext
     const {alert} = useContext(AlertContext);
-
+    const {user, setUser, setDecodeToken, setUserRow, setWhere} = useContext(AuthContext);
+    // useLazyQuery
     const [loadUser, resultUser] = useLazyQuery(USERS_BY_PK);
 
     // Start useEffect
     useEffect(() => {
         const userData = decodeUserToken();
+        setDecodeToken(userData);
 
         if(!userData){
             navigate("/");
@@ -31,15 +33,17 @@ const LayoutView = ({children}) => {
 
     useEffect(() => {
         if(resultUser.data){
+            let checkRow = checkUserRow(resultUser.data.users_by_pk);
+
+            setWhere(whereUserRow(checkRow));
+            setUserRow(checkRow);
             setUser(resultUser.data.users_by_pk);
         }
     }, [resultUser]);
     // End useEffect
 
-    console.log(user);
-
     return (
-        <div className="h-screen overflow-hidden relative">
+        <div className="w-full h-screen overflow-hidden">
             <div className="flex h-full">
                 {
                     user ?
@@ -49,7 +53,7 @@ const LayoutView = ({children}) => {
                             {/*End Nav Bar*/}
 
                             {/*Start Show Data */}
-                            <div className="w-full h-full overflow-auto relative">
+                            <div className="w-10/12 h-full overflow-auto">
                                 <NavUserData username={user.username}/>
 
                                 {/*Start Children */}

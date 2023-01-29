@@ -32,6 +32,6 @@ const decodeUserToken = () => {
         let userData = JSON.parse(userToken);
         return userData;
     }
-}
+};
 
 export {checkInputData, generateUserToken, decodeUserToken};

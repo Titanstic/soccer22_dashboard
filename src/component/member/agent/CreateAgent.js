@@ -1,7 +1,64 @@
-const CreateAgent = ({addModalHandle}) => {
+import {useContext, useState} from "react";
+import {useMutation} from "@apollo/client";
+import {INSERT_USER} from "../../../gql/user";
+import {checkInputData} from "../../../composable/agent";
+import AuthContext from "../../../context/AuthContext";
+
+const CreateAgent = ({addModalHandle, usersResult}) => {
+    // useState
+    let [loading, setLoading] = useState(false);
+    const [userData, setUserData] = useState({});
+    const [error, setError] = useState({});
+    // useContext
+    const {decodeToken} = useContext(AuthContext);
+
+    // Start Mutation
+    const [insertUser] = useMutation(INSERT_USER, {
+        context: {
+            headers: {
+                "authorization": `Bearer ${decodeToken.token}`
+            }
+        },
+        onError: (error) => {
+            console.log("insertUser", error);
+        },
+        onCompleted: (result) => {
+            console.log(result);
+            addModalHandle();
+            usersResult.refetch();
+        }
+    })
+    // End Mutation
+
+    const inputHandle = (e, input) => {
+        setUserData({...userData, [input]: e.target.value});
+
+        if(error[input]){
+            delete error[input];
+            setError(error);
+        }
+    }
+
+    const addAgentData = () => {
+        setLoading(true);
+
+        let {errorExist, tempError} = checkInputData(userData.username, userData.contactName, userData.password)
+        if(errorExist){
+            console.log("error");
+            setError(tempError);
+        }else{
+            try{
+                insertUser({variables: userData});
+            }catch (e) {
+                console.log("addAgentData", e.message);
+            }
+        }
+        setLoading(false);
+    };
+
     return (
-        <div className="w-full h-full bg-gray-200 flex justify-center items-center bg-opacity-90 absolute top-0">
-            <div className="w-11/12 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
+        <div className="w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0">
+            <div className="w-2/3 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
                 <div>
                     <p className="text-3xl font-bold leading-4">Create Agent</p>
                 </div>
@@ -9,45 +66,41 @@ const CreateAgent = ({addModalHandle}) => {
                 <hr className="my-5"/>
 
                 {/*Start Add Form */}
-                <div className="grid grid-cols-3 gap-6">
-                    <div className="col-span-3 shadow sm:col-span-2">
-                        <div className="flex rounded-md mt-1">
+                <div className="grid grid-cols-3 gap-9">
+
+                    <div className="col-span-3 sm:col-span-2 relative">
+                        <div className="flex shadow rounded-md">
                             <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">UserName</span>
-                            <input type="text" className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3" placeholder="Enter your username" />
+                            <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.username ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={userData.username} onChange={(e) => inputHandle(e, "username")} placeholder="Enter your username" />
                         </div>
+                        {
+                            error.username && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.username}</span></div>
+                        }
                     </div>
 
-                    <div className="col-span-3 shadow sm:col-span-2">
-                        <div className="flex rounded-md shadow-sm mt-1">
-                            <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">NickName</span>
-                            <input type="text" className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3" placeholder="Enter your NickName" />
-                        </div>
-                    </div>
-
-                    <div className="col-span-3 shadow sm:col-span-2">
-                        <div className="flex rounded-md shadow-sm mt-1">
+                    <div className="col-span-3 sm:col-span-2 relative">
+                        <div className="flex shadow rounded-md shadow-sm">
                             <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Contact</span>
-                            <input type="text" className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3" placeholder="Enter your Contact" />
+                            <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.contactName ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={userData.contactName} onChange={(e) => inputHandle(e, "contactName")} placeholder="Enter your Contact" />
                         </div>
+                        {
+                            error.contact_name && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.contact_name}</span></div>
+                        }
                     </div>
 
-                    <div className="col-span-3 shadow sm:col-span-2">
-                        <div className="flex rounded-md shadow-sm mt-1">
-                            <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Currency</span>
-                            <input type="text" className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3" placeholder="Enter your Currency" />
+                    <div className="col-span-3 sm:col-span-2 relative">
+                        <div className="flex shadow rounded-md shadow-sm">
+                            <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Password</span>
+                            <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.password ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={userData.password} onChange={(e) => inputHandle(e, "password")} placeholder="Enter your Contact" />
                         </div>
+                        {
+                            error.password && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.password}</span></div>
+                        }
                     </div>
 
-                    <div className="col-span-3 shadow sm:col-span-2">
-                        <div className="flex rounded-md shadow-sm mt-1">
-                            <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Balance</span>
-                            <input type="text" className="block w-full flex-1 rounded-none rounded-r-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3" placeholder="Enter your Balance" />
-                        </div>
-                    </div>
-
-                    <div className="col-span-3 text-right sm:col-span-2">
+                    <div className="col-span-3 justify-self-end sm:col-span-2">
                         <button className="bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3" onClick={addModalHandle}>Cancel</button>
-                        <button className="bg-blue-500 text-white rounded shadow hover:bg-blue-400 px-4 py-3" onClick={() => console.log("add agent")}>Create</button>
+                        <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={addAgentData} disabled={loading}>Create</button>
                     </div>
                 </div>
                 {/*End Add Form */}
