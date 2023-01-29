@@ -21,7 +21,7 @@ const Nav = () => {
             <hr className="mb-3"/>
 
             {/*start nav item*/}
-            <div className="w-full text-base font-medium mt-5 mx-auto">
+            <div className="w-11/12 text-base font-medium mt-5 mx-auto">
                 {/*start account dropdown*/}
                 <button type="button" id="accountDropdownButton" className="w-full rounded-md inline-flex items-center justify-between hover:bg-gray-700 focus:outline-none py-3 " aria-expanded="true" aria-haspopup="true" onClick={() => openDropDown("accountDropdown")}>
                     <span><i className="fa-solid fa-user-gear mx-4"></i> Account</span>
@@ -61,6 +61,9 @@ const Nav = () => {
                 <div id="paymentDropdown" className={`${mainNav !== "payment" && "hidden"} rounded-md focus:outline-line mb-3`} role="menu" aria-orientation="vertical" aria-labelledby="accountDropdownButton">
                     <div className="" role="none">
                         <Link to="/quickpayment" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'quick' && "bg-gray-900"}`} onClick={() => navLinkHandle("quick", "payment")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-money-bill-transfer mx-4"></i> Quick Payment</Link>
+                    </div>
+                    <div className="" role="none">
+                        <Link to="/paymenthistory" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'history' && "bg-gray-900"}`} onClick={() => navLinkHandle("history", "payment")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-money-bill-transfer mx-4"></i>Payment History</Link>
                     </div>
                 </div>
                 {/*end payment dropdown*/}

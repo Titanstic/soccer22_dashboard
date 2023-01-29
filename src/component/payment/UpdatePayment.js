@@ -1,8 +1,9 @@
 import {useContext, useState} from "react";
 import {useMutation} from "@apollo/client";
-import {UPDATE_USER_BALANCE_BY_PK} from "../../gql/user";
 import AuthContext from "../../context/AuthContext";
 import {checkBalanceInput} from "../../composable/payment";
+import {INSERT_BALANCE_TRANSFER_HISTORY, UPDATE_USER_BALANCE_BY_PK} from "../../gql/payment";
+import AlertContext from "../../context/AlertContext";
 
 const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
     // useState
@@ -11,6 +12,7 @@ const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
     const [addBalance, setAddBalance] = useState(null);
     // useContext
     const {decodeToken} = useContext(AuthContext);
+    const {showAlert} = useContext(AlertContext);
 
     // Start Mutation
     const [updateUserBalance] = useMutation(UPDATE_USER_BALANCE_BY_PK, {
@@ -19,6 +21,16 @@ const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
         },
         onCompleted: (result) => {
             console.log(result);
+        }
+    });
+
+    const [insertBalanceTransferHistory] = useMutation(INSERT_BALANCE_TRANSFER_HISTORY, {
+        onError: (error) => {
+            console.log("insert balance transfer history", error);
+        },
+        onCompleted: (result) => {
+            console.log(result);
+            showAlert("Transfer Successfully", false);
             setError(null);
             setAddBalance(0);
         }
@@ -31,6 +43,7 @@ const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
     }
 
     const updateBalance = () => {
+        setLoading(true);
         let {tempError, errorExist} = checkBalanceInput(balance, addBalance);
 
         if(errorExist){
@@ -40,17 +53,19 @@ const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
             let sub = balance - addBalance;
 
             try{
-                updateUserBalance({variables: {balance: sub, id: decodeToken.userID}})
-                updateUserBalance({variables: {balance: add, id: userdata.id}})
+                // update sender balance account
+                updateUserBalance({variables: {balance: sub, id: decodeToken.userID}});
+                // update receiver balance account
+                updateUserBalance({variables: {balance: add, id: userdata.id}});
+                insertBalanceTransferHistory({variables: {receiver_id: userdata.id, sender_id: decodeToken.userID, transfer_amount: addBalance}});
             }catch (e) {
                 console.log(e.message);
             }
+            setLoading(false);
             updateModalHandle(null, 0);
         }
     }
     // End Function
-
-    console.log(userdata);
 
     return (
         <div className="w-10/12 h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0">

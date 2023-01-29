@@ -5,6 +5,7 @@ import AgentView from "../view/member/AgentView";
 import SubUserView from "../view/member/SubUserView";
 import LoginView from "../view/LoginView";
 import PaymentView from "../view/payment/PaymentView";
+import PaymentHistoryView from "../view/payment/PaymentHistoryView";
 const MainRouter = () => {
     return (
         <Routes>
@@ -20,6 +21,7 @@ const MainRouter = () => {
 
             {/*Start Payment Route*/}
             <Route path="/quickpayment" element={<PaymentView/>}/>
+            <Route path="/paymenthistory" element={<PaymentHistoryView/>}/>
             {/*End Payment Route*/}
 
             <Route path="*" element={<NotFound/>}/>

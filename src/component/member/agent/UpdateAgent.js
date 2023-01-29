@@ -42,7 +42,6 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
     const updateUserData = () => {
         setLoading(true);
         let {errorExist, tempError} = updateCheckInputData(user.username, user.contact_name, user.active);
-        console.log(tempError);
 
         if(errorExist){
             setError(tempError);

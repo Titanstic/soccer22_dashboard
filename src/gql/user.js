@@ -60,16 +60,6 @@ const UPDATE_USER_BY_PK = gql`
     }
 `;
 
-const UPDATE_USER_BALANCE_BY_PK = gql`
-    mutation UPDATE_USER_BALANCE_BY_PK($balance: Int!, $id: Int!) {
-          update_users_by_pk(pk_columns: {id: $id}, _set: {balance: $balance}) {
-                balance
-                id
-                username
-          }
-    }
-`
-
 const DELETE_USER_BY_PK = gql`
     mutation DELETE_USERS_BY_PK($id: Int!) {
           delete_users_by_pk(id: $id) {
@@ -85,4 +75,4 @@ const DELETE_USER_BY_PK = gql`
     }
 `;
 
-export { USERS, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, UPDATE_USER_BALANCE_BY_PK, DELETE_USER_BY_PK };
+export { USERS, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, DELETE_USER_BY_PK };
