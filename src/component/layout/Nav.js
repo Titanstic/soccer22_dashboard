@@ -63,7 +63,7 @@ const Nav = () => {
                         <Link to="/quickpayment" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'quick' && "bg-gray-900"}`} onClick={() => navLinkHandle("quick", "payment")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-money-bill-transfer mx-4"></i> Quick Payment</Link>
                     </div>
                     <div className="" role="none">
-                        <Link to="/paymenthistory" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'history' && "bg-gray-900"}`} onClick={() => navLinkHandle("history", "payment")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-money-bill-transfer mx-4"></i>Payment History</Link>
+                        <Link to="/paymenthistory" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'history' && "bg-gray-900"}`} onClick={() => navLinkHandle("history", "payment")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-landmark mx-4"></i> Payment History</Link>
                     </div>
                 </div>
                 {/*end payment dropdown*/}

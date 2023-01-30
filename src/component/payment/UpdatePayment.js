@@ -4,6 +4,7 @@ import AuthContext from "../../context/AuthContext";
 import {checkBalanceInput} from "../../composable/payment";
 import {INSERT_BALANCE_TRANSFER_HISTORY, UPDATE_USER_BALANCE_BY_PK} from "../../gql/payment";
 import AlertContext from "../../context/AlertContext";
+import PaymentGqlContext from "../../context/PaymentGqlContext";
 
 const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
     // useState
@@ -13,6 +14,7 @@ const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
     // useContext
     const {decodeToken} = useContext(AuthContext);
     const {showAlert} = useContext(AlertContext);
+    const { resultHistory } = useContext(PaymentGqlContext);
 
     // Start Mutation
     const [updateUserBalance] = useMutation(UPDATE_USER_BALANCE_BY_PK, {
@@ -29,8 +31,8 @@ const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
             console.log("insert balance transfer history", error);
         },
         onCompleted: (result) => {
-            console.log(result);
             showAlert("Transfer Successfully", false);
+            resultHistory.refetch();
             setError(null);
             setAddBalance(0);
         }

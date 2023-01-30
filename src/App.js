@@ -7,6 +7,7 @@ import { client } from "./hasura/config";
 import {AlertContextProvider} from "./context/AlertContext";
 import {AuthContextProvider} from "./context/AuthContext";
 import {LoadingContextProvider} from "./context/LoadingContext";
+import {PaymentGqlContextProvider} from "./context/PaymentGqlContext";
 
 function App() {
     return (
@@ -15,9 +16,11 @@ function App() {
                 <AlertContextProvider>
                     <LoadingContextProvider>
                         <NavContextProvider>
-                            <BrowserRouter>
-                                <MainRouter/>
-                            </BrowserRouter>
+                            <PaymentGqlContextProvider>
+                                <BrowserRouter>
+                                    <MainRouter/>
+                                </BrowserRouter>
+                            </PaymentGqlContextProvider>
                         </NavContextProvider>
                     </LoadingContextProvider>
                 </AlertContextProvider>

@@ -6,7 +6,7 @@ import Loading from "../../Loading";
 const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult}) => {
     // useState
     const [usersData, setUsersData] = useState(null);
-    const [limit, setLimit] = useState(50);
+    const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
     // useContext
     const {user, where, decodeToken} = useContext(AuthContext);
@@ -24,6 +24,7 @@ const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult
 
     useEffect(() => {
         if(usersResult.data){
+            console.log(usersResult.data);
             // to remover login user account from show users data table
             const result = usersResult.data.users.filter(u => u.id !== decodeToken.userID);
 

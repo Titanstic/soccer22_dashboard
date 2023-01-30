@@ -9,6 +9,7 @@ import Nav from "../component/layout/Nav";
 import NavUserData from "../component/layout/NavUserData";
 import AuthContext from "../context/AuthContext";
 import {checkUserRow, whereUserRow} from "../composable/user";
+import Loading from "../component/Loading";
 
 const LayoutView = ({children}) => {
     // useNavigate
@@ -63,7 +64,7 @@ const LayoutView = ({children}) => {
                             {/*End Show Data */}
                         </>
                         :
-                        <h1>Loading</h1>
+                        <Loading/>
                 }
             </div>
             {/*Start Alert Modal */}
