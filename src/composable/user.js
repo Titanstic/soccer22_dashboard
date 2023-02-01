@@ -10,13 +10,16 @@ const checkUserRow = (userData) => {
 
 let whereUserRow = (userRow) => {
     let tempWhere = {};
+    let tempRow = "";
+    
     for(const key in userRow){
         if(userRow[key]){
             tempWhere[key] = { _eq: userRow[key] };
+            tempRow = key;
         }
     }
 
-    return tempWhere;
+    return {tempWhere, tempRow};
 }
 
 export { checkUserRow, whereUserRow };

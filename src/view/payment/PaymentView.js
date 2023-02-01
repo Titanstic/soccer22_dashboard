@@ -2,8 +2,9 @@ import LayoutView from "../LayoutView";
 import PaymentData from "../../component/payment/PaymentData";
 import {useLazyQuery} from "@apollo/client";
 import {USERS} from "../../gql/user";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import UpdatePayment from "../../component/payment/UpdatePayment";
+import NavContext from "../../context/NavContext";
 
 const  PaymentView = () => {
     // useState
@@ -12,6 +13,15 @@ const  PaymentView = () => {
     const [balance, setBalance] = useState(0);
     // useLazyQuery
     const [loadPayment, resultPayment] = useLazyQuery(USERS);
+    // useContext
+    const {setNavActive, setMainNav} = useContext(NavContext);
+
+    // Start useEffect
+    useEffect(() => {
+        setNavActive("quick");
+        setMainNav("payment");
+    })
+    // End useEffect
 
     // Start Function
     const updateModalHandle = (data, userBalance) => {
@@ -27,7 +37,7 @@ const  PaymentView = () => {
 
             {/*Start Update Payment Modal*/}
             {
-                openUpdate && <UpdatePayment updateModalHandle={updateModalHandle} balance={balance} setBalance={setBalance} userdata={userdata}/>
+                openUpdate && <UpdatePayment updateModalHandle={updateModalHandle} resultPayment={resultPayment} balance={balance} userdata={userdata}/>
             }
             {/*End Update Payment Modal*/}
         </LayoutView>

@@ -1,11 +1,21 @@
 import LayoutView from "../LayoutView";
 import CreateSubUser from "../../component/member/subuser/CreateSubUser";
 import UpdateSubUser from "../../component/member/subuser/UpdateSubUser";
-import {useState} from "react";
+import {useContext, useEffect, useState} from "react";
+import NavContext from "../../context/NavContext";
 
 const SubUserView = () => {
     const [openCreate, setOpenCreate] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
+    // useContext
+    const {setNavActive, setMainNav} = useContext(NavContext);
+
+    // Start useEffect
+    useEffect(() => {
+        setNavActive("subuser");
+        setMainNav("member");
+    })
+    // End useEffect
 
     const addModalHandle = () => {
         setOpenCreate(!openCreate);

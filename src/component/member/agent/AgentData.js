@@ -1,16 +1,18 @@
 import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../context/AuthContext";
-import LoadingContext from "../../../context/LoadingContext";
 import Loading from "../../Loading";
 
 const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult}) => {
     // useState
     const [usersData, setUsersData] = useState(null);
+    const [count ,setCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
+    const [loading, setLoading] = useState(false);
     // useContext
-    const {user, where, decodeToken} = useContext(AuthContext);
-    const {loading, setLoading} = useContext(LoadingContext);
+    const {user, where, decodeToken, row} = useContext(AuthContext);
 
 
     // Start UseEffect
@@ -20,19 +22,33 @@ const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult
         if(where){
             loadUsers({ variables: { limit, offset, where: {_and: where } }});
         }
-    }, [user])
+    }, [user, offset])
 
     useEffect(() => {
         if(usersResult.data){
-            console.log(usersResult.data);
-            // to remover login user account from show users data table
-            const result = usersResult.data.users.filter(u => u.id !== decodeToken.userID);
+            setTotalCount(usersResult.data.users_aggregate.aggregate.count);
+            setCount(Math.ceil(usersResult.data.users_aggregate.aggregate.count / limit));
 
+            // to remove login user account from show users data table
+            const result = usersResult.data.users.filter(u => u.id !== decodeToken.userID);
+            console.log(result);
             setUsersData(result);
             setLoading(false);
         }
     }, [usersResult]);
     // End UseEffect
+
+    // Start Function
+    const paginateButton = (state) => {
+        if(state === "next"){
+            setOffset(offset + limit);
+            setPage(page + 1);
+        }else{
+            setOffset(offset - limit);
+            setPage(page - 1);
+        }
+    };
+    // End Function
 
     return(
         <>
@@ -48,7 +64,8 @@ const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult
                                 <th scope="col" className="px-6 py-4">Nick Name</th>
                                 <th scope="col" className="px-6 py-4">Contact Name</th>
                                 <th scope="col" className="px-6 py-4">Balance</th>
-                                <th className="px-6 py-4"></th>
+                                <th scope="col" className="px-6 py-4">Active</th>
+                                <th scope="col" className="px-6 py-4">Action</th>
                             </tr>
                             </thead>
 
@@ -60,14 +77,15 @@ const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult
                                                 <td className="px-6 py-4">{userData.username}</td>
                                                 <td className="px-6 py-4">{
                                                     `${userData.super_code ? userData.super_code : ""} 
-                                                    ${userData.senior_code ? userData.super_code : ""} 
-                                                    ${userData.master_code ? userData.super_code : ""} 
-                                                    ${userData.agent_code ? userData.super_code : ""} 
-                                                    ${userData.user_code ? userData.super_code : ""} 
+                                                    ${userData.senior_code ? userData.senior_code : ""} 
+                                                    ${userData.master_code ? userData.master_code : ""} 
+                                                    ${userData.agent_code ? userData.agent_code : ""} 
+                                                    ${userData.user_code ? userData.user_code : ""} 
                                                     `
                                                 }</td>
                                                 <td className="px-6 py-4">{userData.contact_name}</td>
                                                 <td className="px-6 py-4">{userData.balance}</td>
+                                                <td className={`${userData.active ? "text-green-500" : "text-red-500"} px-6 py-4`}>{userData.active ? "active" : "not active"}</td>
                                                 <td className="text-lg px-6 py-4">
                                                     <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(userData)}></i>
                                                     <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400" onClick={() => deleteModalHandle(userData.id)}></i>
@@ -77,6 +95,17 @@ const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult
                                 }
                             </tbody>
                         </table>
+
+                        {
+                            count > 1 && <div className="text-sm border-t flex justify-between items-center py-2">
+                                <p className="ml-5">Showing <span className="font-bold">{page}</span> to <span className="font-bold">{count}</span> page  {totalCount} results</p>
+
+                                <div className="mr-5">
+                                    <button className={`${page === 1 ? "bg-gray-200" : "bg-white hover:bg-gray-50"} font-bold border rounded shadow mr-5 px-3 py-2`} onClick={() => paginateButton("prev")} disabled={page === 1 ? true : false}>Previous</button>
+                                    <button className={`${page < count ? "bg-white hover:bg-gray-50" : "bg-gray-200"} font-bold border rounded shadow mr-5 px-3 py-2`} onClick={() => paginateButton("next")} disabled={page < count ? false : true}>Next</button>
+                                </div>
+                            </div>
+                        }
                     </div>
             }
         </>

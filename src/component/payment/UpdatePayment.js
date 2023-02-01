@@ -2,46 +2,43 @@ import {useContext, useState} from "react";
 import {useMutation} from "@apollo/client";
 import AuthContext from "../../context/AuthContext";
 import {checkBalanceInput} from "../../composable/payment";
-import {INSERT_BALANCE_TRANSFER_HISTORY, UPDATE_USER_BALANCE_BY_PK} from "../../gql/payment";
+import {BALANCE_TRANSFER} from "../../gql/payment";
 import AlertContext from "../../context/AlertContext";
 import PaymentGqlContext from "../../context/PaymentGqlContext";
 
-const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
+const UpdatePayment = ({updateModalHandle, resultPayment, balance, userdata}) => {
     // useState
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [addBalance, setAddBalance] = useState(null);
     // useContext
-    const {decodeToken} = useContext(AuthContext);
     const {showAlert} = useContext(AlertContext);
     const { resultHistory } = useContext(PaymentGqlContext);
 
     // Start Mutation
-    const [updateUserBalance] = useMutation(UPDATE_USER_BALANCE_BY_PK, {
+    const [updateUserBalance] = useMutation(BALANCE_TRANSFER, {
         onError: (error) => {
             console.log("update balance", error);
         },
         onCompleted: (result) => {
-            console.log(result);
-        }
-    });
-
-    const [insertBalanceTransferHistory] = useMutation(INSERT_BALANCE_TRANSFER_HISTORY, {
-        onError: (error) => {
-            console.log("insert balance transfer history", error);
-        },
-        onCompleted: (result) => {
-            showAlert("Transfer Successfully", false);
-            resultHistory.refetch();
+            showAlert(result.balanceTransfer.message, false);
             setError(null);
             setAddBalance(0);
+
+            resultHistory.refetch();
+            resultPayment.refetch();
         }
-    })
+    });
     // End Mutation
 
     //Start Function
     const inputHandle = (e) => {
-        setAddBalance(Number(e.target.value));
+        if(isNaN(e.target.value)){
+            setError("Please Enter a number only");
+        }else{
+            setError(null);
+            setAddBalance(Number(e.target.value));
+        }
     }
 
     const updateBalance = () => {
@@ -51,21 +48,14 @@ const UpdatePayment = ({updateModalHandle, balance, userdata}) => {
         if(errorExist){
            setError(tempError);
         }else{
-            let add = addBalance + userdata.balance;
-            let sub = balance - addBalance;
-
             try{
-                // update sender balance account
-                updateUserBalance({variables: {balance: sub, id: decodeToken.userID}});
-                // update receiver balance account
-                updateUserBalance({variables: {balance: add, id: userdata.id}});
-                insertBalanceTransferHistory({variables: {receiver_id: userdata.id, sender_id: decodeToken.userID, transfer_amount: addBalance}});
+                updateUserBalance({variables: {balance: addBalance, receiverId: userdata.id}});
             }catch (e) {
                 console.log(e.message);
             }
-            setLoading(false);
             updateModalHandle(null, 0);
         }
+        setLoading(false);
     }
     // End Function
 

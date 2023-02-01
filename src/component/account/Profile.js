@@ -1,9 +1,16 @@
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import AuthContext from "../../context/AuthContext";
+import NavContext from "../../context/NavContext";
 
 const Profile = () => {
     // useContext
     const {user} = useContext(AuthContext);
+    const {setNavActive, setMainNav} = useContext(NavContext);
+
+    useEffect(() => {
+        setNavActive("user");
+        setMainNav("account");
+    })
 
     return (
         <div className="w-8/12 bg-white border shadow shadow-gray-200 rounded sm:rounded-lg my-10">

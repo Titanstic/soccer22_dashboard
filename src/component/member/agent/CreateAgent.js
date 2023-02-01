@@ -3,6 +3,7 @@ import {useMutation} from "@apollo/client";
 import {INSERT_USER} from "../../../gql/user";
 import {checkInputData} from "../../../composable/agent";
 import AuthContext from "../../../context/AuthContext";
+import AlertContext from "../../../context/AlertContext";
 
 const CreateAgent = ({addModalHandle, usersResult}) => {
     // useState
@@ -11,20 +12,16 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
     const [error, setError] = useState({});
     // useContext
     const {decodeToken} = useContext(AuthContext);
+    const {showAlert} = useContext(AlertContext);
 
     // Start Mutation
     const [insertUser] = useMutation(INSERT_USER, {
-        context: {
-            headers: {
-                "authorization": `Bearer ${decodeToken.token}`
-            }
-        },
         onError: (error) => {
             console.log("insertUser", error);
         },
         onCompleted: (result) => {
-            console.log(result);
             addModalHandle();
+            showAlert("Create Successfully", false);
             usersResult.refetch();
         }
     })

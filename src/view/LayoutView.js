@@ -16,7 +16,7 @@ const LayoutView = ({children}) => {
     const navigate = useNavigate();
     // useContext
     const {alert} = useContext(AlertContext);
-    const {user, setUser, setDecodeToken, setUserRow, setWhere} = useContext(AuthContext);
+    const {user, setUser, setDecodeToken, setUserRow, setWhere, setAdminRow} = useContext(AuthContext);
     // useLazyQuery
     const [loadUser, resultUser] = useLazyQuery(USERS_BY_PK);
 
@@ -35,8 +35,11 @@ const LayoutView = ({children}) => {
     useEffect(() => {
         if(resultUser.data){
             let checkRow = checkUserRow(resultUser.data.users_by_pk);
+            const {tempWhere, tempRow} = whereUserRow(checkRow);
+            console.log(tempRow);
 
-            setWhere(whereUserRow(checkRow));
+            setAdminRow(tempRow);
+            setWhere(tempWhere);
             setUserRow(checkRow);
             setUser(resultUser.data.users_by_pk);
         }

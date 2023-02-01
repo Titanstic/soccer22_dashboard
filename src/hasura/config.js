@@ -1,14 +1,24 @@
 import {setContext} from "@apollo/client/link/context";
 import {onError} from "@apollo/client/link/error";
 import {ApolloClient, HttpLink, InMemoryCache} from "@apollo/client";
+import {decodeUserToken} from "../composable/login";
 
 const authLink = setContext(( _ , { headers }) => {
-    return{
+    let userData = decodeUserToken();
+    if(userData){
+        return{
+            headers: {
+                ...headers,
+                authorization: userData ? `Bearer ${userData.token}` : null,
+            }
+        };
+    }
+
+    return {
         headers: {
-            ...headers,
-            "x-hasura-admin-secret": "myadminsecretkey"
+            ...headers
         }
-    };
+    }
 });
 
 const errorLink = onError(({graphQLErrors, networkError}) => {
