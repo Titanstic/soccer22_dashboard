@@ -4,7 +4,7 @@ import Loading from "../../Loading";
 
 const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, loadUsers, usersResult}) => {
     // useState
-    const [usersData, setUsersData] = useState(null);
+    const [usersData, setUsersData] = useState([]);
     const [count ,setCount] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
     const [page, setPage] = useState(1);
@@ -70,7 +70,7 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
 
                             <tbody className="divide-y divide-gray-100 border-t border-gray-100">
                                 {
-                                    usersData &&
+                                    usersData.length > 0 ?
                                         usersData.map( userData => (
                                             <tr className="hover:bg-gray-50" key={userData.id}>
                                                 <td className="px-6 py-4">{userData.username}</td>
@@ -93,6 +93,10 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
                                                 </td>
                                             </tr>
                                         ))
+                                        :
+                                        <tr className="hover:bg-gray-50">
+                                            <td className="px-6 py-4" colSpan="6">No History</td>
+                                        </tr>
                                 }
                             </tbody>
                         </table>

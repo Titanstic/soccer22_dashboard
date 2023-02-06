@@ -17,7 +17,7 @@ const PaymentHistoryView = () => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
-    const [paymentHistory, setPaymentHistory] = useState(null);
+    const [paymentHistory, setPaymentHistory] = useState([]);
     // useLazyQuery
     const [loadUsers, usersResult] = useLazyQuery(ALL_USER);
     // useContext
@@ -109,7 +109,7 @@ const PaymentHistoryView = () => {
                                 <tbody className="divide-y divide-gray-100 border-t border-gray-100">
                                 {
 
-                                    paymentHistory ?
+                                    paymentHistory.length > 0 ?
                                         paymentHistory.map(payment => (
                                             <tr className="hover:bg-gray-50" key={payment.id}>
                                                 <td className="px-6 py-4">{payment.id}</td>
@@ -121,7 +121,9 @@ const PaymentHistoryView = () => {
                                             </tr>
                                         ))
                                         :
-                                        <h1>No History</h1>
+                                        <tr className="hover:bg-gray-50">
+                                            <td className="px-6 py-4" colSpan="6">No History</td>
+                                        </tr>
                                 }
                                 </tbody>
                             </table>
