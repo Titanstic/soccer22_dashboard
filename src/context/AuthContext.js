@@ -7,10 +7,10 @@ export const AuthContextProvider = ({children}) => {
     const [userRow, setUserRow] = useState({});
     const [decodeToken, setDecodeToken] = useState({});
     const [where, setWhere] = useState(null);
-    const [adminRow, setAdminRow] = useState("");
+    const [upperWhere, setUpperWhere] = useState({});
 
     return(
-        <AuthContext.Provider value={{user, setUser, userRow, setUserRow, decodeToken, setDecodeToken, where, setWhere, adminRow, setAdminRow}}>
+        <AuthContext.Provider value={{user, setUser, userRow, setUserRow, decodeToken, setDecodeToken, where, setWhere, upperWhere, setUpperWhere}}>
             {children}
         </AuthContext.Provider>
     )

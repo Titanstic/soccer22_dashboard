@@ -1,8 +1,10 @@
 import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../context/AuthContext";
 import Loading from "../Loading";
+import {getReceiverCode, getUpperCode} from "../../composable/payment";
+import AlertContext from "../../context/AlertContext";
 
-const PaymentData = ({updateModalHandle, loadPayment, resultPayment}) => {
+const PaymentData = ({updateModalHandle, deductAllModal, loadPayment, resultPayment, loadUpperAcc, resultUpperAcc}) => {
     // useState
     const [paymentData, setPaymentData] = useState(null);
     const [upperAccount, setUpperAccount] = useState(null);
@@ -11,17 +13,17 @@ const PaymentData = ({updateModalHandle, loadPayment, resultPayment}) => {
     const [totalCount, setTotalCount] = useState(0);
     const [page, setPage] = useState(1);
     const [balance, setBalance] = useState(0);
-    const [limit, setLimit] = useState(11);
+    const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
     const [loading, setLoading] = useState(false);
     // useContext
-    const {user, where, decodeToken} = useContext(AuthContext);
+    const {user, where, decodeToken, upperWhere} = useContext(AuthContext);
+    const {showAlert} = useContext(AlertContext);
 
     // Start UseEffect
     useEffect(() => {
         setLoading(true);
         if(where){
-            console.log(where);
             loadPayment({ variables: { limit, offset, where: {_and: where}} })
         }
     }, [user, offset])
@@ -37,10 +39,79 @@ const PaymentData = ({updateModalHandle, loadPayment, resultPayment}) => {
             setLoading(false);
         }
     }, [resultPayment])
+
+    useEffect(() => {
+        if(upperWhere){
+            loadUpperAcc({variables: {where: {_and: upperWhere}} });
+        }
+    }, [loadUpperAcc])
+
+    useEffect(() => {
+        if(resultUpperAcc.data){
+            setUpperAccount(resultUpperAcc.data.users[0]);
+        }
+    }, [resultUpperAcc]);
+
     // End UseEffect
 
 
     // Start Function
+    const balanceWithDraw = (data) => {
+        if(data.active){
+            const {receiverCode, transfer} = getReceiverCode(data, user);
+            let receiverBalance = data.balance;
+
+            if(transfer){
+                updateModalHandle(receiverCode, receiverBalance, balance, "lower", "transfer");
+            }else{
+                showAlert("You don't have permission this lower account", true);
+            }
+        }else{
+            showAlert("This account is not active", true);
+        }
+    };
+
+    const balanceDeposit = () => {
+        const {upperCode, transfer} = getUpperCode(upperAccount, user);
+        let upperBalance = upperAccount.balance;
+
+        if(transfer){
+            updateModalHandle(upperCode, upperBalance, balance, "upper", "transfer");
+        }else{
+            showAlert("You don't have permission this upper account", true);
+        }
+    };
+
+    const balanceDeduct = (data) => {
+        if(data.active){
+            const {receiverCode, transfer} = getReceiverCode(data, user);
+            let receiverBalance = data.balance;
+
+            if(transfer){
+                updateModalHandle(receiverCode, receiverBalance, balance, "lower", "deduct");
+            }else{
+                showAlert("You don't have permission this lower account", true);
+            }
+        }else{
+            showAlert("This account is not active", true);
+        }
+    };
+
+    const balanceDeductAll = (data) => {
+        if(data.active){
+            const {receiverCode, transfer} = getReceiverCode(data, user);
+            let receiverBalance = data.balance;
+
+            if(transfer){
+                deductAllModal(receiverCode, receiverBalance);
+            }else{
+                showAlert("You don't have permission this lower account", true);
+            }
+        }else{
+            showAlert("This account is not active", true);
+        }
+    }
+
     const paginateButton = (state) => {
         if(state === "next"){
             setOffset(offset + limit);
@@ -48,10 +119,6 @@ const PaymentData = ({updateModalHandle, loadPayment, resultPayment}) => {
         }else{
             setOffset(offset - limit);
             setPage(page - 1);
-        }
-
-        if(limit === 11){
-            setLimit(10);
         }
     };
     // End Function
@@ -79,7 +146,7 @@ const PaymentData = ({updateModalHandle, loadPayment, resultPayment}) => {
                                     <th scope="col" className="px-6 py-4">Account</th>
                                     <th scope="col" className="px-6 py-4">Contact Name</th>
                                     <th scope="col" className="px-6 py-4">Current Balance</th>
-                                    <th className="px-6 py-4"></th>
+                                    <th className="px-6 py-4">Action</th>
                                 </tr>
                                 </thead>
 
@@ -98,7 +165,7 @@ const PaymentData = ({updateModalHandle, loadPayment, resultPayment}) => {
                                             <td className="px-6 py-4">{upperAccount.contact_name}</td>
                                             <td className="px-6 py-4">{upperAccount.balance}</td>
                                             <td className="text-lg px-6 py-4">
-                                                <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(upperAccount, balance)}></i>
+                                                <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={balanceDeposit}></i>
                                             </td>
                                         </tr>
                                         :
@@ -114,8 +181,10 @@ const PaymentData = ({updateModalHandle, loadPayment, resultPayment}) => {
                                                 }</td>
                                                 <td className="px-6 py-4">{pay.contact_name}</td>
                                                 <td className="px-6 py-4">{pay.balance}</td>
-                                                <td className="text-lg px-6 py-4">
-                                                    <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(pay, balance)}></i>
+                                                <td className="px-6 py-3">
+                                                    <button className="bg-blue-600 text-white border shadow rounded px-3 py-1 cursor-pointer hover:bg-blue-400 mr-5" onClick={() => balanceWithDraw(pay)}>Transfer</button>
+                                                    <button className="bg-red-600 text-white border shadow rounded px-3 py-1 cursor-pointer hover:bg-red-400 mr-5" onClick={() => balanceDeduct(pay)}>Deduct</button>
+                                                    <button className="bg-red-600 text-white border shadow rounded px-3 py-1 cursor-pointer hover:bg-red-400 mr-5" onClick={() => balanceDeductAll(pay)}>Deduct All</button>
                                                 </td>
                                             </tr>
                                         ))

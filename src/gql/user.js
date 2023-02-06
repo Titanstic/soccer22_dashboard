@@ -23,6 +23,42 @@ const USERS = gql`
         }
 `;
 
+const ALL_USER = gql`
+        query USERS($where: users_bool_exp) {
+              users(order_by: {id: asc}, where: $where) {
+                    company_admin
+                    balance
+                    contact_name
+                    id
+                    super_code
+                    senior_code
+                    master_code
+                    agent_code
+                    user_code
+                    username
+                    active
+              }
+        }
+`
+
+const UPPER_USER = gql`
+        query UPPER_USER($where: users_bool_exp) {
+              users(limit: 1, order_by: {id: asc}, where: $where) {
+                    company_admin
+                    balance
+                    contact_name
+                    id
+                    super_code
+                    senior_code
+                    master_code
+                    agent_code
+                    user_code
+                    username
+                    active
+              }
+          }
+`;
+
 const INSERT_USER = gql`
     mutation SIGNUP($contactName: String!, $password: String!, $username: String!) {
           SignUp(contactName: $contactName, password: $password, username: $username) {
@@ -51,11 +87,20 @@ const USERS_BY_PK = gql`
 `;
 
 const UPDATE_USER_BY_PK = gql`
-    mutation UPDATE_USERS_BY_PK($id: Int!, $contact_name: String!, $username: String!, $active: Boolean!) {
-          update_users_by_pk(pk_columns: {id: $id} _set: {contact_name: $contact_name, username: $username, active: $active}) {
+    mutation UPDATE_USERS_BY_PK($id: Int!, $contact_name: String!, $username: String!) {
+          update_users_by_pk(pk_columns: {id: $id} _set: {contact_name: $contact_name, username: $username}) {
                 active
                 contact_name
                 username
+          }
+    }
+`;
+
+const ACCOUNT_SUSPEND = gql`
+    mutation ACCOUNT_SUSPEND($suspendid: Int!) {
+          AccountSuspend(suspendid: $suspendid) {
+                error
+                message
           }
     }
 `;
@@ -75,4 +120,4 @@ const DELETE_USER_BY_PK = gql`
     }
 `;
 
-export { USERS, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, DELETE_USER_BY_PK };
+export { USERS, ALL_USER, UPPER_USER, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, ACCOUNT_SUSPEND, DELETE_USER_BY_PK };

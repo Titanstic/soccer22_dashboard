@@ -7,6 +7,7 @@ import {useLazyQuery} from "@apollo/client";
 import {USERS} from "../../gql/user";
 import DeleteAgent from "../../component/member/agent/DeleteAgent";
 import NavContext from "../../context/NavContext";
+import UpdateAgentActive from "../../component/member/agent/UpdateAgentActive";
 
 const AgentView = () => {
     // useState
@@ -14,6 +15,7 @@ const AgentView = () => {
     const [userId, setUserId] = useState(null);
     const [openCreate, setOpenCreate] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
+    const [openActive, setOpenActive] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     // useLazyQuery
     const [loadUsers, usersResult] = useLazyQuery(USERS);
@@ -39,6 +41,11 @@ const AgentView = () => {
         setEachUser(eachUser);
     };
 
+    const updateActiveHandle = (eachUser) => {
+        setOpenActive(!openActive);
+        setEachUser(eachUser);
+    }
+
     const deleteModalHandle = (id) => {
         setOpenDelete(!openDelete);
         setUserId(id);
@@ -55,7 +62,7 @@ const AgentView = () => {
             {/*End Add Agent Button*/}
 
             {/*Start Agent Data*/}
-            <AgentData updateModalHandle={updateModalHandle} deleteModalHandle={deleteModalHandle} loadUsers={loadUsers} usersResult={usersResult}/>
+            <AgentData updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} deleteModalHandle={deleteModalHandle} loadUsers={loadUsers} usersResult={usersResult}/>
             {/*End Agent Data*/}
 
             {/*Start Add Agent Modal*/}
@@ -69,6 +76,13 @@ const AgentView = () => {
                 openUpdate && <UpdateAgent updateModalHandle={updateModalHandle} eachUser={eachUser} usersResult={usersResult}/>
             }
             {/*End Update Agent Modal*/}
+
+            {/*Start Update Active Modal*/}
+            {
+                openActive && <UpdateAgentActive updateActiveHandle={updateActiveHandle} eachUser={eachUser} usersResult={usersResult}/>
+            }
+            {/*End Update Active Modal*/}
+
 
             {/*Start Delete Agent Modal*/}
             {

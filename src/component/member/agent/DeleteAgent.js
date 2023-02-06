@@ -42,7 +42,7 @@ const DeleteAgent = ({deleteModalHandle, userId, usersResult}) => {
                 </div>
 
                 <div className="w-full bg-gray-200 flex justify-end py-3">
-                    <button className="bg-white font-medium shadow border rounded mr-4 px-5 py-2 hover:bg-gray-50" onClick={deleteModalHandle}>Cancel</button>
+                    <button className="bg-white font-medium shadow border rounded mr-4 px-5 py-2 hover:bg-gray-50" onClick={() => deleteModalHandle(null)}>Cancel</button>
                     <button className="bg-red-600 text-white font-medium shadow border rounded mr-4 px-5 py-2 hover:bg-red-500" onClick={deleteUserData}>Delete</button>
                 </div>
             </div>

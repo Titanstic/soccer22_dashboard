@@ -2,7 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../context/AuthContext";
 import Loading from "../../Loading";
 
-const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult}) => {
+const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, loadUsers, usersResult}) => {
     // useState
     const [usersData, setUsersData] = useState(null);
     const [count ,setCount] = useState(0);
@@ -12,8 +12,7 @@ const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult
     const [offset, setOffset] = useState(0);
     const [loading, setLoading] = useState(false);
     // useContext
-    const {user, where, decodeToken, row} = useContext(AuthContext);
-
+    const {user, where, decodeToken} = useContext(AuthContext);
 
     // Start UseEffect
     useEffect(() => {
@@ -85,7 +84,9 @@ const AgentData = ({updateModalHandle, deleteModalHandle, loadUsers, usersResult
                                                 }</td>
                                                 <td className="px-6 py-4">{userData.contact_name}</td>
                                                 <td className="px-6 py-4">{userData.balance}</td>
-                                                <td className={`${userData.active ? "text-green-500" : "text-red-500"} px-6 py-4`}>{userData.active ? "active" : "not active"}</td>
+                                                <td className='px-6 py-2'>
+                                                    <button className={`w-20 ${userData.active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} shadow rounded text-white py-2`} onClick={() => updateActiveHandle(userData)}>{userData.active ? "Activate" : "Deactivate"}</button>
+                                                </td>
                                                 <td className="text-lg px-6 py-4">
                                                     <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(userData)}></i>
                                                     <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400" onClick={() => deleteModalHandle(userData.id)}></i>

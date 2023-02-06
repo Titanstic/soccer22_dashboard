@@ -1,12 +1,11 @@
 import {useContext, useState} from "react";
 import {useMutation} from "@apollo/client";
-import AuthContext from "../../context/AuthContext";
 import {checkBalanceInput} from "../../composable/payment";
-import {BALANCE_TRANSFER} from "../../gql/payment";
+import {BALANCE_DEDUCT, BALANCE_DEPOSIT, BALANCE_WITHDRAW} from "../../gql/payment";
 import AlertContext from "../../context/AlertContext";
 import PaymentGqlContext from "../../context/PaymentGqlContext";
 
-const UpdatePayment = ({updateModalHandle, resultPayment, balance, userdata}) => {
+const UpdatePayment = ({updateModalHandle, resultPayment, resultUpperAcc, balance, userCode, userBalance, accStatus, action}) => {
     // useState
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -16,12 +15,19 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userdata}) =>
     const { resultHistory } = useContext(PaymentGqlContext);
 
     // Start Mutation
-    const [updateUserBalance] = useMutation(BALANCE_TRANSFER, {
+    const [balanceWithDraw] = useMutation(BALANCE_WITHDRAW, {
         onError: (error) => {
             console.log("update balance", error);
         },
         onCompleted: (result) => {
-            showAlert(result.balanceTransfer.message, false);
+            console.log(result);
+            if(result.BalanceWithdraw.error === 1){
+                showAlert(result.BalanceWithdraw.message, true);
+            }
+            if (result.BalanceWithdraw.error == 2){
+                showAlert(result.BalanceWithdraw.message, true);
+            }
+            showAlert("Transfer Successfully", false);
             setError(null);
             setAddBalance(0);
 
@@ -29,6 +35,41 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userdata}) =>
             resultPayment.refetch();
         }
     });
+
+    const [balanceDeposit] = useMutation(BALANCE_DEPOSIT, {
+        onError: (error) => {
+            console.log(error);
+        },
+        onCompleted: (result) => {
+            console.log(result);
+            showAlert("Transfer Successfully", false);
+
+            setError(null);
+            setAddBalance(0);
+
+            resultHistory.refetch();
+            resultPayment.refetch();
+            resultUpperAcc.refetch();
+        }
+    });
+
+    const [balanceDeduct] = useMutation(BALANCE_DEDUCT, {
+        onError: (error) => {
+            console.log(error);
+        },
+        onCompleted: (result) => {
+            console.log(result);
+            showAlert("Deduct Successfully", false);
+
+            setError(null);
+            setAddBalance(0);
+
+            resultHistory.refetch();
+            resultPayment.refetch();
+            resultUpperAcc.refetch();
+        }
+    });
+
     // End Mutation
 
     //Start Function
@@ -39,7 +80,7 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userdata}) =>
             setError(null);
             setAddBalance(Number(e.target.value));
         }
-    }
+    };
 
     const updateBalance = () => {
         setLoading(true);
@@ -49,20 +90,46 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userdata}) =>
            setError(tempError);
         }else{
             try{
-                updateUserBalance({variables: {balance: addBalance, receiverId: userdata.id}});
+                if(accStatus === "lower" && action === "transfer"){
+                    balanceWithDraw({variables: {balance: addBalance, receiverCode: userCode}});
+                }else{
+                    balanceDeposit({ variables: {balance: addBalance, receiverCode: userCode}});
+                }
+
             }catch (e) {
                 console.log(e.message);
             }
-            updateModalHandle(null, 0);
+            updateModalHandle(null, null, null, null, null);
         }
         setLoading(false);
-    }
+    };
+
+    const deductBalance = () => {
+        setLoading(true);
+        let {tempError, errorExist} = checkBalanceInput(userBalance, addBalance);
+
+        if(errorExist){
+            setError(tempError);
+        }else{
+            try {
+                if(accStatus === "lower" && action === "deduct"){
+                    balanceDeduct({ variables: {balance: addBalance, detuctCode: userCode}});
+                }
+            }catch (e) {
+                console.log(e.message);
+            }
+
+            updateModalHandle(null, null, null, null, null, null);
+        }
+
+        setLoading(false);
+    };
     // End Function
 
     return (
         <div className="w-10/12 h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0">
             <div className="w-2/3 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
-                <p className="text-2xl font-bold leading-4 pt-4 pl-5">Add Payment for {userdata.contact_name}</p>
+                <p className="text-2xl font-bold leading-4 pt-4 pl-5">Add Payment for {userCode}</p>
 
                 <hr className="my-5"/>
                 
@@ -79,8 +146,13 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userdata}) =>
                 </div>
 
                 <div className="text-right mt-8">
-                    <button className="bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3" onClick={() => updateModalHandle(null, 0)}>Cancel</button>
-                    <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={updateBalance} disabled={loading}>Add Balance</button>
+                    <button className="bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3" onClick={() => updateModalHandle(null, null, null, null, null)}>Cancel</button>
+                    {
+                        action === "transfer" ?
+                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={updateBalance} disabled={loading}>Transfer</button>
+                            :
+                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={deductBalance} disabled={loading}>Deduct</button>
+                    }
                 </div>
             </div>
         </div>

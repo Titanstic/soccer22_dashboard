@@ -27,11 +27,7 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
 
     // Start Function
     const inputHandle = (e, input) => {
-        if(input === "active"){
-            setUser({...user, [input]: e.target.value === "1" ? true : false});
-        }else{
-            setUser({...user, [input]: e.target.value});
-        }
+        setUser({...user, [input]: e.target.value});
 
         if(error[input]){
             delete error[input];
@@ -41,13 +37,13 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
 
     const updateUserData = () => {
         setLoading(true);
-        let {errorExist, tempError} = updateCheckInputData(user.username, user.contact_name, user.active);
+        let {errorExist, tempError} = updateCheckInputData(user.username, user.contact_name);
 
         if(errorExist){
             setError(tempError);
         }else{
             try{
-                updateUserPk({variables: {id: user.id, contact_name: user.contact_name, username: user.username, active: user.active}});
+                updateUserPk({variables: {id: user.id, contact_name: user.contact_name, username: user.username}});
             }catch (e) {
                 console.log("updateUserdata", e.message);
             }
@@ -88,19 +84,6 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
                             </div>
                             {
                                 error.contact_name && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.contact_name}</span></div>
-                            }
-                        </div>
-
-                        <div className="col-span-3 shadow sm:col-span-2 relative">
-                            <div className="flex rounded-md shadow-sm">
-                                <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Active</span>
-                                <input type="radio" name="active" id="active" value="1" onChange={(e) => inputHandle(e, "active")} checked={user.active && true}/>
-                                <label htmlFor="active">Active</label>
-                                <input type="radio" name="active" id="nonactive" value="0" onChange={(e) => inputHandle(e, "active")} checked={!user.active && true}/>
-                                <label htmlFor="nonactive">Non Active</label>
-                            </div>
-                            {
-                                error.active && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.active}</span></div>
                             }
                         </div>
 

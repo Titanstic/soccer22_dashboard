@@ -17,14 +17,31 @@ const PAYMENT_HISTORY = gql`
     }
 `;
 
+const BALANCE_WITHDRAW = gql`
+    mutation BALANCE_WITHDRAW($receiverCode: String!, $balance: Int!) {
+          BalanceWithdraw(balance: $balance, receiverCode: $receiverCode) {
+            error
+            message
+      }
+    }
+`;
 
-const BALANCE_TRANSFER = gql`
-    mutation BALANCE_TRANSFER($balance: Int!, $receiverId: Int!) {
-          balanceTransfer(balance: $balance, receiverId: $receiverId) {
+const BALANCE_DEPOSIT = gql`
+    mutation BALANCE_DEPOSIT($balance: Int!, $receiverCode: String!) {
+          BalanceDeposit(balance: $balance, receiverCode: $receiverCode) {
                 error
                 message
           }
     }
 `;
 
-export { PAYMENT_HISTORY, BALANCE_TRANSFER };
+const BALANCE_DEDUCT = gql`
+    mutation BALANCE_DEDUCT($balance: Int!, $detuctCode: String!) {
+          BalanceDetuct(balance: $balance, detuctCode: $detuctCode) {
+                error
+                message
+          }
+    }
+`
+
+export { PAYMENT_HISTORY, BALANCE_WITHDRAW, BALANCE_DEPOSIT, BALANCE_DEDUCT };

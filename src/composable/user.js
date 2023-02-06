@@ -10,16 +10,29 @@ const checkUserRow = (userData) => {
 
 let whereUserRow = (userRow) => {
     let tempWhere = {};
-    let tempRow = "";
-    
+    let tempUpperWhere = {};
+
+
+    let tempRowKey = [];
+    let tempRowValue = [];
+
+    // to get lower account
     for(const key in userRow){
         if(userRow[key]){
             tempWhere[key] = { _eq: userRow[key] };
-            tempRow = key;
+            tempRowValue.push(userRow[key]);
+            tempRowKey.push(key);
         }
     }
 
-    return {tempWhere, tempRow};
-}
+    // to get upper account
+    for (let i = 0; i < tempRowKey.length - 1; i++){
+        tempUpperWhere[tempRowKey[i]] = { _eq: tempRowValue[i] };
+    }
+
+    return {tempWhere, tempUpperWhere};
+};
+
+
 
 export { checkUserRow, whereUserRow };
