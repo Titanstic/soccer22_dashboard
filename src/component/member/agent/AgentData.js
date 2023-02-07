@@ -95,7 +95,7 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
                                         ))
                                         :
                                         <tr className="hover:bg-gray-50">
-                                            <td className="px-6 py-4" colSpan="6">No History</td>
+                                            <td className="text-center px-6 py-4" colSpan="6">No Data</td>
                                         </tr>
                                 }
                             </tbody>

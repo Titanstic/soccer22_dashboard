@@ -8,6 +8,12 @@ const PAYMENT_HISTORY = gql`
                 receiver_id
                 sender_id
                 transfer_amount
+                user {
+                    username
+                }
+                userBySenderId {
+                    username
+                }
           }
           balance_transfer_history_aggregate(where: {sender_id: {_eq: $sender_id}}) {
                 aggregate {

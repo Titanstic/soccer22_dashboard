@@ -54,7 +54,6 @@ const PaymentData = ({updateModalHandle, deductAllModal, loadPayment, resultPaym
 
     // End UseEffect
 
-
     // Start Function
     const balanceWithDraw = (data) => {
         if(data.active){
@@ -133,7 +132,11 @@ const PaymentData = ({updateModalHandle, deductAllModal, loadPayment, resultPaym
                         <div className="flex justify-between items-center mx-10 py-5">
                             <div className="text-white">
                                 <button className="bg-green-500 rounded border shadow mr-5 px-3 py-2 hover:bg-green-600" onClick={() => setTransferUpper(false)}>Transfer to lower account</button>
-                                <button  className="bg-red-500 rounded border shadow px-3 py-2 hover:bg-red-600" onClick={() => setTransferUpper(true)}>Transfer to upper account</button>
+                                {
+                                    upperAccount &&
+                                        upperAccount.id !== user.id &&
+                                            <button  className="bg-red-500 rounded border shadow px-3 py-2 hover:bg-red-600" onClick={() => setTransferUpper(true)}>Transfer to upper account</button>
+                                }
                             </div>
 
                             <p className="text-xl font-bold">Main Balance : {balance}</p>

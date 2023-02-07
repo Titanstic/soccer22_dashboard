@@ -85,7 +85,7 @@ const PaymentHistoryView = () => {
                             <select className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer" onChange={changeUser} name="" id="">
                                 <option value="0" selected disabled>Please Choose User</option>
                                 {
-                                    allUser.map((u) => (
+                                    allUser && allUser.map((u) => (
                                         <option key={u.id} value={`${u.id}`}>{u.username}</option>
                                     ))
                                 }
@@ -113,8 +113,8 @@ const PaymentHistoryView = () => {
                                         paymentHistory.map(payment => (
                                             <tr className="hover:bg-gray-50" key={payment.id}>
                                                 <td className="px-6 py-4">{payment.id}</td>
-                                                <td className="px-6 py-4">{payment.sender_id}</td>
-                                                <td className="px-6 py-4">{payment.receiver_id}</td>
+                                                <td className="px-6 py-4">{payment.user.username}</td>
+                                                <td className="px-6 py-4">{payment.userBySenderId.username}</td>
                                                 <td className={`${payment.sender_id === user.id ? "text-red-500" : "text-green-500"} font-bold px-6 py-4`}>{payment.sender_id === user.id ? "-" : "+"} {payment.transfer_amount}</td>
                                                 <td className="px-6 py-4">{new Date(payment.created_at).getDate() < 10 ? `0${new Date(payment.created_at).getDate()}` : new Date(payment.created_at).getDate()}-{new Date(payment.created_at).getMonth() + 1 < 10 ? `0${new Date(payment.created_at).getMonth() + 1}` : new Date(payment.created_at).getMonth() + 1}-{new Date(payment.created_at).getFullYear()}</td>
                                                 <td className="px-6 py-4">{new Date(payment.created_at).getHours() < 10 ? `0${new Date(payment.created_at).getHours()}` : new Date(payment.created_at).getHours()}:{new Date(payment.created_at).getMinutes() < 10 ? `0${new Date(payment.created_at).getMinutes()}` : new Date(payment.created_at).getMinutes()}:{new Date(payment.created_at).getSeconds() < 10 ? `0${new Date(payment.created_at).getSeconds()}` : new Date(payment.created_at).getSeconds()}</td>
@@ -122,7 +122,7 @@ const PaymentHistoryView = () => {
                                         ))
                                         :
                                         <tr className="hover:bg-gray-50">
-                                            <td className="px-6 py-4" colSpan="6">No History</td>
+                                            <td className="text-center px-6 py-4" colSpan="6">No History</td>
                                         </tr>
                                 }
                                 </tbody>
