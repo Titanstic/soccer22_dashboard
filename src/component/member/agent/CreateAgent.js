@@ -11,7 +11,7 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
     const [userData, setUserData] = useState({});
     const [error, setError] = useState({});
     // useContext
-    const {decodeToken} = useContext(AuthContext);
+    const {allUsersResult} = useContext(AuthContext);
     const {showAlert} = useContext(AlertContext);
 
     // Start Mutation
@@ -23,6 +23,7 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
             addModalHandle();
             showAlert("Create Successfully", false);
             usersResult.refetch();
+            allUsersResult.refetch();
         }
     })
     // End Mutation

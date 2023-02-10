@@ -1,7 +1,16 @@
 import LayoutView from "../LayoutView";
 import Profile from "../../component/account/Profile";
+import {useContext, useEffect} from "react";
+import NavContext from "../../context/NavContext";
 
 const ProfileView = () => {
+    // useContext
+    const {setNavActive, setMainNav} = useContext(NavContext);
+
+    useEffect(() => {
+        setNavActive("user");
+        setMainNav("account");
+    })
 
     return (
         <LayoutView>

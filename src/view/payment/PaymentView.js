@@ -1,7 +1,7 @@
 import LayoutView from "../LayoutView";
 import PaymentData from "../../component/payment/PaymentData";
 import {useLazyQuery} from "@apollo/client";
-import {UPPER_USER, USERS} from "../../gql/user";
+import {USERS} from "../../gql/user";
 import {useContext, useEffect, useState} from "react";
 import UpdatePayment from "../../component/payment/UpdatePayment";
 import NavContext from "../../context/NavContext";
@@ -18,7 +18,6 @@ const  PaymentView = () => {
     const [openDeductAll, setOpenDeductAll] = useState(false);
     // useLazyQuery
     const [loadPayment, resultPayment] = useLazyQuery(USERS);
-    const [loadUpperAcc, resultUpperAcc] = useLazyQuery(UPPER_USER);
     // useContext
     const {setNavActive, setMainNav} = useContext(NavContext);
 
@@ -51,17 +50,17 @@ const  PaymentView = () => {
 
     return (
         <LayoutView>
-            <PaymentData updateModalHandle={updateModalHandle} deductAllModal={deductAllModal} loadPayment={loadPayment} resultPayment={resultPayment} loadUpperAcc={loadUpperAcc} resultUpperAcc={resultUpperAcc}/>
+            <PaymentData updateModalHandle={updateModalHandle} deductAllModal={deductAllModal} loadPayment={loadPayment} resultPayment={resultPayment}/>
 
             {/*Start Update Payment Modal*/}
             {
-                openUpdate && <UpdatePayment updateModalHandle={updateModalHandle} resultPayment={resultPayment} resultUpperAcc={resultUpperAcc} balance={balance} userCode={userCode} userBalance={userBalance} accStatus={accStatus} action={action}/>
+                openUpdate && <UpdatePayment updateModalHandle={updateModalHandle} resultPayment={resultPayment} balance={balance} userCode={userCode} userBalance={userBalance} accStatus={accStatus} action={action}/>
             }
             {/*End Update Payment Modal*/}
 
             {/*Start Deduct All payment Modal*/}
             {
-                openDeductAll && <DeductAllPayment deductAllModal={deductAllModal} resultPayment={resultPayment} resultUpperAcc={resultUpperAcc} userCode={userCode} userBalance={userBalance}/>
+                openDeductAll && <DeductAllPayment deductAllModal={deductAllModal} resultPayment={resultPayment} userCode={userCode} userBalance={userBalance}/>
             }
             {/*End Deduct All payment Modal*/}
         </LayoutView>

@@ -1,8 +1,8 @@
 import {gql} from "@apollo/client";
 
 const USERS = gql`
-    query USERS($limit: Int!, $offset: Int!, $where: users_bool_exp) {
-          users(offset: $offset, limit: $limit, order_by: {id: asc}, where: $where) {
+    query USERS($where: users_bool_exp) {
+          users(order_by: {id: asc}, where: $where) {
                 company_admin
                 balance
                 contact_name
@@ -39,24 +39,6 @@ const ALL_USER = gql`
                     active
               }
         }
-`
-
-const UPPER_USER = gql`
-        query UPPER_USER($where: users_bool_exp) {
-              users(limit: 1, order_by: {id: asc}, where: $where) {
-                    company_admin
-                    balance
-                    contact_name
-                    id
-                    super_code
-                    senior_code
-                    master_code
-                    agent_code
-                    user_code
-                    username
-                    active
-              }
-          }
 `;
 
 const INSERT_USER = gql`
@@ -120,4 +102,4 @@ const DELETE_USER_BY_PK = gql`
     }
 `;
 
-export { USERS, ALL_USER, UPPER_USER, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, ACCOUNT_SUSPEND, DELETE_USER_BY_PK };
+export { USERS, ALL_USER, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, ACCOUNT_SUSPEND, DELETE_USER_BY_PK };

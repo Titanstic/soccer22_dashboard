@@ -4,7 +4,7 @@ import {useContext} from "react";
 import AlertContext from "../../context/AlertContext";
 import PaymentGqlContext from "../../context/PaymentGqlContext";
 
-const DeductAllPayment = ({deductAllModal, resultPayment, resultUpperAcc, userCode, userBalance}) => {
+const DeductAllPayment = ({deductAllModal, resultPayment, userCode, userBalance}) => {
     // useContext
     const {showAlert} = useContext(AlertContext);
     const { resultHistory } = useContext(PaymentGqlContext);
@@ -20,7 +20,6 @@ const DeductAllPayment = ({deductAllModal, resultPayment, resultUpperAcc, userCo
 
             resultHistory.refetch();
             resultPayment.refetch();
-            resultUpperAcc.refetch();
         }
     });
     //End Mutation

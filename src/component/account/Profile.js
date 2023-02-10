@@ -1,16 +1,31 @@
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../context/AuthContext";
-import NavContext from "../../context/NavContext";
+import {accountCount} from "../../composable/user";
 
 const Profile = () => {
+    // useState
+    const [accCount, setAccCount] = useState({});
+    const [accountBalance, setAccountBalance] = useState(null);
+    const [cashBalance, setCashBalance] = useState(null);
+    const [memberBalance, setMemberBalance] = useState(null);
     // useContext
-    const {user} = useContext(AuthContext);
-    const {setNavActive, setMainNav} = useContext(NavContext);
+    const {user, where, whereArr, loadAllUsers, allUsersResult} = useContext(AuthContext);
 
     useEffect(() => {
-        setNavActive("user");
-        setMainNav("account");
-    })
+        if(where){
+            loadAllUsers({variables: {where: {_and: where }}})
+        }
+    }, [where])
+
+    useEffect(() => {
+        if(allUsersResult.data){
+            let {superAcc, seniorAcc, masterAcc, agentAcc, userAcc, totalBalance} = accountCount(allUsersResult.data.users);
+            setAccCount({superAcc, seniorAcc, masterAcc, agentAcc, userAcc});
+            setCashBalance(user.balance);
+            setAccountBalance(totalBalance);
+            setMemberBalance(totalBalance - user.balance);
+         }
+    }, [allUsersResult])
 
     return (
         <div className="w-8/12 bg-white border shadow shadow-gray-200 rounded sm:rounded-lg my-10">
@@ -21,7 +36,7 @@ const Profile = () => {
             {
                 user && <div className="border-t border-gray-200">
                     <dl>
-                        <div className="bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
+                        <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                             <dt className="text-sm font-medium text-gray-500">User Name</dt>
                             <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{user.username}</dd>
                         </div>
@@ -30,23 +45,73 @@ const Profile = () => {
                     <dl>
                         <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                             <dt className="text-sm font-medium text-gray-500">Cash Balance</dt>
-                            <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{user.balance}</dd>
+                            <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{cashBalance}</dd>
                         </div>
                     </dl>
 
                     <dl>
-                        <div className="bg-gray-50 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
+                        <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                             <dt className="text-sm font-medium text-gray-500">Account Balance</dt>
-                            <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{user.balance}</dd>
+                            <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{accountBalance}</dd>
                         </div>
                     </dl>
 
                     <dl>
                         <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                             <dt className="text-sm font-medium text-gray-500">Members Balance</dt>
-                            <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{user.balance}</dd>
+                            <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{memberBalance}</dd>
                         </div>
                     </dl>
+
+                    {
+                        whereArr.length < 1 &&
+                            <dl>
+                                <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
+                                    <dt className="text-sm font-medium text-gray-500">Super Account</dt>
+                                    <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{accCount.superAcc}</dd>
+                                </div>
+                            </dl>
+                    }
+
+                    {
+                        whereArr.length < 2 &&
+                            <dl>
+                                <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
+                                    <dt className="text-sm font-medium text-gray-500">Senior Account</dt>
+                                    <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{accCount.seniorAcc}</dd>
+                                </div>
+                            </dl>
+                    }
+
+                    {
+                        whereArr.length < 3 &&
+                            <dl>
+                                <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
+                                    <dt className="text-sm font-medium text-gray-500">Master Account</dt>
+                                    <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{accCount.masterAcc}</dd>
+                                </div>
+                            </dl>
+                    }
+
+                    {
+                        whereArr.length < 4 &&
+                            <dl>
+                                <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
+                                    <dt className="text-sm font-medium text-gray-500">Agent Account</dt>
+                                    <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{accCount.agentAcc}</dd>
+                                </div>
+                            </dl>
+                    }
+
+                    {
+                        whereArr.length < 5 &&
+                            <dl>
+                                <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
+                                    <dt className="text-sm font-medium text-gray-500">User Account</dt>
+                                    <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{accCount.userAcc}</dd>
+                                </div>
+                            </dl>
+                    }
                 </div>
             }
         </div>

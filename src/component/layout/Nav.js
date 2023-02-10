@@ -2,10 +2,12 @@ import {Link} from "react-router-dom";
 import {useContext} from "react";
 import {openDropDown} from "../../composable/layout";
 import NavContext from "../../context/NavContext";
+import AuthContext from "../../context/AuthContext";
 
 const Nav = () => {
     // useContext
     const {navActive, setNavActive, mainNav, setMainNav} = useContext(NavContext);
+    const {whereArr} = useContext(AuthContext);
 
     // Start Function
     const navLinkHandle = (nav, main) => {
@@ -45,7 +47,13 @@ const Nav = () => {
                 </button>
                 <div id="memberDropdown" className={`${mainNav !== "member" && "hidden"} rounded-md focus:outline-line mb-3`} role="menu" aria-orientation="vertical" aria-labelledby="memberDropdownButton">
                     <div role="none">
-                        <Link to="/agent" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'agent' && "bg-gray-900"}`} onClick={() => navLinkHandle("agent", "member")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-person-shelter mx-4"></i> Agent</Link>
+                        <Link to="/agent" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'agent' && "bg-gray-900"}`} onClick={() => navLinkHandle("agent", "member")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-person-shelter mx-4"></i>
+                            {whereArr.length === 0 && "Super Acc"}
+                            {whereArr.length === 1 && "Senior Acc"}
+                            {whereArr.length === 2 && "Master Acc"}
+                            {whereArr.length === 3 && "Agent Acc"}
+                            {whereArr.length === 4 && "User Acc"}
+                        </Link>
                         <Link to="/subuser" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'subuser' && "bg-gray-900"}`} onClick={() => navLinkHandle("subuser", "member")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-user-group mx-4"></i> Sub User</Link>
                     </div>
                 </div>

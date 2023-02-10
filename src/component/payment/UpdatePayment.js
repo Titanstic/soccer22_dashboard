@@ -5,7 +5,7 @@ import {BALANCE_DEDUCT, BALANCE_DEPOSIT, BALANCE_WITHDRAW} from "../../gql/payme
 import AlertContext from "../../context/AlertContext";
 import PaymentGqlContext from "../../context/PaymentGqlContext";
 
-const UpdatePayment = ({updateModalHandle, resultPayment, resultUpperAcc, balance, userCode, userBalance, accStatus, action}) => {
+const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, userBalance, accStatus, action}) => {
     // useState
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -49,7 +49,6 @@ const UpdatePayment = ({updateModalHandle, resultPayment, resultUpperAcc, balanc
 
             resultHistory.refetch();
             resultPayment.refetch();
-            resultUpperAcc.refetch();
         }
     });
 
@@ -66,7 +65,6 @@ const UpdatePayment = ({updateModalHandle, resultPayment, resultUpperAcc, balanc
 
             resultHistory.refetch();
             resultPayment.refetch();
-            resultUpperAcc.refetch();
         }
     });
 

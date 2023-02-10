@@ -1,36 +1,55 @@
 import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../context/AuthContext";
 import Loading from "../../Loading";
+import {useNavigate} from "react-router-dom";
 
 const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, loadUsers, usersResult}) => {
     // useState
     const [usersData, setUsersData] = useState([]);
-    const [count ,setCount] = useState(0);
-    const [totalCount, setTotalCount] = useState(0);
-    const [page, setPage] = useState(1);
-    const [limit, setLimit] = useState(10);
     const [offset, setOffset] = useState(0);
     const [loading, setLoading] = useState(false);
     // useContext
-    const {user, where, decodeToken} = useContext(AuthContext);
+    const {where, decodeToken} = useContext(AuthContext);
+    // useNavigate
+    const navigate = useNavigate();
 
     // Start UseEffect
     useEffect(() => {
         setLoading(true);
 
         if(where){
-            loadUsers({ variables: { limit, offset, where: {_and: where } }});
+            loadUsers({ variables: { where: {_and: where } }});
         }
-    }, [user, offset])
+    }, [where])
 
     useEffect(() => {
         if(usersResult.data){
-            setTotalCount(usersResult.data.users_aggregate.aggregate.count);
-            setCount(Math.ceil(usersResult.data.users_aggregate.aggregate.count / limit));
-
             // to remove login user account from show users data table
             const result = usersResult.data.users.filter(u => u.id !== decodeToken.userID);
-            console.log(result);
+
+            let filterUser = [];
+            result.forEach(r => {
+                let key = `${r.super_code}${r.senior_code}${r.master_code}${r.agent_code}${r.user_code}`;
+                if(filterUser.length === 0){
+                    filterUser.push({[key]: [r]})
+                } else{
+                    filterUser.forEach((f) => {
+                        console.log(f[Object.keys(f)[0]]);
+                        // if(Object.keys(f)[0] === key){
+                            // f.push()
+                        // }else{
+                        //     filterUser.push({[key]: [r]})
+                        // }
+                        // console.log(Object.keys(f)[0], key);
+                        // console.log(Object.keys(f)[0] == key ? true : false);
+                    })
+                }
+
+                // let obj = {[key]: [r]}
+                // console.log(obj[key]);
+            });
+            console.log("filter", filterUser);
+
             setUsersData(result);
             setLoading(false);
         }
@@ -38,15 +57,6 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
     // End UseEffect
 
     // Start Function
-    const paginateButton = (state) => {
-        if(state === "next"){
-            setOffset(offset + limit);
-            setPage(page + 1);
-        }else{
-            setOffset(offset - limit);
-            setPage(page - 1);
-        }
-    };
     // End Function
 
     return(
@@ -60,7 +70,6 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
                             <thead className="bg-gray-50">
                             <tr className="text-lg font-medium text-gray-900">
                                 <th scope="col" className="px-6 py-4">User Name</th>
-                                <th scope="col" className="px-6 py-4">Nick Name</th>
                                 <th scope="col" className="px-6 py-4">Contact Name</th>
                                 <th scope="col" className="px-6 py-4">Balance</th>
                                 <th scope="col" className="px-6 py-4">Active</th>
@@ -74,14 +83,6 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
                                         usersData.map( userData => (
                                             <tr className="hover:bg-gray-50" key={userData.id}>
                                                 <td className="px-6 py-4">{userData.username}</td>
-                                                <td className="px-6 py-4">{
-                                                    `${userData.super_code ? userData.super_code : ""} 
-                                                    ${userData.senior_code ? userData.senior_code : ""} 
-                                                    ${userData.master_code ? userData.master_code : ""} 
-                                                    ${userData.agent_code ? userData.agent_code : ""} 
-                                                    ${userData.user_code ? userData.user_code : ""} 
-                                                    `
-                                                }</td>
                                                 <td className="px-6 py-4">{userData.contact_name}</td>
                                                 <td className="px-6 py-4">{userData.balance}</td>
                                                 <td className='px-6 py-2'>
@@ -89,7 +90,8 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
                                                 </td>
                                                 <td className="text-lg px-6 py-4">
                                                     <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(userData)}></i>
-                                                    <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400" onClick={() => deleteModalHandle(userData.id)}></i>
+                                                    <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400 mr-5" onClick={() => deleteModalHandle(userData.id)}></i>
+                                                    <i className="text-green-600 fa-solid fa-money-check-dollar cursor-pointer hover:text-green400" onClick={() => navigate("/quickpayment")}></i>
                                                 </td>
                                             </tr>
                                         ))
@@ -100,17 +102,6 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
                                 }
                             </tbody>
                         </table>
-
-                        {
-                            count > 1 && <div className="text-sm border-t flex justify-between items-center py-2">
-                                <p className="ml-5">Showing <span className="font-bold">{page}</span> to <span className="font-bold">{count}</span> page  {totalCount} results</p>
-
-                                <div className="mr-5">
-                                    <button className={`${page === 1 ? "bg-gray-200" : "bg-white hover:bg-gray-50"} font-bold border rounded shadow mr-5 px-3 py-2`} onClick={() => paginateButton("prev")} disabled={page === 1 ? true : false}>Previous</button>
-                                    <button className={`${page < count ? "bg-white hover:bg-gray-50" : "bg-gray-200"} font-bold border rounded shadow mr-5 px-3 py-2`} onClick={() => paginateButton("next")} disabled={page < count ? false : true}>Next</button>
-                                </div>
-                            </div>
-                        }
                     </div>
             }
         </>
