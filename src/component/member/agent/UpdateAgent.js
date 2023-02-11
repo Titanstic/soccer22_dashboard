@@ -37,7 +37,7 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
 
     const updateUserData = () => {
         setLoading(true);
-        let {errorExist, tempError} = updateCheckInputData(user.username, user.contact_name);
+        let {errorExist, tempError} = updateCheckInputData(user.password);
 
         if(errorExist){
             setError(tempError);
@@ -69,21 +69,11 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
                     <div className="grid grid-cols-3 gap-9">
                         <div className="col-span-3 sm:col-span-2 relative">
                             <div className="flex shadow rounded-md">
-                                <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">UserName</span>
-                                <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.username ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={user.username} onChange={(e) => inputHandle(e, "username")} placeholder="Enter your username" />
+                                <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Password</span>
+                                <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.password ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={user.password} onChange={(e) => inputHandle(e, "password")} placeholder="Enter your password" />
                             </div>
                             {
-                                error.username && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.username}</span></div>
-                            }
-                        </div>
-
-                        <div className="col-span-3 sm:col-span-2 relative">
-                            <div className="flex shadow rounded-md shadow-sm">
-                                <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Contact Name</span>
-                                <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.contact_name ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={user.contact_name} onChange={(e) => inputHandle(e, "contact_name")} placeholder="Enter your Contact" />
-                            </div>
-                            {
-                                error.contact_name && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.contact_name}</span></div>
+                                error.password && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.password}</span></div>
                             }
                         </div>
 

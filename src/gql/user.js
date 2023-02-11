@@ -69,8 +69,8 @@ const USERS_BY_PK = gql`
 `;
 
 const UPDATE_USER_BY_PK = gql`
-    mutation UPDATE_USERS_BY_PK($id: Int!, $contact_name: String!, $username: String!) {
-          update_users_by_pk(pk_columns: {id: $id} _set: {contact_name: $contact_name, username: $username}) {
+    mutation UPDATE_USERS_BY_PK($id: Int!, $password: String!) {
+          update_users_by_pk(pk_columns: {id: $id} _set: {password: $password}) {
                 active
                 contact_name
                 username

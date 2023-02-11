@@ -12,7 +12,7 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
     const [addBalance, setAddBalance] = useState(null);
     // useContext
     const {showAlert} = useContext(AlertContext);
-    const { resultHistory } = useContext(PaymentGqlContext);
+    const { resultHistory, eachHistoryResult } = useContext(PaymentGqlContext);
 
     // Start Mutation
     const [balanceWithDraw] = useMutation(BALANCE_WITHDRAW, {
@@ -32,6 +32,7 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
             setAddBalance(0);
 
             resultHistory.refetch();
+            eachHistoryResult.refetch();
             resultPayment.refetch();
         }
     });
@@ -48,6 +49,7 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
             setAddBalance(0);
 
             resultHistory.refetch();
+            eachHistoryResult.refetch();
             resultPayment.refetch();
         }
     });
@@ -64,6 +66,7 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
             setAddBalance(0);
 
             resultHistory.refetch();
+            eachHistoryResult.refetch();
             resultPayment.refetch();
         }
     });
@@ -130,7 +133,7 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
                 <p className="text-2xl font-bold leading-4 pt-4 pl-5">Add Payment for {userCode}</p>
 
                 <hr className="my-5"/>
-                
+
                 <div className="grid grid-cols-3 gap-6">
                     <div className="col-span-3 sm:col-span-2 relative">
                         <div className="flex shadow rounded-md shadow-sm mt-1">
