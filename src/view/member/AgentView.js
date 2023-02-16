@@ -67,7 +67,9 @@ const AgentView = () => {
                             {whereArr.length === 3 && "Agent Account List"}
                             {whereArr.length === 4 && "User Account List"}
                         </p>
-                        <button className="bg-blue-500 text-white rounded shadow hover:bg-blue-400 px-4 py-3" onClick={addModalHandle}>Add Agent</button>
+                        <button className="bg-blue-500 text-white rounded shadow hover:bg-blue-400 px-4 py-3" onClick={addModalHandle}>
+                            Add {whereArr.length === 0 && "Super"} {whereArr.length === 1 && "Senior"} {whereArr.length === 2 && "Master"} {whereArr.length === 3 && "Agent"} {whereArr.length === 4 && "User"}
+                        </button>
                     </div>
             }
             {/*// End Add Agent Button*/}

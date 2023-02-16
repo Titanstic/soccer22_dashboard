@@ -6,7 +6,7 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
     // useState
     const [usersData, setUsersData] = useState(null);
     // useContext
-    const {where, decodeToken} = useContext(AuthContext);
+    const {where, whereArr, decodeToken} = useContext(AuthContext);
     // useNavigate
     const navigate = useNavigate();
 
@@ -24,33 +24,39 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
 
             let filterUser = [];
             result.forEach(r => {
-                let key = `${r.super_code}${r.senior_code}${r.master_code}${r.agent_code}${r.user_code}`;
-                if(filterUser.length === 0){
-                    filterUser.push({[key]: [r]})
-                } else{
-                    filterUser.forEach((f) => {
-                        console.log(f[Object.keys(f)[0]]);
-                        // if(Object.keys(f)[0] === key){
-                            // f.push()
-                        // }else{
-                        //     filterUser.push({[key]: [r]})
-                        // }
-                        // console.log(Object.keys(f)[0], key);
-                        // console.log(Object.keys(f)[0] == key ? true : false);
+                let key = `${r.super_code ? r.super_code : ""}${r.senior_code ? " "+r.senior_code : ""}${r.master_code ? " "+r.master_code : ""}${r.agent_code ? " "+r.agent_code : ""}${r.user_code ? " "+r.user_code : ""}`;
+                let keyArr = key.split(" ");
+
+                if(keyArr.length > whereArr.length + 1){
+                    filterUser.forEach(f => {
+                        let objectKey = f[0]["objectKey"];
+                        let objectKeyArr = objectKey.split(" ");
+
+                         if(keyArr[keyArr.length - 2] === objectKeyArr[objectKeyArr.length - 1]){
+                            f.push(r);
+                         }
                     })
+                } else{
+                    r = {...r, "objectKey": key};
+                    filterUser.push([r]);
                 }
-
-                // let obj = {[key]: [r]}
-                // console.log(obj[key]);
             });
-            console.log("filter", filterUser);
+            console.log("filter", filterUser[0]);
 
-            setUsersData(result);
+            setUsersData(filterUser);
         }
     }, [usersResult]);
     // End UseEffect
 
     // Start Function
+    const userClickHandle = (data) => {
+        console.log(data);
+        let childData = document.getElementsByClassName(`${data[0].id}`);
+        for(let i = 1; i < childData.length; i++){
+            console.log(childData[i].className);
+            childData[i].classList.toggle("hidden");
+        }
+    }
     // End Function
 
     return(
@@ -71,19 +77,39 @@ const AgentData = ({updateModalHandle, updateActiveHandle, deleteModalHandle, lo
                     usersData ?
                         usersData.length > 0 ?
                             usersData.map( userData => (
-                                <tr className="hover:bg-gray-50" key={userData.id}>
-                                    <td className="px-6 py-4">{userData.username}</td>
-                                    <td className="px-6 py-4">{userData.contact_name}</td>
-                                    <td className="px-6 py-4">{userData.balance}</td>
-                                    <td className='px-6 py-2'>
-                                        <button className={`w-20 ${userData.active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} shadow rounded text-white py-2`} onClick={() => updateActiveHandle(userData)}>{userData.active ? "Activate" : "Deactivate"}</button>
-                                    </td>
-                                    <td className="text-lg px-6 py-4">
-                                        <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(userData)}></i>
-                                        <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400 mr-5" onClick={() => deleteModalHandle(userData.id)}></i>
-                                        <i className="text-green-600 fa-solid fa-money-check-dollar cursor-pointer hover:text-green400" onClick={() => navigate("/quickpayment")}></i>
-                                    </td>
-                                </tr>
+                                <>
+                                    <tr className="hover:bg-gray-50" key={userData[0].id} onClick={() => userClickHandle(userData)}>
+                                        <td className="px-6 py-4">{userData[0].username}</td>
+                                        <td className="px-6 py-4">{userData[0].contact_name}</td>
+                                        <td className="px-6 py-4">{userData[0].balance}</td>
+                                        <td className='px-6 py-2'>
+                                            <button className={`w-20 ${userData[0].active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} shadow rounded text-white py-2`} onClick={() => updateActiveHandle(userData)}>{userData[0].active ? "Activate" : "Deactivate"}</button>
+                                        </td>
+                                        <td className="text-lg px-6 py-4">
+                                            <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(userData[0])}></i>
+                                            <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400 mr-5" onClick={() => deleteModalHandle(userData[0].id)}></i>
+                                            <i className="text-green-600 fa-solid fa-money-check-dollar cursor-pointer hover:text-green400" onClick={() => navigate("/quickpayment")}></i>
+                                        </td>
+                                    </tr>
+                                    {
+                                        userData.length > 1 &&
+                                            userData.map(u => (
+                                                <tr className={`hidden hover:bg-gray-50 ${userData[0].id}`} key={u.id}>
+                                                    <td className="px-6 py-4"> - {u.username}</td>
+                                                    <td className="px-6 py-4">{u.contact_name}</td>
+                                                    <td className="px-6 py-4">{u.balance}</td>
+                                                    <td className='px-6 py-2'>
+                                                        <button className={`w-20 ${u.active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} shadow rounded text-white py-2`} onClick={() => updateActiveHandle(u)}>{u.active ? "Activate" : "Deactivate"}</button>
+                                                    </td>
+                                                    <td className="text-lg px-6 py-4">
+                                                        <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(u)}></i>
+                                                        <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400 mr-5" onClick={() => deleteModalHandle(u.id)}></i>
+                                                        <i className="text-green-600 fa-solid fa-money-check-dollar cursor-pointer hover:text-green400" onClick={() => navigate("/quickpayment")}></i>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                    }
+                                </>
                             ))
                             :
                             <tr className="hover:bg-gray-50">
