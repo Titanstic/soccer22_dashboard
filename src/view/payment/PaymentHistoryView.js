@@ -69,6 +69,7 @@ const PaymentHistoryView = () => {
 
     useEffect(() => {
         if(resultHistory.data){
+            console.log(resultHistory.data);
             setTotalCount(resultHistory.data.balance_transfer_history_aggregate.aggregate.count);
             setCount(Math.ceil(resultHistory.data.balance_transfer_history_aggregate.aggregate.count / 10));
 
@@ -163,6 +164,7 @@ const PaymentHistoryView = () => {
                                 <th scope="col" className="px-6 py-4">In</th>
                                 <th scope="col" className="px-6 py-4">Out</th>
                                 <th scope="col" className="px-6 py-4">Older Coin</th>
+                                <th scope="col" className="px-6 py-4">New Coin</th>
                                 <th className="px-6 py-4">Date</th>
                                 <th className="px-6 py-4">Time</th>
                             </tr>
@@ -179,7 +181,8 @@ const PaymentHistoryView = () => {
                                                 <td className="px-6 py-4">{payment.user.username}</td>
                                                 <td className="text-green-500 font-bold px-6 py-4">{payment.receiver_id === user.id ? payment.transfer_amount : "0"} </td>
                                                 <td className="text-red-500 font-bold px-6 py-4">{payment.sender_id === user.id ? payment.transfer_amount : "0"}</td>
-                                                <td className="px-6 py-4">{ }</td>
+                                                <td className="px-6 py-4">{payment.receiver_old_balance}</td>
+                                                <td className="px-6 py-4">{payment.receiver_old_balance + payment.transfer_amount}</td>
                                                 <td className="px-6 py-4">{new Date(payment.created_at).toISOString().split("T")[0]}</td>
                                                 <td className="px-6 py-4">{new Date(payment.created_at).toISOString().split("T")[1].split(".")[0]}</td>
                                             </tr>

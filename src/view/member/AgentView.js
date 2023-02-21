@@ -21,7 +21,6 @@ const AgentView = () => {
     // useLazyQuery
     const [loadUsers, usersResult] = useLazyQuery(USERS);
     // useContext
-    const {whereArr} = useContext(AuthContext);
     const {setNavActive, setMainNav} = useContext(NavContext);
 
     // Start useEffect
@@ -56,26 +55,8 @@ const AgentView = () => {
 
     return (
         <LayoutView>
-            {/*// Start Add Agent Button*/}
-            {
-                whereArr &&
-                    <div className="flex justify-between items-center mt-5 mx-5">
-                        <p className="text-3xl font-bold">
-                            {whereArr.length === 0 && "Super Account List"}
-                            {whereArr.length === 1 && "Senior Account List"}
-                            {whereArr.length === 2 && "Master Account List"}
-                            {whereArr.length === 3 && "Agent Account List"}
-                            {whereArr.length === 4 && "User Account List"}
-                        </p>
-                        <button className="bg-blue-500 text-white rounded shadow hover:bg-blue-400 px-4 py-3" onClick={addModalHandle}>
-                            Add {whereArr.length === 0 && "Super"} {whereArr.length === 1 && "Senior"} {whereArr.length === 2 && "Master"} {whereArr.length === 3 && "Agent"} {whereArr.length === 4 && "User"}
-                        </button>
-                    </div>
-            }
-            {/*// End Add Agent Button*/}
-
             {/*Start Agent Data*/}
-            <AgentData updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} deleteModalHandle={deleteModalHandle} loadUsers={loadUsers} usersResult={usersResult}/>
+            <AgentData addModalHandle={addModalHandle} updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} deleteModalHandle={deleteModalHandle} loadUsers={loadUsers} usersResult={usersResult}/>
             {/*End Agent Data*/}
 
             {/*Start Add Agent Modal*/}
@@ -95,7 +76,6 @@ const AgentView = () => {
                 openActive && <UpdateAgentActive updateActiveHandle={updateActiveHandle} eachUser={eachUser} usersResult={usersResult}/>
             }
             {/*End Update Active Modal*/}
-
 
             {/*Start Delete Agent Modal*/}
             {
