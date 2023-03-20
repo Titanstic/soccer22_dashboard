@@ -28,4 +28,28 @@ const updateCheckInputData = (password) => {
     return {errorExist, tempError};
 };
 
-export {checkInputData, updateCheckInputData};
+const filterUser = (result, whereArr) => {
+    let filterUser = [];
+
+    result.forEach(r => {
+        let key = `${r.super_code ? r.super_code : ""}${r.senior_code ? " "+r.senior_code : ""}${r.master_code ? " "+r.master_code : ""}${r.agent_code ? " "+r.agent_code : ""}${r.user_code ? " "+r.user_code : ""}`;
+        let keyArr = key.split(" ");
+
+        if(keyArr.length > whereArr.length + 1){
+            filterUser.forEach(f => {
+                let objectKey = f[0]["objectKey"];
+                let objectKeyArr = objectKey.split(" ");
+
+                if(keyArr[keyArr.length - 2] === objectKeyArr[objectKeyArr.length - 1]){
+                    f.push(r);
+                }
+            })
+        } else{
+            r = {...r, "objectKey": key};
+            filterUser.push([r]);
+        }
+    });
+    return filterUser;
+}
+
+export {checkInputData, updateCheckInputData, filterUser};

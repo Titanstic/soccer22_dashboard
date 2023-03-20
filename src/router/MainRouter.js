@@ -6,6 +6,8 @@ import SubUserView from "../view/member/SubUserView";
 import LoginView from "../view/LoginView";
 import PaymentView from "../view/payment/PaymentView";
 import PaymentHistoryView from "../view/payment/PaymentHistoryView";
+import CreateMatchView from "../view/match/CreateMatchView";
+import MatchListView from "../view/match/MatchListView";
 const MainRouter = () => {
     return (
         <Routes>
@@ -23,6 +25,11 @@ const MainRouter = () => {
             <Route path="/quickpayment" element={<PaymentView/>}/>
             <Route path="/paymenthistory" element={<PaymentHistoryView/>}/>
             {/*End Payment Route*/}
+
+            {/*Start Management match*/}
+            <Route path="/createMatch" element={<CreateMatchView/>}/>
+            <Route path="/matchlist" element={<MatchListView/>}/>
+            {/*End Management match*/}
 
             <Route path="*" element={<NotFound/>}/>
         </Routes>

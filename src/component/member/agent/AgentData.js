@@ -2,6 +2,7 @@ import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../../context/AuthContext";
 import {useNavigate} from "react-router-dom";
 import EachAgentData from "./EachAgentData";
+import {filterUser} from "../../../composable/agent";
 
 const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, deleteModalHandle, loadUsers, usersResult}) => {
     // useState
@@ -20,38 +21,21 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, delet
         }
     }, [where])
 
+    // initial function for filter user
     useEffect(() => {
         if(usersResult.data){
             // to remove login user account from show users data table
             const result = usersResult.data.users.filter(u => u.id !== decodeToken.userID);
 
-            let filterUser = [];
-            result.forEach(r => {
-                let key = `${r.super_code ? r.super_code : ""}${r.senior_code ? " "+r.senior_code : ""}${r.master_code ? " "+r.master_code : ""}${r.agent_code ? " "+r.agent_code : ""}${r.user_code ? " "+r.user_code : ""}`;
-                let keyArr = key.split(" ");
-
-                if(keyArr.length > whereArr.length + 1){
-                    filterUser.forEach(f => {
-                        let objectKey = f[0]["objectKey"];
-                        let objectKeyArr = objectKey.split(" ");
-
-                         if(keyArr[keyArr.length - 2] === objectKeyArr[objectKeyArr.length - 1]){
-                            f.push(r);
-                         }
-                    })
-                } else{
-                    r = {...r, "objectKey": key};
-                    filterUser.push([r]);
-                }
-            });
-            setUsersData(filterUser);
+            // to check filter User
+            const filteredUser = filterUser(result, whereArr);
+            setUsersData(filteredUser);
         }
     }, [usersResult]);
     // End UseEffect
 
     // Start Function
     const userClickHandle = (data) => {
-        console.log(data);
         setShowEachUser(!showEachUser);
         setEachUser(data);
     }
