@@ -85,7 +85,6 @@ const Nav = () => {
                 </button>
                 <div id="matchDropdown" className={`${mainNav !== "matches" && "hidden"} rounded-md focus:outline-line mb-3`} role="menu" aria-orientation="vertical" aria-labelledby="matchDropdownButton">
                     <div className="" role="none">
-                        <Link to="/creatematch" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'creatematch' && "bg-gray-900"}`} onClick={() => navLinkHandle("creatematch", "matches")} role="menuitem" tabIndex="-1"><i className="fa-regular fa-futbol mx-4"></i> Create Match</Link>
                         <Link to="/matchlist" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'matchlist' && "bg-gray-900"}`} onClick={() => navLinkHandle("matchlist", "matches")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-list mx-4"></i> Match List</Link>
                     </div>
                 </div>

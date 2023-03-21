@@ -5,7 +5,6 @@ const EachAgentData = ({userClickHandle, eachUser, updateModalHandle, updateActi
     // useNavigate
     const navigate = useNavigate();
 
-    console.log("users", eachUser[0]);
     return(
         <div className="w-11/12 rounded-lg my-10 mx-auto">
             <div className="flex items-center">

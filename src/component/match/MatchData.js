@@ -1,13 +1,12 @@
-import {useLazyQuery} from "@apollo/client";
-import {MATCH} from "../../gql/match";
 import {useEffect, useState} from "react";
 
-const MatchData = () => {
+const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, loadMatch, matchResult}) => {
     // useState
     const [matchList, setMatchList] = useState(null);
+    const [count ,setCount] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    const [page, setPage] = useState(1);
     const [offset, setOffset] = useState(0);
-    // useLazyQuery
-    const [loadMatch, matchResult] = useLazyQuery(MATCH);
 
     // Start useEffect
     // to get match list
@@ -16,34 +15,93 @@ const MatchData = () => {
     }, [offset])
 
     useEffect(() => {
-        console.log(matchResult);
+        if(matchResult.data){
+            setTotalCount(matchResult.data.match_aggregate.aggregate.count);
+            setCount(Math.ceil(matchResult.data.match_aggregate.aggregate.count / 10));
+            setMatchList(matchResult.data.match);
+        }
     }, [matchResult])
-
     // End useEffect
+
+    // Start Function
+    // For pagination
+    const paginateButton = (state) => {
+        if(state === "next"){
+            setOffset(offset + 10);
+            setPage(page + 1);
+        }else{
+            setOffset(offset - 10);
+            setPage(page - 1);
+        }
+    };
+    // End Function
 
     return(
         <>
-            <div className="m-5">
-                <h1 className="text-3xl font-bold">Match List</h1>
+            <div className="flex justify-between items-center mt-5 mx-5">
+                <p className="text-3xl font-bold">Match List</p>
+
+                <button className="bg-blue-500 text-white rounded shadow hover:bg-blue-400 px-4 py-3" onClick={addModalHandle}>Create Match</button>
             </div>
 
             {/*Start Match List Table*/}
-            <div className="w-11/12 rounded-lg border border-gray-200 shadow-md mx-auto">
+            <div className="w-11/12 rounded-lg border border-gray-200 shadow-md mx-auto my-5">
                 <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                     <thead className="bg-gray-50">
                     <tr className="text-lg font-medium text-gray-900">
                         <th scope="col" className="px-6 py-4">ID</th>
                         <th scope="col" className="px-6 py-4">Home Team</th>
                         <th scope="col" className="px-6 py-4">Away Team</th>
-                        <th scope="col" className="px-6 py-4">Active</th>
+                        <th scope="col" className="px-6 py-4">Rate 1</th>
+                        <th scope="col" className="px-6 py-4">Rate 2</th>
                         <th scope="col" className="px-6 py-4">Action</th>
                     </tr>
                     </thead>
 
                     <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+                    {
+                        matchList ?
+                            matchList.map(match => (
+                                <tr className="hover:bg-gray-50" key={match.id}>
+                                    <td className="px-6 py-4">{match.id}</td>
+                                    <td className="px-6 py-4">{match.home_team}</td>
+                                    <td className="px-6 py-4">{match.away_team}</td>
+                                    <td className="px-6 py-4">{match.rate_1 ? match.rate_1 : "-"}</td>
+                                    <td className="px-6 py-4">{match.rate_2 ? match.rate_2 : "-"}</td>
+                                    <td className='flex px-6 py-4'>
+                                        {
+                                            !match.score_1 &&
+                                                !match.score_2 ?
+                                                    <button className={`w-20 shadow bg-red-500 rounded text-white py-2 hover:bg-red-400`} onClick={() => endModalHandle(match.id)}>End Match</button>
+                                                :
+                                                    <p className={`w-20 text-center shadow bg-blue-400 rounded text-white py-2`}>Finish</p>
+                                        }
+                                        {
+                                            match.full_match && <button className={`shadow bg-blue-500 rounded text-white ml-5 px-3 py-2 hover:bg-blue-400`} onClick={() => addSecondModalHandle(match)}>Create Second</button>
+                                        }
+                                    </td>
+                                </tr>
+                            ))
+                            :
+                            <tr>
+                                <td className="text-center px-6 py-4" colSpan="6">No Data</td>
+                            </tr>
+                    }
                     </tbody>
                 </table>
                 {/*End Match List Table*/}
+
+                {/*Start Pagination*/}
+                {
+                    count > 1 && <div className="text-sm border-t flex justify-between items-center py-2">
+                        <p className="ml-5">Showing <span className="font-bold">{page}</span> to <span className="font-bold">{count}</span> page  {totalCount} results</p>
+                        <div className="mr-5">
+                            <button className={`${page === 1 ? "bg-gray-200" : "bg-white hover:bg-gray-50"} font-bold border rounded shadow mr-5 px-3 py-2`} onClick={() => paginateButton("prev")} disabled={page === 1 ? true : false}>Previous</button>
+                            <button className={`${page < count ? "bg-white hover:bg-gray-50" : "bg-gray-200"} font-bold border rounded shadow mr-5 px-3 py-2`} onClick={() => paginateButton("next")} disabled={page < count ? false : true}>Next</button>
+                        </div>
+                    </div>
+                }
+                {/*End Pagination*/}
             </div>
         </>
     );

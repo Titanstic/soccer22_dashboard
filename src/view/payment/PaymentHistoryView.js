@@ -57,6 +57,7 @@ const PaymentHistoryView = () => {
         }
     }, [usersResult])
 
+    //
     useEffect(() => {
         if(selectUser && !selectEachUser){
             loadHistory({variables: { offset, startDate, endDate, userId: selectUser}});
@@ -69,7 +70,6 @@ const PaymentHistoryView = () => {
 
     useEffect(() => {
         if(resultHistory.data){
-            console.log(resultHistory.data);
             setTotalCount(resultHistory.data.balance_transfer_history_aggregate.aggregate.count);
             setCount(Math.ceil(resultHistory.data.balance_transfer_history_aggregate.aggregate.count / 10));
 

@@ -35,7 +35,8 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, delet
     // End UseEffect
 
     // Start Function
-    const userClickHandle = (data) => {
+    const userClickHandle = (e, data) => {
+        console.log(e);
         setShowEachUser(!showEachUser);
         setEachUser(data);
     }
@@ -83,7 +84,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, delet
                                         usersData ?
                                             usersData.length > 0 ?
                                                 usersData.map( userData => (
-                                                    <tr className="hover:bg-gray-50" key={userData[0].id} onClick={() => userClickHandle(userData)}>
+                                                    <tr className="hover:bg-gray-50" key={userData[0].id} onClick={(e) => userClickHandle(e, userData)}>
                                                         <td className="px-6 py-4">{userData[0].username}</td>
                                                         <td className="px-6 py-4">{userData[0].contact_name}</td>
                                                         <td className="px-6 py-4">{userData[0].balance}</td>

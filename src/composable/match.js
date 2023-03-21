@@ -42,4 +42,20 @@ const inputErrorValidation = (form) => {
     return {errorDetail, errors};
 };
 
-export {inputErrorValidation};
+const inputEndMatchValidation = (form) => {
+    let errorDetail = {};
+    let errors = false;
+
+    if(form.score1 === ""){
+        errorDetail.score1 = "Please Enter Score1";
+        errors = true;
+    }
+    if(form.score2 === ""){
+        errorDetail.score2 = "Please Enter Score2";
+        errors = true;
+    }
+
+    return {errorDetail, errors};
+}
+
+export {inputErrorValidation, inputEndMatchValidation};
