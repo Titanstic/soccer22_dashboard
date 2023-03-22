@@ -34,7 +34,6 @@ const UpdateAgentActive = ({updateActiveHandle, eachUser, usersResult}) => {
         }
     }
     // End Function
-    console.log(eachUser);
 
     return (
         <div className="w-10/12 h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0">

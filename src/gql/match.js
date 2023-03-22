@@ -15,6 +15,13 @@ const MATCH = gql`
                 full_match
                 status
                 id
+                goal_paung
+                link_1
+                link_2
+                link_3
+                link_4
+                link_5
+                match_time
           }
           match_aggregate {
                 aggregate {

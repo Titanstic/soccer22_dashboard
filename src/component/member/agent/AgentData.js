@@ -36,9 +36,15 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, delet
 
     // Start Function
     const userClickHandle = (e, data) => {
-        console.log(e);
+        if(e.target.className === "px-6 py-4"){
+            setShowEachUser(!showEachUser);
+            setEachUser(data);
+        }
+    };
+
+    const userBackClickHandle = () => {
         setShowEachUser(!showEachUser);
-        setEachUser(data);
+        setEachUser(null);
     }
     // End Function
 
@@ -46,7 +52,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, delet
         <>
             {
                 showEachUser ?
-                    <EachAgentData userClickHandle={userClickHandle} eachUser={eachUser} updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} deleteModalHandle={deleteModalHandle}/>
+                    <EachAgentData userBackClickHandle={userBackClickHandle} eachUser={eachUser} updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} deleteModalHandle={deleteModalHandle}/>
                     :
                     <>
                         {/*// Start Add Agent Button*/}
@@ -88,7 +94,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, delet
                                                         <td className="px-6 py-4">{userData[0].username}</td>
                                                         <td className="px-6 py-4">{userData[0].contact_name}</td>
                                                         <td className="px-6 py-4">{userData[0].balance}</td>
-                                                        <td className='px-6 py-2'>
+                                                        <td className='px-6 py-4'>
                                                             <button className={`w-20 ${userData[0].active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} shadow rounded text-white py-2`} onClick={() => updateActiveHandle(userData)}>{userData[0].active ? "Activate" : "Deactivate"}</button>
                                                         </td>
                                                         <td className="text-lg px-6 py-4">

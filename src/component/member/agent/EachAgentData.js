@@ -1,14 +1,13 @@
 import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
 
-const EachAgentData = ({userClickHandle, eachUser, updateModalHandle, updateActiveHandle, deleteModalHandle}) =>{
+const EachAgentData = ({userBackClickHandle, eachUser, updateModalHandle, updateActiveHandle, deleteModalHandle}) =>{
     // useNavigate
     const navigate = useNavigate();
 
     return(
         <div className="w-11/12 rounded-lg my-10 mx-auto">
             <div className="flex items-center">
-                <button className="font-bold border border-gray-200 shadow-md rounded px-4 py-1 hover:bg-gray-50" onClick={userClickHandle}>Back</button>
+                <button className="font-bold border border-gray-200 shadow-md rounded px-4 py-1 hover:bg-gray-50" onClick={userBackClickHandle}>Back</button>
                 <span className="text-3xl font-bold ml-5">{eachUser[0].username}'s Each Data</span>
             </div>
 

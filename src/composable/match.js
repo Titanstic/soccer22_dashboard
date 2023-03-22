@@ -26,11 +26,11 @@ const inputErrorValidation = (form) => {
         errorDetail.goPaung = "Please Enter Go Paung";
         errors = true;
     }
-    if(form.match === "false" && form.halfScore1 === ""){
+    if((form.match === "false" && form.halfScore1 === "") || form.halfScore1 === null){
         errorDetail.halfScore1 = "Please Enter Half Score 1";
         errors = true;
     }
-    if(form.match === "false" && form.halfScore2 === ""){
+    if((form.match === "false" && form.halfScore2 === "") || form.halfScore2 === null){
         errorDetail.halfScore2 = "Please Enter Half Score 2";
         errors = true;
     }

@@ -54,6 +54,7 @@ const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, loadMa
                         <th scope="col" className="px-6 py-4">Away Team</th>
                         <th scope="col" className="px-6 py-4">Rate 1</th>
                         <th scope="col" className="px-6 py-4">Rate 2</th>
+                        <th scope="col" className="px-6 py-4">Go Paung</th>
                         <th scope="col" className="px-6 py-4">Action</th>
                     </tr>
                     </thead>
@@ -68,6 +69,7 @@ const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, loadMa
                                     <td className="px-6 py-4">{match.away_team}</td>
                                     <td className="px-6 py-4">{match.rate_1 ? match.rate_1 : "-"}</td>
                                     <td className="px-6 py-4">{match.rate_2 ? match.rate_2 : "-"}</td>
+                                    <td className="px-6 py-4">{match.goal_paung}</td>
                                     <td className='flex px-6 py-4'>
                                         {
                                             !match.score_1 &&

@@ -14,6 +14,7 @@ const MatchListView = () => {
     const [openCreateSecond, setOpenCreateSecond] = useState(false);
     const [openEnd, setOpenEnd] = useState(false);
     const [matchId, setMatchId] = useState(null);
+    const [matchData, setMatchData] = useState(null);
     // useContext
     const {setNavActive, setMainNav} = useContext(NavContext);
     // useLazyQuery
@@ -33,8 +34,8 @@ const MatchListView = () => {
     }
 
     const addSecondModalHandle = (data) => {
-        console.log(data);
         setOpenCreateSecond(!openCreateSecond);
+        setMatchData(data);
     }
 
     const endModalHandle = (id) => {
@@ -57,7 +58,7 @@ const MatchListView = () => {
 
             {/*Start Create Second */}
             {
-                openCreateSecond && <CreateSecondMatch addSecondModalHandle={addSecondModalHandle} matchResult={matchResult}/>
+                openCreateSecond && <CreateSecondMatch addSecondModalHandle={addSecondModalHandle} matchData={matchData} matchResult={matchResult}/>
             }
             {/*End Create Second */}
 

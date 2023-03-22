@@ -57,7 +57,7 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                 rate2 : "",
                 matchTime: "",
                 goPaung: "",
-                match: "false",
+                match: false,
                 halfScore1: "",
                 halfScore2: ""
             });
@@ -84,7 +84,7 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                 rate2 : "",
                 matchTime: "",
                 goPaung: "",
-                match: "false",
+                match: false,
                 halfScore1: "",
                 halfScore2: ""
             });
@@ -153,6 +153,7 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
     // Create Match Button Fuction
     const createMatch = () => {
         setLoading(true);
+        console.log(form);
         // check input error
         const {errorDetail, errors} = inputErrorValidation(form);
         setError(errorDetail);
@@ -164,6 +165,7 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                 }else{
                     insertFullMatch({variables: form});
                 }
+
                 matchResult.refetch();
             }catch (e){
                 console.log("add Match Data", e.message);
