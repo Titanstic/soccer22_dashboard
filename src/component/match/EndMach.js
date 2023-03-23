@@ -1,7 +1,8 @@
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {inputEndMatchValidation} from "../../composable/match";
 import {useMutation} from "@apollo/client";
-import {GET_SLIP, UPDATE_SCORE_MATCH} from "../../gql/match";
+import {UPDATE_SCORE_MATCH} from "../../gql/match";
+import AlertContext from "../../context/AlertContext";
 
 const EndMach = ({endModalHandle, matchId, matchResult}) => {
     // useState
@@ -11,6 +12,8 @@ const EndMach = ({endModalHandle, matchId, matchResult}) => {
         "score2": ""
     });
     const [error, setError] = useState({});
+    // useContext
+    const {showAlert} = useContext(AlertContext);
 
     // Start Mutation
     const [updateScoreMatch] = useMutation(UPDATE_SCORE_MATCH, {
@@ -18,21 +21,11 @@ const EndMach = ({endModalHandle, matchId, matchResult}) => {
             console.log("Update Score Match", error);
         },
         onCompleted: (result) => {
-            console.log(result);
+            showAlert("Added Score Successfully", false);
             endModalHandle(null);
             matchResult.refetch();
-            getSlip({ variables: {matchId}});
         }
     });
-
-    const [getSlip] = useMutation(GET_SLIP, {
-        onError: (error) => {
-            console.log("Get Slip", "You Don't have no bet slip");
-        },
-        onCompleted: (result) => {
-            console.log(result);
-        }
-    })
     // End Mutation
 
     // Start Function

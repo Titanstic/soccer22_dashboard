@@ -56,6 +56,50 @@ const inputEndMatchValidation = (form) => {
     }
 
     return {errorDetail, errors};
-}
+};
 
-export {inputErrorValidation, inputEndMatchValidation};
+let eachInputValidation = (input, e, disable, error, formStatus) => {
+    let eachError = {...error},
+        eachDisable = {...disable},
+        status = formStatus;
+
+    // for rate1 control
+    if(input === "rate1"){
+        eachDisable = {...disable, "rate2": true};
+        delete error["rate2"];
+        eachError = {...error};
+    }
+    if(input === "rate1" && e.target.value === ""){
+        delete disable["rate2"];
+        eachDisable = {...disable};
+    }
+
+    // for rate2 control
+    if(input === "rate2"){
+        eachDisable = {...disable, "rate1": true};
+        delete error["rate1"];
+        eachError = {...error};
+    }
+    if(input === "rate2" && e.target.value === ""){
+        delete disable["rate1"];
+        eachDisable = {...disable};
+    }
+
+    // for match control
+    if(input === "match" && e.target.value === "true"){
+        eachDisable = {...disable, "halfScore": true};
+        delete error["halfScore1"];
+        delete error["halfScore2"];
+        eachError = {...error};
+        status = "false";
+    }
+    if(input === "match" && e.target.value === "false"){
+        delete disable["halfScore"];
+        eachDisable = {...disable};
+        status = "true";
+    }
+
+    return {eachError, eachDisable, status};
+};
+
+export {inputErrorValidation, inputEndMatchValidation, eachInputValidation};

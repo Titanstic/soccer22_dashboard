@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import EachAgentData from "./EachAgentData";
 import {filterUser} from "../../../composable/agent";
 
-const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, deleteModalHandle, loadUsers, usersResult}) => {
+const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, checkUserDetail, deleteModalHandle, loadUsers, usersResult}) => {
     // useState
     const [usersData, setUsersData] = useState(null);
     const [eachUser, setEachUser] = useState(null);
@@ -52,7 +52,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, delet
         <>
             {
                 showEachUser ?
-                    <EachAgentData userBackClickHandle={userBackClickHandle} eachUser={eachUser} updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} deleteModalHandle={deleteModalHandle}/>
+                    <EachAgentData userBackClickHandle={userBackClickHandle} eachUser={eachUser}/>
                     :
                     <>
                         {/*// Start Add Agent Button*/}
@@ -97,10 +97,11 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, delet
                                                         <td className='px-6 py-4'>
                                                             <button className={`w-20 ${userData[0].active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} shadow rounded text-white py-2`} onClick={() => updateActiveHandle(userData)}>{userData[0].active ? "Activate" : "Deactivate"}</button>
                                                         </td>
-                                                        <td className="text-lg px-6 py-4">
-                                                            <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-5" onClick={() => updateModalHandle(userData[0])}></i>
-                                                            <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400 mr-5" onClick={() => deleteModalHandle(userData[0].id)}></i>
-                                                            <i className="text-green-600 fa-solid fa-money-check-dollar cursor-pointer hover:text-green400" onClick={() => navigate("/quickpayment")}></i>
+                                                        <td className="text-lg px-6 py-2">
+                                                            <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-4" onClick={() => updateModalHandle(userData[0])}></i>
+                                                            <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400 mr-4" onClick={() => deleteModalHandle(userData[0].id)}></i>
+                                                            <i className="text-green-600 fa-solid fa-money-check-dollar cursor-pointer hover:text-green-400 mr-4" onClick={() => navigate("/quickpayment")}></i>
+                                                            <i className="text-gray-600 fa-solid fa-circle-info cursor-pointer hover:text-gray-400" onClick={() => checkUserDetail(userData[0])}></i>
                                                         </td>
                                                     </tr>
                                                 ))

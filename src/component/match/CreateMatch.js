@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from "react";
-import {inputErrorValidation} from "../../composable/match";
+import {eachInputValidation, inputErrorValidation} from "../../composable/match";
 import {useMutation} from "@apollo/client";
 import {INSERT_FULL_MATCH, INSERT_HALF_MATCH} from "../../gql/match";
 import AlertContext from "../../context/AlertContext";
@@ -8,7 +8,9 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
     // useState
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState({});
-    const [disable, setDisable] = useState({});
+    const [disable, setDisable] = useState({
+        "halfScore" : true
+    });
     const [form, setForm] = useState({
         homeTeam : "",
         awayTeam : "",
@@ -22,9 +24,10 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
         rate2 : "",
         matchTime: "",
         goPaung: "",
-        match: "false",
+        match: "true",
         halfScore1: "",
-        halfScore2: ""
+        halfScore2: "",
+        status: "false"
     });
     // useContext
     const {showAlert} = useContext(AlertContext);
@@ -44,23 +47,6 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
             console.log("Insert Match", error);
         },
         onCompleted: (result) => {
-            setForm({
-                homeTeam : "",
-                awayTeam : "",
-                league : "",
-                link1 : "",
-                link2 : "",
-                link3 : "",
-                link4 : "",
-                link5 : "",
-                rate1 : "",
-                rate2 : "",
-                matchTime: "",
-                goPaung: "",
-                match: false,
-                halfScore1: "",
-                halfScore2: ""
-            });
             showAlert("Create Match Successfully", false);
             addModalHandle();
         }
@@ -71,68 +57,21 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
             console.log("Insert Match", error);
         },
         onCompleted: (result) => {
-            setForm({
-                homeTeam : "",
-                awayTeam : "",
-                league : "",
-                link1 : "",
-                link2 : "",
-                link3 : "",
-                link4 : "",
-                link5 : "",
-                rate1 : "",
-                rate2 : "",
-                matchTime: "",
-                goPaung: "",
-                match: false,
-                halfScore1: "",
-                halfScore2: ""
-            });
             showAlert("Create Match Successfully", false);
             addModalHandle();
         }
     });
-
     // End Mutation
 
     // Start Function
     // control form input
     const inputHandle = (e, input) => {
-        // for rate1 control
-        if(input === "rate1"){
-            setDisable({...disable, "rate2": true});
-            delete error["rate2"];
-            setError({...error});
-        }
-        if(input === "rate1" && e.target.value === ""){
-            delete disable["rate2"];
-            setDisable({...disable});
-        }
+        // validation input for rate1, rate2 and match
+        let {eachDisable, eachError, status} = eachInputValidation(input, e, disable, error, form.status);
+        setError(eachError);
+        setDisable(eachDisable);
 
-        // for rate2 control
-        if(input === "rate2"){
-            setDisable({...disable, "rate1": true});
-            delete error["rate1"];
-            setError({...error});
-        }
-        if(input === "rate2" && e.target.value === ""){
-            delete disable["rate1"];
-            setDisable({...disable});
-        }
-
-        // for match control
-        if(input === "match" && e.target.value === "true"){
-            setDisable({...disable, "halfScore": true});
-            delete error["halfScore1"];
-            delete error["halfScore2"];
-            setError({...error});
-        }
-        if(input === "match" && e.target.value === "false"){
-            delete disable["halfScore"];
-            setDisable({...disable});
-        }
-
-        setForm({...form, [input]: e.target.value});
+        setForm({...form, status, [input]: e.target.value});
         // to find error input
         if(error[input]){
             delete error[input];
@@ -150,10 +89,9 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
         }
     };
 
-    // Create Match Button Fuction
+    // Create Match Button Function
     const createMatch = () => {
         setLoading(true);
-        console.log(form);
         // check input error
         const {errorDetail, errors} = inputErrorValidation(form);
         setError(errorDetail);
@@ -165,8 +103,30 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                 }else{
                     insertFullMatch({variables: form});
                 }
-
+                setForm({
+                    homeTeam : "",
+                    awayTeam : "",
+                    league : "",
+                    link1 : "",
+                    link2 : "",
+                    link3 : "",
+                    link4 : "",
+                    link5 : "",
+                    rate1 : "",
+                    rate2 : "",
+                    matchTime: "",
+                    goPaung: "",
+                    match: "true",
+                    halfScore1: "",
+                    halfScore2: "",
+                    status: "false"
+                });
+                setDisable({
+                    "halfScore" : true
+                });
+                setError({});
                 matchResult.refetch();
+                console.log("work");
             }catch (e){
                 console.log("add Match Data", e.message);
             }
@@ -187,7 +147,14 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
             rate1 : "",
             rate2 : "",
             matchTime: "",
-            goPaung: ""
+            goPaung: "",
+            match: "true",
+            halfScore1: "",
+            halfScore2: "",
+            status: "false"
+        });
+        setDisable({
+            "halfScore" : true
         });
         setError({});
         addModalHandle();

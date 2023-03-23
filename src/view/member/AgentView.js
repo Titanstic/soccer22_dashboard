@@ -8,7 +8,7 @@ import {USERS} from "../../gql/user";
 import DeleteAgent from "../../component/member/agent/DeleteAgent";
 import NavContext from "../../context/NavContext";
 import UpdateAgentActive from "../../component/member/agent/UpdateAgentActive";
-import AuthContext from "../../context/AuthContext";
+import AgentDetails from "../../component/member/agent/AgentDetails";
 
 const AgentView = () => {
     // useState
@@ -18,6 +18,7 @@ const AgentView = () => {
     const [openUpdate, setOpenUpdate] = useState(false);
     const [openActive, setOpenActive] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
+    const [openDetail, setOpenDetail] = useState(false);
     // useLazyQuery
     const [loadUsers, usersResult] = useLazyQuery(USERS);
     // useContext
@@ -47,6 +48,11 @@ const AgentView = () => {
         setEachUser(eachUser);
     }
 
+    const checkUserDetail = (eachUser) => {
+        setEachUser(eachUser);
+        setOpenDetail(!openDetail);
+    }
+
     const deleteModalHandle = (id) => {
         setOpenDelete(!openDelete);
         setUserId(id);
@@ -56,7 +62,7 @@ const AgentView = () => {
     return (
         <LayoutView>
             {/*Start Agent Data*/}
-            <AgentData addModalHandle={addModalHandle} updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} deleteModalHandle={deleteModalHandle} loadUsers={loadUsers} usersResult={usersResult}/>
+            <AgentData addModalHandle={addModalHandle} updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} checkUserDetail={checkUserDetail} deleteModalHandle={deleteModalHandle} loadUsers={loadUsers} usersResult={usersResult}/>
             {/*End Agent Data*/}
 
             {/*Start Add Agent Modal*/}
@@ -82,6 +88,12 @@ const AgentView = () => {
                 openDelete &&  <DeleteAgent deleteModalHandle={deleteModalHandle} userId={userId} usersResult={usersResult}/>
             }
             {/*End Delete Agent Modal*/}
+
+            {/*Start Agent Detail Modal*/}
+            {
+                openDetail && <AgentDetails checkUserDetail={checkUserDetail} eachUser={eachUser} usersResult={usersResult}/>
+            }
+            {/*End Agent Detail Modal*/}
         </LayoutView>
     )
 };

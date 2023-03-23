@@ -34,7 +34,8 @@ const Profile = () => {
             </div>
 
             {
-                user && <div className="border-t border-gray-200">
+                user &&
+                    <div className="border-t border-gray-200">
                     <dl>
                         <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                             <dt className="text-sm font-medium text-gray-500">User Name</dt>

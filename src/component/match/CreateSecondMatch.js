@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
-import {inputErrorValidation} from "../../composable/match";
+import {eachInputValidation, inputErrorValidation} from "../../composable/match";
 import {useMutation} from "@apollo/client";
-import {INSERT_HALF_MATCH} from "../../gql/match";
+import {INSERT_HALF_MATCH, UPDATE_STATUS_MATCH} from "../../gql/match";
 import AlertContext from "../../context/AlertContext";
 
 const CreateSecondMatch = ({addSecondModalHandle, matchData, matchResult}) => {
@@ -27,7 +27,8 @@ const CreateSecondMatch = ({addSecondModalHandle, matchData, matchResult}) => {
         goPaung: matchData.goal_paung,
         match: !matchData.full_match,
         halfScore1: matchData.half_score_1,
-        halfScore2: matchData.half_score_2
+        halfScore2: matchData.half_score_2,
+        status: matchData.status === "false" ? "true" : "false"
     });
     // useContext
     const {showAlert} = useContext(AlertContext);
@@ -63,53 +64,33 @@ const CreateSecondMatch = ({addSecondModalHandle, matchData, matchResult}) => {
                 rate2 : "",
                 matchTime: "",
                 goPaung: "",
-                match: "false",
+                match: false,
                 halfScore1: "",
-                halfScore2: ""
+                halfScore2: "",
+                status: "true"
             });
             showAlert("Create Match Successfully", false);
             addSecondModalHandle(null);
         }
     });
+
+    const [updateStatusMatch] = useMutation(UPDATE_STATUS_MATCH, {
+        onError: (error) => {
+            console.log("Update Status", error);
+        },
+        onCompleted: (result) => {
+            console.log(result);
+        }
+    })
     // End Mutation
 
     // Start Function
     // control form input
     const inputHandle = (e, input) => {
-        console.log(e.target.value);
-        // for rate1 control
-        if(input === "rate1"){
-            setDisable({...disable, "rate2": true});
-            delete error["rate2"];
-            setError({...error});
-        }
-        if(input === "rate1" && e.target.value === ""){
-            delete disable["rate2"];
-            setDisable({...disable});
-        }
-
-        // for rate2 control
-        if(input === "rate2"){
-            setDisable({...disable, "rate1": true});
-            delete error["rate1"];
-            setError({...error});
-        }
-        if(input === "rate2" && e.target.value === ""){
-            delete disable["rate1"];
-            setDisable({...disable});
-        }
-
-        // for match control
-        if(input === "match" && e.target.value === "true"){
-            setDisable({...disable, "halfScore": true});
-            delete error["halfScore1"];
-            delete error["halfScore2"];
-            setError({...error});
-        }
-        if(input === "match" && e.target.value === "false"){
-            delete disable["halfScore"];
-            setDisable({...disable});
-        }
+        // validation input for rate1, rate2 and match
+        let {eachDisable, eachError} = eachInputValidation(input, e, disable, error);
+        setError(eachError);
+        setDisable(eachDisable);
 
         setForm({...form, [input]: e.target.value});
         // to find error input
@@ -129,7 +110,7 @@ const CreateSecondMatch = ({addSecondModalHandle, matchData, matchResult}) => {
         }
     };
 
-    // Create Match Button Fuction
+    // Create Match Button Function
     const createMatch = () => {
         setLoading(true);
         // check input error
@@ -138,10 +119,11 @@ const CreateSecondMatch = ({addSecondModalHandle, matchData, matchResult}) => {
 
         if(!errors){
             try {
+                updateStatusMatch({variables: {id: matchData.id, status: `${matchData.full_match}`}});
                 insertHalfMatch({variables: form});
                 matchResult.refetch();
             }catch (e){
-                console.log("add Match Data", e.message);
+                console.log("add Second Match Data", e.message);
             }
         }
         setLoading(false);

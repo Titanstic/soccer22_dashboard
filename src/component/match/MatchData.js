@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
 
-const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, loadMatch, matchResult}) => {
+const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, calBetSlipsModal, loadMatch, matchResult}) => {
     // useState
-    const [matchList, setMatchList] = useState(null);
+    const [matchList, setMatchList] = useState([]);
     const [count ,setCount] = useState(0);
     const [totalCount, setTotalCount] = useState(0);
     const [page, setPage] = useState(1);
@@ -61,7 +61,7 @@ const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, loadMa
 
                     <tbody className="divide-y divide-gray-100 border-t border-gray-100">
                     {
-                        matchList ?
+                        matchList.length > 0 ?
                             matchList.map(match => (
                                 <tr className="hover:bg-gray-50" key={match.id}>
                                     <td className="px-6 py-4">{match.id}</td>
@@ -74,12 +74,22 @@ const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, loadMa
                                         {
                                             !match.score_1 &&
                                                 !match.score_2 ?
-                                                    <button className={`w-20 shadow bg-red-500 rounded text-white py-2 hover:bg-red-400`} onClick={() => endModalHandle(match.id)}>End Match</button>
+                                                    <button className={`w-20 shadow bg-red-500 rounded text-white mr-5 py-2 hover:bg-red-400`} onClick={() => endModalHandle(match.id)}>End Match</button>
                                                 :
-                                                    <p className={`w-20 text-center shadow bg-blue-400 rounded text-white py-2`}>Finish</p>
+                                                    <p className={`w-20 text-center shadow bg-blue-400 rounded mr-5 text-white py-2`}>Finish</p>
                                         }
                                         {
-                                            match.full_match && <button className={`shadow bg-blue-500 rounded text-white ml-5 px-3 py-2 hover:bg-blue-400`} onClick={() => addSecondModalHandle(match)}>Create Second</button>
+                                            (match.score_1 && match.score_2) ?
+                                                (match.bet_slips.length > 0 && !match.bet_slips[0].status_slip) ?
+                                                        <button className={`w-20 text-center shadow bg-blue-500 rounded text-white py-2 hover:bg-blue-400`} onClick={() => calBetSlipsModal(match.id)}>Calc Bet Slip</button>
+                                                        :
+                                                        <p className={`w-20 text-center shadow bg-red-400 rounded text-white py-2 hover:bg-red-400`}>No Bet Slip</p>
+                                                :
+                                                <p className={`w-20 text-center shadow bg-blue-400 rounded text-white py-2 hover:bg-blue-400`}>Calc Bet Slip</p>
+                                        }
+
+                                        {
+                                            match.status === "false" && <button className={`shadow bg-blue-500 rounded text-white px-3 py-2 hover:bg-blue-400`} onClick={() => addSecondModalHandle(match)}>Create Second</button>
                                         }
                                     </td>
                                 </tr>

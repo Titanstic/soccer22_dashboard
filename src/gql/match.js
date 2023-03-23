@@ -2,7 +2,7 @@ import {gql} from "@apollo/client";
 
 const MATCH = gql`
     query MyQuery($offset: Int = 0) {
-          match(limit: 10, offset: $offset, order_by: {id: asc}) {
+          match(limit: 10, offset: $offset, order_by: {id: desc}) {
                 away_team
                 league_id
                 home_team
@@ -22,6 +22,10 @@ const MATCH = gql`
                 link_4
                 link_5
                 match_time
+                bet_slips {
+                      id
+                      status_slip
+                }
           }
           match_aggregate {
                 aggregate {
@@ -30,9 +34,9 @@ const MATCH = gql`
           }
     }
 `;
-const INSERT_HALF_MATCH = gql`
-    mutation INSERT_HALF_MATCH($awayTeam: String!, $match: Boolean!, $goPaung: String!, $homeTeam: String!, $rate1: String, $rate2: String,  $halfScore2: Int, $halfScore1: Int, $link1: String, $link2: String, $link3: String, $link4: String, $link5: String, $matchTime: timestamptz, $league: Int!) {
-          insert_match_one(object: {away_team: $awayTeam, full_match: $match, goal_paung: $goPaung, home_team: $homeTeam, rate_1: $rate1, rate_2: $rate2, half_score_2: $halfScore2, half_score_1: $halfScore1, link_1: $link1, link_2: $link2, link_3: $link3, link_4: $link4, link_5: $link5, match_time: $matchTime, league_id: $league}) {
+const   INSERT_HALF_MATCH = gql`
+    mutation INSERT_HALF_MATCH($awayTeam: String!, $match: Boolean!, $goPaung: String!, $homeTeam: String!, $rate1: String, $rate2: String,  $halfScore2: Int, $halfScore1: Int, $link1: String, $link2: String, $link3: String, $link4: String, $link5: String, $matchTime: timestamptz, $league: Int!, $status: String!) {
+          insert_match_one(object: {away_team: $awayTeam, full_match: $match, goal_paung: $goPaung, home_team: $homeTeam, rate_1: $rate1, rate_2: $rate2, half_score_2: $halfScore2, half_score_1: $halfScore1, link_1: $link1, link_2: $link2, link_3: $link3, link_4: $link4, link_5: $link5, match_time: $matchTime, league_id: $league, status: $status}) {
                id
           }
     }
@@ -40,8 +44,8 @@ const INSERT_HALF_MATCH = gql`
 
 
 const INSERT_FULL_MATCH = gql`
-    mutation INSERT_HALF_MATCH($awayTeam: String!, $match: Boolean!, $goPaung: String!, $homeTeam: String!, $rate1: String, $rate2: String, $link1: String, $link2: String, $link3: String, $link4: String, $link5: String, $matchTime: timestamptz, $league: Int!) {
-          insert_match_one(object: {away_team: $awayTeam, full_match: $match, goal_paung: $goPaung, home_team: $homeTeam, rate_1: $rate1, rate_2: $rate2, link_1: $link1, link_2: $link2, link_3: $link3, link_4: $link4, link_5: $link5, match_time: $matchTime, league_id: $league}) {
+    mutation INSERT_HALF_MATCH($awayTeam: String!, $match: Boolean!, $goPaung: String!, $homeTeam: String!, $rate1: String, $rate2: String, $link1: String, $link2: String, $link3: String, $link4: String, $link5: String, $matchTime: timestamptz, $league: Int!, $status: String!) {
+          insert_match_one(object: {away_team: $awayTeam, full_match: $match, goal_paung: $goPaung, home_team: $homeTeam, rate_1: $rate1, rate_2: $rate2, link_1: $link1, link_2: $link2, link_3: $link3, link_4: $link4, link_5: $link5, match_time: $matchTime, league_id: $league, status: $status}) {
                id
           }
     }
@@ -55,6 +59,15 @@ const UPDATE_SCORE_MATCH = gql`
     }
 `;
 
+const UPDATE_STATUS_MATCH = gql`
+    mutation UPDATE_STATUS_MATCH($id: Int!, $status: String!) {
+          update_match_by_pk(pk_columns: {id: $id}, _set: {status: $status}) {
+                id
+                status
+          }
+    }
+`;
+
 const GET_SLIP = gql`
     mutation GET_SLIP($matchId: Int!) {
          get_slip(args: {_match_id: $matchId}) {
@@ -63,4 +76,4 @@ const GET_SLIP = gql`
     }
 `;
 
-export {MATCH, INSERT_HALF_MATCH, INSERT_FULL_MATCH, UPDATE_SCORE_MATCH, GET_SLIP};
+export {MATCH, INSERT_HALF_MATCH, INSERT_FULL_MATCH, UPDATE_SCORE_MATCH, UPDATE_STATUS_MATCH, GET_SLIP};

@@ -7,12 +7,14 @@ import {useLazyQuery} from "@apollo/client";
 import {MATCH} from "../../gql/match";
 import EndMach from "../../component/match/EndMach";
 import CreateSecondMatch from "../../component/match/CreateSecondMatch";
+import CalculateBetSlips from "../../component/match/CalculateBetSlips";
 
 const MatchListView = () => {
     // useState
     const [openCreate, setOpenCreate] = useState(false);
     const [openCreateSecond, setOpenCreateSecond] = useState(false);
     const [openEnd, setOpenEnd] = useState(false);
+    const [openCalBet, setOpenCalBet] = useState(false);
     const [matchId, setMatchId] = useState(null);
     const [matchData, setMatchData] = useState(null);
     // useContext
@@ -42,12 +44,17 @@ const MatchListView = () => {
         setMatchId(id);
         setOpenEnd(!openEnd);
     }
+
+    const calBetSlipsModal = (id) => {
+        setMatchId(id);
+        setOpenCalBet(!openCalBet);
+    }
     // End Function
 
     return (
         <LayoutView>
             {/*Start match List Data*/}
-            <MatchData addModalHandle={addModalHandle} addSecondModalHandle={addSecondModalHandle} endModalHandle={endModalHandle} loadMatch={loadMatch} matchResult={matchResult}/>
+            <MatchData addModalHandle={addModalHandle} addSecondModalHandle={addSecondModalHandle} endModalHandle={endModalHandle} calBetSlipsModal={calBetSlipsModal} loadMatch={loadMatch} matchResult={matchResult}/>
             {/*End match List Data*/}
 
             {/*Start Create Match Data*/}
@@ -62,11 +69,15 @@ const MatchListView = () => {
             }
             {/*End Create Second */}
 
-            {/*Start End Match Data*/}
+            {/*Start End Match*/}
             {
                 openEnd && <EndMach endModalHandle={endModalHandle} matchId={matchId} matchResult={matchResult}/>
             }
-            {/*End Match Data*/}
+            {/*End Match*/}
+
+            {
+                openCalBet && <CalculateBetSlips calBetSlipsModal={calBetSlipsModal} matchId={matchId} matchResult={matchResult}/>
+            }
         </LayoutView>
     )
 };
