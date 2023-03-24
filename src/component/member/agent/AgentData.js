@@ -6,6 +6,7 @@ import {filterUser} from "../../../composable/agent";
 
 const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, checkUserDetail, deleteModalHandle, loadUsers, usersResult}) => {
     // useState
+    const [loading, setLoading] = useState(true);
     const [usersData, setUsersData] = useState(null);
     const [eachUser, setEachUser] = useState(null);
     const [showEachUser, setShowEachUser] = useState(false);
@@ -16,6 +17,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, check
 
     // Start UseEffect
     useEffect(() => {
+        setLoading(true);
         if(where){
             loadUsers({ variables: { where: {_and: where } }});
         }
@@ -30,6 +32,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, check
             // to check filter User
             const filteredUser = filterUser(result, whereArr);
             setUsersData(filteredUser);
+            setLoading(false);
         }
     }, [usersResult]);
     // End UseEffect
@@ -87,8 +90,8 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, check
 
                                 <tbody className="divide-y divide-gray-100 border-t border-gray-100">
                                     {
-                                        usersData ?
-                                            usersData.length > 0 ?
+                                        !loading ?
+                                            usersData ?
                                                 usersData.map( userData => (
                                                     <tr className="hover:bg-gray-50" key={userData[0].id} onClick={(e) => userClickHandle(e, userData)}>
                                                         <td className="px-6 py-4">{userData[0].username}</td>

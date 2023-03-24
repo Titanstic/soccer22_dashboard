@@ -7,7 +7,7 @@ import AuthContext from "../../context/AuthContext";
 const Nav = () => {
     // useContext
     const {navActive, setNavActive, mainNav, setMainNav} = useContext(NavContext);
-    const {whereArr} = useContext(AuthContext);
+    const {whereArr, where} = useContext(AuthContext);
 
     // Start Function
     const navLinkHandle = (nav, main) => {
@@ -77,17 +77,22 @@ const Nav = () => {
                 {/*end payment dropdown*/}
 
                 {/*start match */}
-                <button type="button" id="matchDropdownButton" className="w-full rounded-md inline-flex justify-between items-center hover:bg-gray-700 focus:outline-none py-3 " aria-expanded="true" aria-haspopup="true" onClick={() => openDropDown("matchDropdown")}>
-                    <i className="fa-regular fa-futbol mx-4"></i><span className="text-start"> Match Management</span>
-                    <svg className="w-4 h-4 mx-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div id="matchDropdown" className={`${mainNav !== "matches" && "hidden"} rounded-md focus:outline-line mb-3`} role="menu" aria-orientation="vertical" aria-labelledby="matchDropdownButton">
-                    <div className="" role="none">
-                        <Link to="/matchlist" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'matchlist' && "bg-gray-900"}`} onClick={() => navLinkHandle("matchlist", "matches")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-list mx-4"></i> Match List</Link>
-                    </div>
-                </div>
+                {
+                    Object.keys(where).length === 0 &&
+                        <>
+                            <button type="button" id="matchDropdownButton" className="w-full rounded-md inline-flex justify-between items-center hover:bg-gray-700 focus:outline-none py-3 " aria-expanded="true" aria-haspopup="true" onClick={() => openDropDown("matchDropdown")}>
+                                <i className="fa-regular fa-futbol mx-4"></i><span className="text-start"> Match Management</span>
+                                <svg className="w-4 h-4 mx-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            <div id="matchDropdown" className={`${mainNav !== "matches" && "hidden"} rounded-md focus:outline-line mb-3`} role="menu" aria-orientation="vertical" aria-labelledby="matchDropdownButton">
+                                <div className="" role="none">
+                                    <Link to="/matchlist" id="menu-item-0" className={`w-full inline-block rounded-md hover:bg-gray-700 pl-5 py-2 ${navActive === 'matchlist' && "bg-gray-900"}`} onClick={() => navLinkHandle("matchlist", "matches")} role="menuitem" tabIndex="-1"><i className="fa-solid fa-list mx-4"></i> Match List</Link>
+                                </div>
+                            </div>
+                        </>
+                }
                 {/*end match */}
 
             </div>

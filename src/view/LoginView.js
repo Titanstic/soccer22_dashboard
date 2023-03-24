@@ -95,7 +95,7 @@ const LoginView = () => {
                     </div>
 
                     <div>
-                        <button className={`block w-full bg-indigo-500 text-white text-sm font-medium border border-transparent rounded shadow ${loading ? "cursor-progress" : "cursor-pointer hover:bg-indigo-600"} px-4 py-3 focus:ring-2 focus:indigo-500 focus:ring-offset-2`} onClick={signInAccount} disabled={loading}>Sign in</button>
+                        <button className={`block w-full bg-indigo-500 text-white text-sm font-medium border border-transparent rounded shadow ${loading ? "cursor-progress" : "cursor-pointer hover:bg-indigo-600"} px-4 py-3 focus:ring-2 focus:indigo-500 focus:ring-offset-2`} onClick={signInAccount} disabled={loading}>{loading ? "loading ..." : "Sign in"}</button>
                     </div>
                 </div>
                 {/*End Login Form*/}
