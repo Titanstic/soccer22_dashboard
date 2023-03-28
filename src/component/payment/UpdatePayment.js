@@ -128,16 +128,16 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
     // End Function
 
     return (
-        <div className="w-10/12 h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0">
-            <div className="w-2/3 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
-                <p className="text-2xl font-bold leading-4 pt-4 pl-5">Add Payment for {userCode}</p>
+        <div className="w-full h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0 sm:w-10/12">
+            <div className="w-5/6 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3 sm:w-2/6">
+                <p className="text-xl font-bold leading-4 pt-4 sm:text-2xl">Add Payment for {userCode}</p>
 
                 <hr className="my-5"/>
 
                 <div className="grid grid-cols-3 gap-6">
-                    <div className="col-span-3 sm:col-span-2 relative">
+                    <div className="col-span-3 relative">
                         <div className="flex shadow rounded-md shadow-sm mt-1">
-                            <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Balance</span>
+                            <span className="w-16 sm:w-18 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Balance</span>
                             <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={addBalance ? addBalance : 0} onChange={(e) => inputHandle(e)} placeholder=" Balance" />
                         </div>
                         {
@@ -147,12 +147,12 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
                 </div>
 
                 <div className="text-right mt-8">
-                    <button className="bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3" onClick={() => updateModalHandle(null, null, null, null, null)}>Cancel</button>
+                    <button className="bg-red-500 text-sm text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-2 sm:py-3 sm:text-base" onClick={() => updateModalHandle(null, null, null, null, null)}>Cancel</button>
                     {
                         action === "transfer" ?
-                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={updateBalance} disabled={loading}>Transfer</button>
+                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-sm text-white rounded shadow hover:bg-blue-400 px-4 py-2 sm:py-3 sm:text-base`} onClick={updateBalance} disabled={loading}>Transfer</button>
                             :
-                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={deductBalance} disabled={loading}>Deduct</button>
+                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-sm text-white rounded shadow hover:bg-blue-400 px-4 py-2 sm:py-3 sm:text-base`} onClick={deductBalance} disabled={loading}>Deduct</button>
                     }
                 </div>
             </div>

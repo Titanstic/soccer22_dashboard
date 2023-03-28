@@ -2,7 +2,7 @@ import {gql} from "@apollo/client";
 
 const USERS = gql`
     query USERS($where: users_bool_exp) {
-          users(order_by: {id: desc}, where: $where) {
+          users(order_by: {id: asc}, where: $where) {
                 company_admin
                 balance
                 contact_name

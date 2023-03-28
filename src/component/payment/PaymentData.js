@@ -89,50 +89,42 @@ const PaymentData = ({updateModalHandle, deductAllModal, loadPayment, resultPaym
 
     return(
         <>
-            {
-                <>
-                    <div className="flex justify-between items-center mx-10 py-5">
-                        <p className="text-xl font-bold">Main Balance : {balance}</p>
-                    </div>
+            <div className="w-full border border-gray-200 rounded-lg shadow-md mt-5 mb-10 overflow-y-auto sm:w-11/12 sm:mx-auto">
+                <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
+                    <thead className="bg-gray-50">
+                    <tr className="sm:font-medium text-gray-900 sm:text-lg">
+                        <th scope="col" className="px-6 py-4">Id</th>
+                        <th scope="col" className="px-6 py-4">User Name</th>
+                        <th scope="col" className="px-6 py-4">Contact Name</th>
+                        <th scope="col" className="px-6 py-4">Current Balance</th>
+                        <th className="px-6 py-4">Action</th>
+                    </tr>
+                    </thead>
 
-                    <div className="w-11/12 border border-gray-200 rounded-lg shadow-md mt-5 mb-10 mx-auto">
-                        <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                            <thead className="bg-gray-50">
-                            <tr className="text-lg font-medium text-gray-900">
-                                <th scope="col" className="px-6 py-4">Id</th>
-                                <th scope="col" className="px-6 py-4">User Name</th>
-                                <th scope="col" className="px-6 py-4">Contact Name</th>
-                                <th scope="col" className="px-6 py-4">Current Balance</th>
-                                <th className="px-6 py-4">Action</th>
+                    <tbody className="text-sm divide-y divide-gray-100 border-t border-gray-100 sm:text-base">
+                    {
+                        paymentData ?
+                            paymentData.map( (pay, index) => (
+                                <tr className="hover:bg-gray-50" key={pay.id}>
+                                    <td className="px-6 py-4">{index + 1}</td>
+                                    <td className="px-6 py-4">{pay.username}</td>
+                                    <td className="px-6 py-4">{pay.contact_name}</td>
+                                    <td className="px-6 py-4">{pay.balance}</td>
+                                    <td className="px-6 py-2 flex">
+                                        <button className={`${pay.active ? "bg-blue-600 cursor-pointer" : "bg-blue-400"} text-white border shadow rounded px-3 py-2 hover:bg-blue-400 mr-8`} onClick={() => balanceWithDraw(pay)} disabled={!pay.active}>Add</button>
+                                        <button className={`${pay.active ? "bg-red-600 cursor-pointer" : "bg-red-400"} text-white border shadow rounded px-3 py-2 hover:bg-red-400 mr-8`} onClick={() => balanceDeduct(pay)} disabled={!pay.active}>Remove</button>
+                                        <button className={`${pay.active ? "bg-red-600 cursor-pointer" : "bg-red-400"} text-white border shadow rounded px-3 py-2 hover:bg-red-400`} onClick={() => balanceDeductAll(pay)} disabled={!pay.active}>Remove All</button>
+                                    </td>
+                                </tr>
+                            ))
+                            :
+                            <tr>
+                                <td className="text-center px-6 py-2" colSpan="4">Loading</td>
                             </tr>
-                            </thead>
-
-                            <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                            {
-                                paymentData ?
-                                    paymentData.map( (pay, index) => (
-                                        <tr className="hover:bg-gray-50" key={pay.id}>
-                                            <td className="px-6 py-4">{index + 1}</td>
-                                            <td className="px-6 py-4">{pay.username}</td>
-                                            <td className="px-6 py-4">{pay.contact_name}</td>
-                                            <td className="px-6 py-4">{pay.balance}</td>
-                                            <td className="px-6 py-2">
-                                                <button className={`${pay.active ? "bg-blue-600 cursor-pointer" : "bg-blue-400"} text-white border shadow rounded px-3 py-2 hover:bg-blue-400 mr-8`} onClick={() => balanceWithDraw(pay)} disabled={!pay.active}>Transfer</button>
-                                                <button className={`${pay.active ? "bg-red-600 cursor-pointer" : "bg-red-400"} text-white border shadow rounded px-3 py-2 hover:bg-red-400 mr-8`} onClick={() => balanceDeduct(pay)} disabled={!pay.active}>Deduct</button>
-                                                <button className={`${pay.active ? "bg-red-600 cursor-pointer" : "bg-red-400"} text-white border shadow rounded px-3 py-2 hover:bg-red-400`} onClick={() => balanceDeductAll(pay)} disabled={!pay.active}>Deduct All</button>
-                                            </td>
-                                        </tr>
-                                    ))
-                                    :
-                                    <tr>
-                                        <td className="text-center px-6 py-2" colSpan="4">Loading</td>
-                                    </tr>
-                            }
-                            </tbody>
-                        </table>
-                    </div>
-                </>
-            }
+                    }
+                    </tbody>
+                </table>
+            </div>
         </>
     )
 };

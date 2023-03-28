@@ -32,26 +32,28 @@ const accountCount = (data) => {
         masterAcc =0,
         agentAcc =0,
         userAcc = 0,
-        totalBalance = 0;
+        totalBalance = 0,
+        totalMember = 0;
 
     data.forEach(u => {
         let code = `${u.super_code ? u.super_code : ""}${u.senior_code ? u.senior_code : ""}${u.master_code ? u.master_code : ""}${u.agent_code ? u.agent_code : ""}${u.user_code ? u.user_code : ""}`;
-
         // To get account's count from length
-        if(code.length === 3){
-            superAcc += 1;
-        }
-        if(code.length === 6){
-            seniorAcc += 1;
-        }
-        if(code.length === 9){
-            masterAcc += 1;
-        }
-        if (code.length === 12){
-            agentAcc += 1;
-        }
-        if(code.length === 15) {
-            userAcc += 1;
+        switch (code.length) {
+            case 3:
+                superAcc += 1;
+                break;
+            case 6:
+                seniorAcc += 1;
+                break;
+            case 9:
+                masterAcc += 1;
+                break;
+            case 12:
+                agentAcc += 1;
+                break;
+            case 15:
+                userAcc += 1;
+                break;
         }
 
         totalBalance += u.balance;

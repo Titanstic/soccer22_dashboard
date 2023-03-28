@@ -14,7 +14,7 @@ const ProfileView = () => {
 
     return (
         <LayoutView>
-            <div className="w-full flex justify-center items-center">
+            <div className="w-full flex justify-center items-center overflow-auto">
                 {/*Start User's ProfileView Data*/}
                 <Profile/>
                 {/*End User's ProfileView Data*/}

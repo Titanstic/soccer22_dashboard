@@ -62,14 +62,16 @@ const EndMach = ({endModalHandle, matchId, matchResult}) => {
     // End Function
 
     return (
-        <div className="w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0 overflow-y-auto py-5">
+        <div className="w-full sm:w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0 overflow-y-auto py-5">
             <div className="w-11/12 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
-                <div className="my-5 mx-5">
-                    <p className={"text-3xl font-bold"}>End Match for {matchId}</p>
+                <div className="mx-5">
+                    <p className={"text-xl sm:text-3xl font-bold"}>End Match for {matchId}</p>
                 </div>
+                
+                <hr className="my-5"/>
 
                 <div className="grid grid-cols-4 gap-7 mx-5 mb-5">
-                    <div className="col-span-2 relative">
+                    <div className="col-span-4 sm:col-span-2 relative">
                         <div className="flex shadow rounded-md">
                             <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Score 1</span>
                             <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.score1 ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={form.score1} onChange={(e) => scoreHandle(e, "score1")}/>
@@ -79,7 +81,7 @@ const EndMach = ({endModalHandle, matchId, matchResult}) => {
                         }
                     </div>
 
-                    <div className="col-span-2 relative">
+                    <div className="col-span-4 sm:col-span-2 relative">
                         <div className="flex shadow rounded-md">
                             <span className="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Score 2</span>
                             <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.score2 ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={form.score2} onChange={(e) => scoreHandle(e, "score2")}/>
@@ -90,8 +92,8 @@ const EndMach = ({endModalHandle, matchId, matchResult}) => {
                     </div>
 
                     <div className="col-span-4 justify-self-end">
-                        <button className={`${loading ? "bg-red-400" : "bg-red-500"} text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3`} onClick={cancelEndMatch} disabled={loading}>Cancel</button>
-                        <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={endMatchHandle} disabled={loading}>{loading ? "loading ..." : "End Match"}</button>
+                        <button className={`${loading ? "bg-red-400" : "bg-red-500"} text-sm text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3 sm:text-base`} onClick={cancelEndMatch} disabled={loading}>Cancel</button>
+                        <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-sm text-white rounded shadow hover:bg-blue-400 px-4 py-3 sm:text-base`} onClick={endMatchHandle} disabled={loading}>{loading ? "loading ..." : "End Match"}</button>
                     </div>
                 </div>
             </div>

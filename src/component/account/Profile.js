@@ -19,6 +19,7 @@ const Profile = () => {
 
     useEffect(() => {
         if(allUsersResult.data){
+            console.log(allUsersResult.data.users);
             let {superAcc, seniorAcc, masterAcc, agentAcc, userAcc, totalBalance} = accountCount(allUsersResult.data.users);
             setAccCount({superAcc, seniorAcc, masterAcc, agentAcc, userAcc});
             setCashBalance(user.balance);
@@ -65,7 +66,7 @@ const Profile = () => {
                     </dl>
 
                     {
-                        whereArr.length < 1 &&
+                        whereArr.length === 0 &&
                             <dl>
                                 <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                                     <dt className="text-sm font-medium text-gray-500">Super Account</dt>
@@ -75,7 +76,7 @@ const Profile = () => {
                     }
 
                     {
-                        whereArr.length < 2 &&
+                        whereArr.length === 1 &&
                             <dl>
                                 <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                                     <dt className="text-sm font-medium text-gray-500">Senior Account</dt>
@@ -85,7 +86,7 @@ const Profile = () => {
                     }
 
                     {
-                        whereArr.length < 3 &&
+                        whereArr.length === 2 &&
                             <dl>
                                 <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                                     <dt className="text-sm font-medium text-gray-500">Master Account</dt>
@@ -95,7 +96,7 @@ const Profile = () => {
                     }
 
                     {
-                        whereArr.length < 4 &&
+                        whereArr.length === 3 &&
                             <dl>
                                 <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                                     <dt className="text-sm font-medium text-gray-500">Agent Account</dt>
@@ -105,7 +106,7 @@ const Profile = () => {
                     }
 
                     {
-                        whereArr.length < 5 &&
+                        whereArr.length === 4 &&
                             <dl>
                                 <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                                     <dt className="text-sm font-medium text-gray-500">User Account</dt>
@@ -113,6 +114,13 @@ const Profile = () => {
                                 </div>
                             </dl>
                     }
+
+                        <dl>
+                            <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
+                                <dt className="text-sm font-medium text-gray-500">Total Member Account</dt>
+                                <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">0</dd>
+                            </div>
+                        </dl>
                 </div>
             }
         </div>

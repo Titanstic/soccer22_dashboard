@@ -36,11 +36,11 @@ const UpdateAgentActive = ({updateActiveHandle, eachUser, usersResult}) => {
     // End Function
 
     return (
-        <div className="w-10/12 h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0">
-            <div className="w-2/5 bg-white rounded shadow shadow-gray-400 mx-auto">
+        <div className="w-full h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0 sm:w-10/12">
+            <div className="w-4/5 bg-white rounded shadow shadow-gray-400 mx-auto sm:w-2/5">
                 <div className="py-10 px-4">
-                    <h1 className="text-2xl font-medium leading-6 text-gray-900 mb-3">Update Agent Active</h1>
-                    <p className="text-lg text-gray-500">Are you sure you want to {user.active ? "deactivate" : "activate"} this agent?</p>
+                    <h1 className="text-xl font-medium leading-6 text-gray-900 mb-3 sm:text-2xl">Update Agent Active</h1>
+                    <p className="text-gray-500 sm:text-lg">Are you sure you want to {user.active ? "deactivate" : "activate"} this agent?</p>
                 </div>
 
                 <div className="w-full bg-gray-200 flex justify-end py-3">

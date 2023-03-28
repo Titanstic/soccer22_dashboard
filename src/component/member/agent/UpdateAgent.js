@@ -55,10 +55,10 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
     // End Function
 
     return (
-        <div className="w-10/12 h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0">
-            <div className="w-2/3 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
+        <div className="w-full sm:w-10/12 h-full bg-gray-200 flex justify-center items-center bg-opacity-90 overflow-hidden absolute top-0">
+            <div className="w-5/6 sm:w-1/3 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
                 <div>
-                    <p className="text-3xl font-bold leading-4">Update Agent</p>
+                    <p className="text-xl sm:text-3xl font-bold leading-4">Update Agent</p>
                 </div>
 
                 <hr className="my-5"/>
@@ -66,8 +66,8 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
                 {/*Start Update Form */}
                 {
                     user &&
-                    <div className="grid grid-cols-3 gap-9">
-                        <div className="col-span-3 sm:col-span-2 relative">
+                    <div className="grid grid-cols-3 gap-7">
+                        <div className="col-span-3 relative">
                             <div className="flex shadow rounded-md">
                                 <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Password</span>
                                 <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.password ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={user.password} onChange={(e) => inputHandle(e, "password")} placeholder="Enter your password" />
@@ -77,7 +77,7 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
                             }
                         </div>
 
-                        <div className="col-span-3 text-right sm:col-span-2">
+                        <div className="col-span-3 text-right">
                             <button className="bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3" onClick={() => updateModalHandle(null)}>Cancel</button>
                             <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={updateUserData} disabled={loading}>Update</button>
                         </div>

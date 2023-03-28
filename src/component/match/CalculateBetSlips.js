@@ -34,7 +34,7 @@ const CalculateBetSlips = ({calBetSlipsModal, matchId, matchResult}) => {
     // End Function
 
     return (
-        <div className="w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0 overflow-y-auto py-5">
+        <div className="w-full sm:w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0 overflow-y-auto py-5">
             <div className="w-6/12 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
                 <div className="my-5 mx-5">
                     <p className={"text-3xl font-bold"}>Calculate Bet Slips for {matchId}</p>

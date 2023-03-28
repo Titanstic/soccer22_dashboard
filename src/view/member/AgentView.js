@@ -17,7 +17,6 @@ const AgentView = () => {
     const [openCreate, setOpenCreate] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [openActive, setOpenActive] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
     const [openDetail, setOpenDetail] = useState(false);
     // useLazyQuery
     const [loadUsers, usersResult] = useLazyQuery(USERS);
@@ -52,17 +51,12 @@ const AgentView = () => {
         setEachUser(eachUser);
         setOpenDetail(!openDetail);
     }
-
-    const deleteModalHandle = (id) => {
-        setOpenDelete(!openDelete);
-        setUserId(id);
-    }
     // End Function
 
     return (
         <LayoutView>
             {/*Start Agent Data*/}
-            <AgentData addModalHandle={addModalHandle} updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} checkUserDetail={checkUserDetail} deleteModalHandle={deleteModalHandle} loadUsers={loadUsers} usersResult={usersResult}/>
+            <AgentData addModalHandle={addModalHandle} updateModalHandle={updateModalHandle} updateActiveHandle={updateActiveHandle} checkUserDetail={checkUserDetail} loadUsers={loadUsers} usersResult={usersResult}/>
             {/*End Agent Data*/}
 
             {/*Start Add Agent Modal*/}
@@ -82,12 +76,6 @@ const AgentView = () => {
                 openActive && <UpdateAgentActive updateActiveHandle={updateActiveHandle} eachUser={eachUser} usersResult={usersResult}/>
             }
             {/*End Update Active Modal*/}
-
-            {/*Start Delete Agent Modal*/}
-            {
-                openDelete &&  <DeleteAgent deleteModalHandle={deleteModalHandle} userId={userId} usersResult={usersResult}/>
-            }
-            {/*End Delete Agent Modal*/}
 
             {/*Start Agent Detail Modal*/}
             {

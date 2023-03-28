@@ -1,17 +1,18 @@
 import {useNavigate} from "react-router-dom";
-import {useContext, useEffect} from "react";
+import {useContext, useEffect, useState} from "react";
 import AlertContext from "../context/AlertContext";
 import ShowAlert from "../component/alert/ShowAlert";
 import {decodeUserToken} from "../composable/login";
 import {useLazyQuery} from "@apollo/client";
 import {USERS_BY_PK} from "../gql/user";
-import Nav from "../component/layout/Nav";
-import NavUserData from "../component/layout/NavUserData";
+import PhoneNav from "../component/layout/PhoneNav";
 import AuthContext from "../context/AuthContext";
 import {checkUserRow, whereUserRow} from "../composable/user";
 import Loading from "../component/Loading";
+import WindowNav from "../component/layout/WindowNav";
 
 const LayoutView = ({children}) => {
+    const [showNav, setShowNav] = useState(false);
     // useNavigate
     const navigate = useNavigate();
     // useContext
@@ -45,20 +46,35 @@ const LayoutView = ({children}) => {
     }, [resultUser]);
     // End useEffect
 
+    const navHandle = () => {
+        console.log('working');
+        setShowNav(!showNav);
+    }
+
     return (
-        <div className="w-full h-screen overflow-hidden">
-            <div className="flex h-full">
+        <div className="w-full h-screen flex overflow-hidden">
+            {/*<div className=" h-full">*/}
                 {
                     user ?
                         <>
-                            {/*Start Nav Bar*/}
-                            <Nav/>
-                            {/*End Nav Bar*/}
+                            {/*Start PhoneNav Bar*/}
+                            <PhoneNav showNav={showNav} navHandle={navHandle}/>
+                            <WindowNav/>
+
+                            {/*End PhoneNav Bar*/}
 
                             {/*Start Show Data */}
-                            <div className="w-10/12 h-full overflow-auto">
-                                <NavUserData username={user.username}/>
+                            <div className="w-full h-full overflow-y-auto sm:w-10/12">
+                                <div className="w-full flex justify-between items-center shadow p-5">
+                                    <div className="flex">
+                                        <button className="block border mr-5 px-4 py-1 hover:bg-gray-50 sm:hidden" onClick={navHandle}><i className="fa-solid fa-bars"></i></button>
+                                        <p className="text-md font-bold">Welcome Back, {user.username}</p>
+                                    </div>
 
+                                    <div className="mr-5">
+                                        <p className="text-md font-bold">Balance - {user.balance}</p>
+                                    </div>
+                                </div>
                                 {/*Start Children */}
                                 {children}
                                 {/*End Children */}
@@ -68,7 +84,7 @@ const LayoutView = ({children}) => {
                         :
                         <Loading/>
                 }
-            </div>
+            {/*</div>*/}
             {/*Start Alert Modal */}
             {
                 alert && <ShowAlert/>

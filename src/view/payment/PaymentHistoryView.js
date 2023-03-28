@@ -132,8 +132,8 @@ const PaymentHistoryView = () => {
     return (
         <LayoutView>
             {
-                <div className="w-11/12 my-10 mx-auto">
-                    <div className="flex justify-between items-center mb-10">
+                <div className="w-full my-10 mx-auto md:w-11/12">
+                    <div className="flex justify-between items-center ml-5 mb-10 md:ml-0">
                         <select className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer mr-5" onChange={changeUser} defaultValue={"0"}>
                             <option value={"0"} disabled>Choose User</option>
                             {
@@ -144,16 +144,20 @@ const PaymentHistoryView = () => {
                             }
                         </select>
 
-                        <div className="">
-                            <label htmlFor="fromDate" className="font-bold mr-2">From :</label>
-                            <input type="date" id="fromDate" className="border px-4 py-2 mr-5" value={fromDate} onChange={fromDateHandle}/>
+                        <div>
+                            <div className="md:inline-block mb-2 md:mb-0">
+                                <label htmlFor="fromDate" className="font-bold mr-3">From :</label>
+                                <input type="date" id="fromDate" className="border px-4 py-2 mr-5" value={fromDate} onChange={fromDateHandle}/>
+                            </div>
 
-                            <label htmlFor="toDate" className="font-bold mr-2">To :</label>
-                            <input type="date" id="toDate" className="border px-4 py-2" value={toDate} onChange={toDateHandle} min={fromDate}/>
+                            <div  className="md:inline-block">
+                                <label htmlFor="toDate" className="font-bold mr-8 md:mr-2">To :</label>
+                                <input type="date" id="toDate" className="border px-4 py-2" value={toDate} onChange={toDateHandle} min={fromDate}/>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="rounded-lg border border-gray-200 shadow-md">
+                    <div className="rounded-lg border border-gray-200 shadow-md overflow-auto mx-2 sm:mx-0">
                         {/*Start Payment History Data*/}
                         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                             <thead className="bg-gray-50">

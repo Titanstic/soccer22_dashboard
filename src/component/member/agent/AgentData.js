@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import EachAgentData from "./EachAgentData";
 import {filterUser} from "../../../composable/agent";
 
-const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, checkUserDetail, deleteModalHandle, loadUsers, usersResult}) => {
+const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, checkUserDetail, loadUsers, usersResult}) => {
     // useState
     const [loading, setLoading] = useState(true);
     const [usersData, setUsersData] = useState(null);
@@ -76,7 +76,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, check
                         }
                         {/*// End Add Agent Button*/}
 
-                        <div className="w-11/12 rounded-lg border border-gray-200 shadow-md my-10 mx-auto">
+                        <div className="w-full rounded-lg border border-gray-200 shadow-md my-10 overflow-y-auto sm:w-11/12 sm:mx-auto">
                             <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                                 <thead className="bg-gray-50">
                             <tr className="text-lg font-medium text-gray-900">
@@ -102,7 +102,6 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, check
                                                         </td>
                                                         <td className="text-lg px-6 py-2">
                                                             <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-4" onClick={() => updateModalHandle(userData[0])}></i>
-                                                            <i className="text-red-600 fa-solid fa-trash cursor-pointer hover:text-red-400 mr-4" onClick={() => deleteModalHandle(userData[0].id)}></i>
                                                             <i className="text-green-600 fa-solid fa-money-check-dollar cursor-pointer hover:text-green-400 mr-4" onClick={() => navigate("/quickpayment")}></i>
                                                             <i className="text-gray-600 fa-solid fa-circle-info cursor-pointer hover:text-gray-400" onClick={() => checkUserDetail(userData[0])}></i>
                                                         </td>

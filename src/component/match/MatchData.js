@@ -45,7 +45,7 @@ const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, calBet
             </div>
 
             {/*Start Match List Table*/}
-            <div className="w-11/12 rounded-lg border border-gray-200 shadow-md mx-auto my-5">
+            <div className="w-full  rounded-lg border border-gray-200 shadow-md my-5 overflow-y-auto sm:w-11/12 sm:mx-auto">
                 <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                     <thead className="bg-gray-50">
                     <tr className="text-lg font-medium text-gray-900">
