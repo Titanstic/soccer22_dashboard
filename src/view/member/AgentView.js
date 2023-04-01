@@ -5,7 +5,6 @@ import UpdateAgent from "../../component/member/agent/UpdateAgent";
 import AgentData from "../../component/member/agent/AgentData";
 import {useLazyQuery} from "@apollo/client";
 import {USERS} from "../../gql/user";
-import DeleteAgent from "../../component/member/agent/DeleteAgent";
 import NavContext from "../../context/NavContext";
 import UpdateAgentActive from "../../component/member/agent/UpdateAgentActive";
 import AgentDetails from "../../component/member/agent/AgentDetails";
@@ -13,7 +12,6 @@ import AgentDetails from "../../component/member/agent/AgentDetails";
 const AgentView = () => {
     // useState
     const [eachUser, setEachUser] = useState(null);
-    const [userId, setUserId] = useState(null);
     const [openCreate, setOpenCreate] = useState(false);
     const [openUpdate, setOpenUpdate] = useState(false);
     const [openActive, setOpenActive] = useState(false);

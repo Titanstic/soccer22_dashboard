@@ -64,15 +64,15 @@ const LayoutView = ({children}) => {
                             {/*End PhoneNav Bar*/}
 
                             {/*Start Show Data */}
-                            <div className="w-full h-full overflow-y-auto sm:w-10/12">
-                                <div className="w-full flex justify-between items-center shadow p-5">
+                            <div className="w-full h-full overflow-y-auto md:w-10/12">
+                                <div className="w-full flex justify-between items-center shadow px-2 py-5">
                                     <div className="flex">
-                                        <button className="block border mr-5 px-4 py-1 hover:bg-gray-50 sm:hidden" onClick={navHandle}><i className="fa-solid fa-bars"></i></button>
-                                        <p className="text-md font-bold">Welcome Back, {user.username}</p>
+                                        <button className="block border mr-3 px-3 py-1 hover:bg-gray-50 md:hidden" onClick={navHandle}><i className="fa-solid fa-bars"></i></button>
+                                        <p className="text-sm md:text-md font-bold pt-2 md:pt-0">Welcome Back, {user.username}</p>
                                     </div>
 
-                                    <div className="mr-5">
-                                        <p className="text-md font-bold">Balance - {user.balance}</p>
+                                    <div className="md:mr-5">
+                                        <p className="text-sm md:text-md font-bold">Balance - {user.balance}</p>
                                     </div>
                                 </div>
                                 {/*Start Children */}

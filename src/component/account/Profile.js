@@ -29,8 +29,8 @@ const Profile = () => {
     }, [allUsersResult])
 
     return (
-        <div className="w-8/12 bg-white border shadow shadow-gray-200 rounded sm:rounded-lg my-10">
-            <div className="px-4 py-5 sm:px-6">
+        <div className="w-10/12 md:w-8/12 bg-white border shadow shadow-gray-200 rounded md:rounded-lg my-10">
+            <div className="px-4 py-5 md:px-6">
                 <h3 className="text-xl font-medium leading-6 text-gray-900">Account - Profile</h3>
             </div>
 

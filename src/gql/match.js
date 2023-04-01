@@ -51,6 +51,18 @@ const INSERT_FULL_MATCH = gql`
     }
     `;
 
+const INSERT_TEAM = gql`
+    mutation INSERT_TEAM($team_logo: String!, $team_name_en: String!, $team_name_mm: String!) {
+          insert_team_one(object: {team_logo: $team_logo, team_name_en: $team_name_en, team_name_mm: $team_name_mm}) {
+                id
+                team_logo
+                team_name_en
+                team_name_mm
+                created_at
+          }
+    }
+`
+
 const UPDATE_SCORE_MATCH = gql`
     mutation MyMutation($matchId: Int!, $score2: Int!, $score1: Int!) {
           addscore(args: {_match_id: $matchId, _scoreb: $score2, _scorea: $score1}) {
@@ -76,4 +88,4 @@ const GET_SLIP = gql`
     }
 `;
 
-export {MATCH, INSERT_HALF_MATCH, INSERT_FULL_MATCH, UPDATE_SCORE_MATCH, UPDATE_STATUS_MATCH, GET_SLIP};
+export {MATCH, INSERT_HALF_MATCH, INSERT_FULL_MATCH, INSERT_TEAM, UPDATE_SCORE_MATCH, UPDATE_STATUS_MATCH, GET_SLIP};

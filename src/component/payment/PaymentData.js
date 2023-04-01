@@ -1,6 +1,5 @@
 import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../context/AuthContext";
-import Loading from "../Loading";
 import {filterTransferUsers, getReceiverCode} from "../../composable/payment";
 import AlertContext from "../../context/AlertContext";
 
@@ -89,10 +88,10 @@ const PaymentData = ({updateModalHandle, deductAllModal, loadPayment, resultPaym
 
     return(
         <>
-            <div className="w-full border border-gray-200 rounded-lg shadow-md mt-5 mb-10 overflow-y-auto sm:w-11/12 sm:mx-auto">
+            <div className="w-full border border-gray-200 rounded-lg shadow-md mt-5 mb-10 overflow-y-auto md:w-11/12 md:mx-auto">
                 <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                     <thead className="bg-gray-50">
-                    <tr className="sm:font-medium text-gray-900 sm:text-lg">
+                    <tr className="md:font-medium text-gray-900 md:text-lg">
                         <th scope="col" className="px-6 py-4">Id</th>
                         <th scope="col" className="px-6 py-4">User Name</th>
                         <th scope="col" className="px-6 py-4">Contact Name</th>
@@ -101,7 +100,7 @@ const PaymentData = ({updateModalHandle, deductAllModal, loadPayment, resultPaym
                     </tr>
                     </thead>
 
-                    <tbody className="text-sm divide-y divide-gray-100 border-t border-gray-100 sm:text-base">
+                    <tbody className="text-sm divide-y divide-gray-100 border-t border-gray-100 md:text-base">
                     {
                         paymentData ?
                             paymentData.map( (pay, index) => (

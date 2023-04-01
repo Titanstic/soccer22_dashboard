@@ -48,11 +48,11 @@ const AgentDetails = ({checkUserDetail, eachUser, usersResult}) => {
     }
 
     return (
-        <div className="w-full sm:w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0 overflow-y-auto py-5">
-            <div className="w-10/12 sm:w-9/12 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
+        <div className="w-full md:w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0 overflow-y-auto py-5">
+            <div className="w-10/12 md:w-9/12 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
                 <div className="flex justify-between items-center mb-5 mx-2 sm:mx-5">
-                    <p className={"text-2xl sm:text-3xl font-bold"}>User Detail for {eachUser.contact_name}</p>
-                    <i className="text-3xl text-gray-900 fa-solid fa-xmark cursor-pointer hover:text-gray-600" onClick={() => checkUserDetail(null)}></i>
+                    <p className={"text-xl md:text-3xl font-bold"}>User Detail for {eachUser.contact_name}</p>
+                    <i className="text-xl md:text-3xl text-gray-900 fa-solid fa-xmark cursor-pointer hover:text-gray-600" onClick={() => checkUserDetail(null)}></i>
                 </div>
 
                 {/*Start User Detail Info*/}

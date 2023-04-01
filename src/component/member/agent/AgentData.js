@@ -62,31 +62,31 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, check
                         {
                             whereArr &&
                                 <div className="flex justify-between items-center mt-5 mx-5">
-                                    <p className="text-3xl font-bold">
+                                    <p className="text-2xl md:text-3xl font-bold">
                                         {whereArr.length === 0 && "Super Account List"}
                                         {whereArr.length === 1 && "Senior Account List"}
                                         {whereArr.length === 2 && "Master Account List"}
                                         {whereArr.length === 3 && "Agent Account List"}
                                         {whereArr.length === 4 && "User Account List"}
                                     </p>
-                                    <button className="bg-blue-500 text-white rounded shadow hover:bg-blue-400 px-4 py-3" onClick={addModalHandle}>
+                                    <button className="text-sm bg-blue-500 text-white rounded shadow hover:bg-blue-400 px-4 py-3 md:text-base" onClick={addModalHandle}>
                                         Add {whereArr.length === 0 && "Super"} {whereArr.length === 1 && "Senior"} {whereArr.length === 2 && "Master"} {whereArr.length === 3 && "Agent"} {whereArr.length === 4 && "User"}
                                     </button>
                                 </div>
                         }
                         {/*// End Add Agent Button*/}
 
-                        <div className="w-full rounded-lg border border-gray-200 shadow-md my-10 overflow-y-auto sm:w-11/12 sm:mx-auto">
+                        <div className="w-full rounded-lg border border-gray-200 shadow-md my-10 overflow-y-auto md:w-11/12 md:mx-auto">
                             <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                                 <thead className="bg-gray-50">
-                            <tr className="text-lg font-medium text-gray-900">
-                                <th scope="col" className="px-6 py-4">User Name</th>
-                                <th scope="col" className="px-6 py-4">Contact Name</th>
-                                <th scope="col" className="px-6 py-4">Balance</th>
-                                <th scope="col" className="px-6 py-4">Active</th>
-                                <th scope="col" className="px-6 py-4">Action</th>
-                            </tr>
-                            </thead>
+                                    <tr className="text-lg font-medium text-gray-900">
+                                        <th scope="col" className="px-6 py-4">User Name</th>
+                                        <th scope="col" className="px-6 py-4">Contact Name</th>
+                                        <th scope="col" className="px-6 py-4">Balance</th>
+                                        <th scope="col" className="px-6 py-4">Active</th>
+                                        <th scope="col" className="px-6 py-4">Action</th>
+                                    </tr>
+                                </thead>
 
                                 <tbody className="divide-y divide-gray-100 border-t border-gray-100">
                                     {

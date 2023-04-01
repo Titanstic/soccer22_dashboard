@@ -7,6 +7,8 @@ import LoginView from "../view/LoginView";
 import PaymentView from "../view/payment/PaymentView";
 import PaymentHistoryView from "../view/payment/PaymentHistoryView";
 import MatchListView from "../view/match/MatchListView";
+import CreateTeamView from "../view/match/CreateTeamView";
+import ReportView from "../view/report/ReportView";
 const MainRouter = () => {
     return (
         <Routes>
@@ -27,7 +29,12 @@ const MainRouter = () => {
 
             {/*Start Management match*/}
             <Route path="/matchlist" element={<MatchListView/>}/>
+            <Route path="/createteam" element={<CreateTeamView/>}/>
             {/*End Management match*/}
+
+            {/*Start report Management*/}
+            <Route path="/report" element={<ReportView/>}/>
+            {/*End report Management*/}
 
             <Route path="*" element={<NotFound/>}/>
         </Routes>

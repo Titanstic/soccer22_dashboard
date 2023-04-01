@@ -1,3 +1,21 @@
+import Resizer from "react-image-file-resizer";
+
+const resizeFile = (file) =>
+    new Promise((resolve) => {
+        Resizer.imageFileResizer(
+            file,
+            30,
+            30,
+            "JPEG, JPG, PNG",
+            100,
+            0,
+            (uri) => {
+                resolve(uri);
+            },
+            "base64"
+        );
+    });
+
 const inputErrorValidation = (form) => {
     let errorDetail = {};
     let errors = false;
@@ -102,4 +120,26 @@ let eachInputValidation = (input, e, disable, error, formStatus) => {
     return {eachError, eachDisable, status};
 };
 
-export {inputErrorValidation, inputEndMatchValidation, eachInputValidation};
+const teamInputValidation = (form) => {
+    let errorDetail = {};
+    let errors = false;
+
+    if(form.team_name_mm === ""){
+        errorDetail.team_name_mm = "Please Enter Team Name";
+        errors = true;
+    }
+
+    if(form.team_name_en === ""){
+        errorDetail.team_name_en = "Please Enter Team Name";
+        errors = true;
+    }
+
+    if(form.team_logo === ""){
+        errorDetail.team_logo = "Please Choose Photo";
+        errors = true;
+    }
+
+    return {errorDetail, errors};
+};
+
+export { resizeFile, inputErrorValidation, inputEndMatchValidation, eachInputValidation, teamInputValidation};
