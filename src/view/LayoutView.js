@@ -17,7 +17,7 @@ const LayoutView = ({children}) => {
     const navigate = useNavigate();
     // useContext
     const {alert} = useContext(AlertContext);
-    const {user, setUser, setDecodeToken, setUserRow, setWhere, setWhereArr} = useContext(AuthContext);
+    const {user, setUser, setSingleBet, setMaxBet, setDecodeToken, setUserRow, setWhere, setWhereArr} = useContext(AuthContext);
     // useLazyQuery
     const [loadUser, resultUser] = useLazyQuery(USERS_BY_PK);
 
@@ -38,6 +38,8 @@ const LayoutView = ({children}) => {
             let checkRow = checkUserRow(resultUser.data.users_by_pk);
             const {tempWhere, tempRowValue} = whereUserRow(checkRow);
 
+            setSingleBet(resultUser.data.users_by_pk.single_bet);
+            setMaxBet(resultUser.data.users_by_pk.max_bet);
             setWhere(tempWhere);
             setWhereArr(tempRowValue);
             setUserRow(checkRow);

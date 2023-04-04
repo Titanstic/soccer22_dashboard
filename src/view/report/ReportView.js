@@ -4,19 +4,23 @@ import AuthContext from "../../context/AuthContext";
 import {getCurrentDate} from "../../composable/payment";
 import {useLazyQuery} from "@apollo/client";
 import {COMMISION_HISTORY} from "../../gql/report";
-import {filterComision} from "../../composable/report";
+import {filterComision, filterEachUser, filterGroupComision} from "../../composable/report";
 
 
 const ReportView = () => {
     // useState
     const [loading, setLoading] = useState(false);
+    const [showEachUser, setShowEachUser] = useState(false);
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [key, setKey] = useState(1);
 
     const [user, setUser] = useState(null);
+    const [totalCompany, setTotalCompany] = useState(null);
     const [betSlip, setBetSlip] = useState(null);
+    const [comision, setComision] = useState(null);
     // useContext
     const {where} = useContext(AuthContext);
     // useLazyQuery
@@ -51,32 +55,14 @@ const ReportView = () => {
         if(resultComHistory.data){
             let comisionHistorys = resultComHistory.data.commision_history;
             let {newComisionHistorys} = filterComision(comisionHistorys);
+            let {newGroups, newCompanyGroups} = filterGroupComision(newComisionHistorys, key);
 
-            let newGroups = [];
-            newComisionHistorys.forEach(each => {
-                if(newGroups.length > 0){
-                    newGroups.forEach(group => {
-                        if(group.user.id === each[1].user.id){
-                            // console.log({...group, "bet_slip": {...group.bet_slip, "balance": 500}});
-                            let balance = group.bet_slip.balance + each[1].bet_slip.balance;
-                            const target = Object.assign(group, balance);
-                            // group.bet_slip.balance =  group.bet_slip.balance + each[1].bet_slip.balance;
-                        }else{
-                            newGroups.push(each[1]);
-                        }
-                    })
-                }else{
-                    newGroups.push(each[1]);
-                }
-            });
-
-            console.log(newGroups);
-
+            setComision(newComisionHistorys);
+            setTotalCompany(newCompanyGroups);
+            setBetSlip(newGroups);
             setLoading(false);
-            setBetSlip(newComisionHistorys);
         }
     }, [resultComHistory])
-
     // --- end to get bet slip
 
     // End UseEffect
@@ -103,6 +89,23 @@ const ReportView = () => {
         setEndDate(`${e.target.value}T24:00:00+00:00`);
         // setPaymentHistory(null);
     }
+
+    const detailMember = (currentIndex) => {
+        if(key < 5){
+            setKey(currentIndex + 1);
+
+            const {newGroups, newCompanyGroups} = filterGroupComision(comision, currentIndex + 1);
+            setShowEachUser(false);
+            setTotalCompany(newCompanyGroups);
+            setBetSlip(newGroups);
+        }else{
+            const {eachUserGroup} = filterEachUser(comision, 5);
+            console.log(eachUserGroup);
+
+            setShowEachUser(true);
+            setBetSlip(eachUserGroup);
+        }
+    }
     // End Function
 
     return (
@@ -124,54 +127,117 @@ const ReportView = () => {
 
                 <div className="rounded-lg border border-gray-200 shadow-md mx-2 sm:mx-0">
                     {/*Start Payment History Data*/}
-                    <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                        <thead className="bg-gray-50">
-                            <tr className="text-lg font-medium text-gray-900">
-                                <th scope="col" className="px-6 py-4">Account</th>
-                                <th scope="col" className="px-6 py-4">Amount</th>
-                                <th scope="col" className="text-center px-6 py-4" colSpan="3">Member</th>
-                                <th scope="col" className="text-center px-6 py-4" colSpan="3">Company</th>
-                            </tr>
-                            <tr>
-                                <th scope="col" className="px-6 py-1"></th>
-                                <th scope="col" className="px-6 py-1"></th>
-                                <th scope="col" className="px-6 py-1">W/L</th>
-                                <th scope="col" className="px-6 py-1">Com</th>
-                                <th scope="col" className="px-6 py-1">W/L + Com</th>
-                                <th scope="col" className="px-6 py-1">W/L</th>
-                                <th scope="col" className="px-6 py-1">Com</th>
-                                <th scope="col" className="px-6 py-1">W/L + Com</th>
-                            </tr>
-                        </thead>
-
-                        <tbody className="divide-y divide-gray-100 border-t border-gray-100">
                         {
-                            loading ?
-                                <tr>
-                                    <td className="text-center text-red-600 px-6 py-4" colSpan="8">Loading ...</td>
-                                </tr>
-                                :
-                                betSlip &&
-                                    betSlip.length > 0 ?
-                                        betSlip.map(slip => (
-                                            <tr className="hover:bg-gray-50" key={slip[1].id}>
-                                                <td className="px-6 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => {console.log("work")}}>{slip[1].user.username}</span></td>
-                                                <td className="px-6 py-4">{slip[1].bet_slip.balance}</td>
-                                                <td className="px-6 py-4">{slip[1].bet_slip.win_lose_cash}</td>
-                                                <td className="px-6 py-4">{slip[1].actual_commision}</td>
-                                                <td className="px-6 py-4">{slip[1].bet_slip.win_lose_cash + slip[1].actual_commision}</td>
-                                                <td className="px-6 py-4">{slip[1].bet_slip.win_lose_cash}</td>
-                                                <td className="px-6 py-4">{slip[1].actual_commision}</td>
-                                                <td className="px-6 py-4">{slip[1].bet_slip.win_lose_cash + slip[1].actual_commision}</td>
+                            showEachUser ?
+                                <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
+                                    <thead className="bg-gray-50">
+                                        <tr className="text-lg font-medium text-gray-900">
+                                            <th scope="col" className="px-6 py-4">Account</th>
+                                            <th scope="col" className="px-6 py-4">Date</th>
+                                            <th scope="col" className="px-6 py-4">Event</th>
+                                            <th scope="col" className="text-center px-6 py-4">Detail</th>
+                                            <th scope="col" className="px-6 py-1">W/L</th>
+                                            <th scope="col" className="px-6 py-1">Com</th>
+                                            <th scope="col" className="px-6 py-1">W/L + Com</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+                                    {
+                                        betSlip &&
+                                            betSlip.length > 0 ?
+                                            betSlip.map(slip => (
+                                            <tr className="hover:bg-gray-50" key={slip.id}>
+                                                <td className="px-6 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer">{slip.bet_slip.user.username}</span></td>
+                                                <td className="px-6 py-4">
+                                                    {new Date(slip.created_at).toISOString().split("T")[0]}
+                                                    <br/>
+                                                    {new Date(slip.created_at).toISOString().split("T")[1]}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="font-bold">{slip.bet_slip.match.home_team} </span>
+                                                    <span className="text-sm">VS</span>
+                                                    <span className="font-bold"> {slip.bet_slip.match.away_team} </span>
+                                                    <span className="">
+                                                        {
+                                                            slip.bet_slip.match.half_score_1
+                                                                ?
+                                                                `(${slip.bet_slip.match.half_score_1} - ${slip.bet_slip.match.half_score_2})`
+                                                                :
+                                                                `(${slip.bet_slip.match.score_1} - ${slip.bet_slip.match.score_2})`
+                                                        }
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {
+                                                        slip.bet_slip.bet_team ?
+                                                            `Body ${slip.bet_slip.body} (${slip.bet_slip.bet_team})`
+                                                            :
+                                                            `${slip.bet_slip.over_under} (${slip.bet_slip.goal_paung})`
+                                                    }
+                                                </td>
+                                                <td className="px-6 py-4">{slip.bet_slip.win_lose_cash}</td>
+                                                <td className="px-6 py-4">{slip.actual_commision}</td>
+                                                <td className="px-6 py-4">{slip.bet_slip.win_lose_cash + slip.actual_commision}</td>
                                             </tr>
-                                        ))
-                                    :
-                                    <tr>
-                                        <td className="text-center text-red-600 px-6 py-4" colSpan="8">No Data</td>
+                                            ))
+                                            :
+                                            <tr>
+                                                <td className="text-center text-red-600 px-6 py-4" colSpan="8">No Data</td>
+                                            </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                                :
+                                <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
+                                    <thead className="bg-gray-50">
+                                    <tr className="text-lg font-medium text-gray-900">
+                                        <th scope="col" className="px-6 py-4">Account</th>
+                                        <th scope="col" className="px-6 py-4">Amount</th>
+                                        <th scope="col" className="text-center px-6 py-4" colSpan="3">Member</th>
+                                        <th scope="col" className="text-center px-6 py-4" colSpan="3">Company</th>
                                     </tr>
+                                    <tr>
+                                        <th scope="col" className="px-6 py-1"></th>
+                                        <th scope="col" className="px-6 py-1"></th>
+                                        <th scope="col" className="px-6 py-1">W/L</th>
+                                        <th scope="col" className="px-6 py-1">Com</th>
+                                        <th scope="col" className="px-6 py-1">W/L + Com</th>
+                                        <th scope="col" className="px-6 py-1">W/L</th>
+                                        <th scope="col" className="px-6 py-1">Com</th>
+                                        <th scope="col" className="px-6 py-1">W/L + Com</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+                                    {
+                                        loading ?
+                                            <tr>
+                                                <td className="text-center text-red-600 px-6 py-4" colSpan="8">Loading ...</td>
+                                            </tr>
+                                            :
+                                            betSlip &&
+                                                betSlip.length > 0 ?
+                                                    betSlip.map((slip, slipkey) => (
+                                                        <tr className="hover:bg-gray-50" key={slip.id}>
+                                                            <td className="px-6 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => detailMember(key)}>{slip.user.username}</span></td>
+                                                            <td className="px-6 py-4">{slip.bet_slip.balance}</td>
+                                                            <td className="px-6 py-4">{slip.bet_slip.win_lose_cash}</td>
+                                                            <td className="px-6 py-4">{slip.actual_commision}</td>
+                                                            <td className="px-6 py-4">{slip.bet_slip.win_lose_cash + slip.actual_commision}</td>
+                                                            <td className="px-6 py-4">{totalCompany[slipkey].bet_slip.win_lose_cash}</td>
+                                                            <td className="px-6 py-4">{totalCompany[slipkey].actual_commision}</td>
+                                                            <td className="px-6 py-4">{totalCompany[slipkey].bet_slip.win_lose_cash + totalCompany[slipkey].actual_commision}</td>
+                                                        </tr>
+                                                    ))
+                                                    :
+                                                    <tr>
+                                                        <td className="text-center text-red-600 px-6 py-4" colSpan="8">No Data</td>
+                                                    </tr>
+                                    }
+                                    </tbody>
+                                </table>
                         }
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </LayoutView>

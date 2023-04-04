@@ -6,6 +6,8 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({children}) => {
     const [user, setUser] = useState(null);
+    const [singleBet, setSingleBet] = useState(null);
+    const [maxBet, setMaxBet] = useState(null);
     const [userRow, setUserRow] = useState({});
     const [decodeToken, setDecodeToken] = useState({});
     const [where, setWhere] = useState(null);
@@ -15,7 +17,7 @@ export const AuthContextProvider = ({children}) => {
 
 
     return(
-        <AuthContext.Provider value={{user, setUser, userRow, setUserRow, decodeToken, setDecodeToken, where, setWhere, whereArr, setWhereArr, loadAllUsers, allUsersResult}}>
+        <AuthContext.Provider value={{user, setUser, singleBet, setSingleBet, maxBet, setMaxBet, userRow, setUserRow, decodeToken, setDecodeToken, where, setWhere, whereArr, setWhereArr, loadAllUsers, allUsersResult}}>
             {children}
         </AuthContext.Provider>
     )

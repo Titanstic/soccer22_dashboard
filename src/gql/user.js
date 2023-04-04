@@ -66,6 +66,8 @@ const USERS_BY_PK = gql`
             super_code
             user_code
             username
+            max_bet
+            single_bet
         }
     }
 `;

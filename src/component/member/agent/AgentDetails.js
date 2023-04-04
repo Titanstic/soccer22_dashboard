@@ -6,22 +6,22 @@ import AlertContext from "../../../context/AlertContext";
 
 const AgentDetails = ({checkUserDetail, eachUser, usersResult}) => {
     console.log(eachUser);
+    // useContext
+    const {user, singleBet} = useContext(AuthContext);
+    const {showAlert} = useContext(AlertContext);
     // useState
-    const [singleBet, setSingleBet] = useState(eachUser.single_bet);
+    const [eachSingleBet, setEachSingleBet] = useState(singleBet);
     const [singleBetBtn, setsingleBetBtn] = useState(true);
     const [loading, setLoading] = useState(false);
     // useRef
     const singleBetElement = useRef();
-    // useContext
-    const {user} = useContext(AuthContext);
-    const {showAlert} = useContext(AlertContext);
 
     // Start Mutation
     const [singleBetTransfer] = useMutation(SINGLE_BET_TRANSFER, {
         onError: (error) => {
             console.log("singleBetTransfer", error);
             showAlert("Single Bet Transfer Failed", true);
-            setSingleBet(eachUser.single_bet);
+            // setSingleBet(eachUser.single_bet);
         },
         onCompleted: (result) => {
             console.log(result);
@@ -76,8 +76,8 @@ const AgentDetails = ({checkUserDetail, eachUser, usersResult}) => {
                             <dt className="text-sm font-medium text-gray-600">Commission</dt>
                             <dd className="text-sm text-gray-900 sm:col-span-2 flex sm:mt-0 mt-1">
                                 <div className="relative">
-                                    <input type="text" className={`border px-4 py-1 mr-2`} value={singleBet} ref={singleBetElement} onChange={(e) => setSingleBet(e.target.value)} disabled={singleBetBtn}/>
-                                    <span className="text-gray-500 absolute left-2 top-full">Max Commission = {eachUser.single_bet}</span>
+                                    <input type="text" className={`border px-4 py-1 mr-2`} value={eachSingleBet} ref={singleBetElement} onChange={(e) => setEachSingleBet(e.target.value)}  disabled={singleBetBtn}/>
+                                    <span className="text-gray-500 absolute left-2 top-full">Max Commission = {singleBet}</span>
                                 </div>
                                 <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white px-4 py-1 mr-2 hover:bg-blue-400`} onClick={editSingleBtn} disabled={loading}>{singleBetBtn ? "edit" : "confirm"}</button>
                                 {
