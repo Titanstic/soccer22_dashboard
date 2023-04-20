@@ -25,7 +25,8 @@ const errorLink = onError(({graphQLErrors, networkError}) => {
     if(graphQLErrors) {
         graphQLErrors.forEach(({extensions}) => {
             if(extensions.code === "invalid-headers" || extensions.code === "invalid-jwt"){
-                window.location.assign(`${window.location.origin}/login`);
+                window.localStorage.removeItem("loggedUser");
+                window.location.assign(`${window.location.origin}`);
             }
         })
     }

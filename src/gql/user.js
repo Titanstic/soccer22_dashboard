@@ -44,8 +44,8 @@ const ALL_USER = gql`
 `;
 
 const INSERT_USER = gql`
-    mutation SIGNUP($contactName: String!, $password: String!, $username: String!) {
-          SignUp(contactName: $contactName, password: $password, username: $username) {
+    mutation SIGNUP($contactName: String!, $password: String!, $username: String!, $commission: numeric!, $maxBet: Int!) {
+          SignUp(contactName: $contactName, password: $password, username: $username, commission: $commission, maxbet: $maxBet) {
                 error
                 message
           }
@@ -83,11 +83,21 @@ const UPDATE_USER_BY_PK = gql`
 `;
 
 const SINGLE_BET_TRANSFER = gql`
-    mutation MyMutation($_commision: numeric!, $_receiverid: Int!, $_senderid: Int!) {
+    mutation SINGLE_BET_TRANSFER($_commision: numeric!, $_receiverid: Int!, $_senderid: Int!) {
           single_bet_transfer(args: {_commision: $_commision, _receiverid: $_receiverid, _senderid: $_senderid}) {
                 id
                 username
                 single_bet
+                max_bet
+          }
+    }
+`;
+
+const MAX_BET_TRANSFER = gql`
+    mutation MyMutation($_senderid: Int!, $_receiverid: Int!, $_maxbet: Int!) {
+          max_bet_transfer(args: {_maxbet: $_maxbet, _receiverid: $_receiverid, _senderid: $_senderid}) {
+                id
+                username
                 max_bet
           }
     }
@@ -117,4 +127,4 @@ const DELETE_USER_BY_PK = gql`
     }
 `;
 
-export { USERS, ALL_USER, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, SINGLE_BET_TRANSFER, ACCOUNT_SUSPEND, DELETE_USER_BY_PK };
+export { USERS, ALL_USER, INSERT_USER, USERS_BY_PK, UPDATE_USER_BY_PK, SINGLE_BET_TRANSFER, MAX_BET_TRANSFER, ACCOUNT_SUSPEND, DELETE_USER_BY_PK };

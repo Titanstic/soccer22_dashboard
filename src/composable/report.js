@@ -28,13 +28,20 @@ const filterComision = (comisionHistorys) => {
 
 const filterGroupComision = (newComisionHistorys, key) => {
     let newGroups = [];
+    let totalNewGroupComission = 0;
+    let totalNewGroupBalance = 0;
+    let totalNewGroupWinLose = 0;
     let newCompanyGroups = [];
+    let totalNewCompanyComission = 0;
+    let totalNewCompanyBalance = 0;
+    let totalNewCompanyWinLose = 0;
+    let newItem = false;
 
      newComisionHistorys.forEach(each => {
         if(newGroups.length > 0){
             newGroups.forEach((group, index) => {
                 if(group.user.id === each[key].user.id){
-                     // for total member
+                    // for total member
                      newGroups[index] = {...group,
                          actual_commision: group.actual_commision + each[key].actual_commision,
                          bet_slip: {
@@ -44,34 +51,60 @@ const filterGroupComision = (newComisionHistorys, key) => {
                          }
                      };
 
+                     // console.log(newGroups);
+
                      // for total company
                     newCompanyGroups[index] = {...newCompanyGroups[index],
-                        actual_commision: newCompanyGroups[index].actual_commision + each[0].actual_commision,
+                        actual_commision: newCompanyGroups[index].actual_commision + each[key-1].actual_commision,
                         bet_slip: {
                             ...newCompanyGroups[index].bet_slip,
-                            balance: newCompanyGroups[index].bet_slip.balance + each[0].bet_slip.balance,
-                            win_lose_cash: newCompanyGroups[index].bet_slip.win_lose_cash + each[0].bet_slip.win_lose_cash
+                            balance: newCompanyGroups[index].bet_slip.balance + each[key-1].bet_slip.balance,
+                            win_lose_cash: newCompanyGroups[index].bet_slip.win_lose_cash + each[key-1].bet_slip.win_lose_cash
                         }
-                    }
+                    };
+
+                    newItem = false;
                 }else{
-                    newGroups.push(each[key]);
-                    newCompanyGroups.push(each[0]);
+                    newItem = true
                 }
             })
+
+            if(newItem) {
+                newGroups.push(each[key]);
+                newCompanyGroups.push(each[key-1]);
+            }
         }else{
             newGroups.push(each[key]);
-            newCompanyGroups.push(each[0]);
+            newCompanyGroups.push(each[key-1]);
         }
+
+         totalNewGroupComission += each[key].actual_commision;
+         totalNewGroupBalance += each[key].bet_slip.balance;
+         totalNewGroupWinLose += each[key].bet_slip.win_lose_cash;
+
+         totalNewCompanyComission += each[key - 1].actual_commision;
+         totalNewCompanyBalance += each[key - 1].bet_slip.balance;
+         totalNewCompanyWinLose += each[key - 1].bet_slip.win_lose_cash;
     });
-    return {newGroups, newCompanyGroups};
+
+    return {newGroups, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, newCompanyGroups, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose};
 };
 
-const filterEachUser = (newComisionHistorys, key) => {
+const filterEachUser = (newComisionHistorys, key, userID) => {
     let eachUserGroup = [];
+    let totalNewGroupComission = 0;
+    let totalNewGroupBalance = 0;
+    let totalNewGroupWinLose = 0;
 
     newComisionHistorys.map(comision => {
-        eachUserGroup.push(comision[key])
+        if(comision[key].user.id === userID) {
+            eachUserGroup.push(comision[key]);
+
+            totalNewGroupComission += comision[key].actual_commision;
+            totalNewGroupBalance += comision[key].bet_slip.balance;
+            totalNewGroupWinLose += comision[key].bet_slip.win_lose_cash;
+        }
     });
-    return {eachUserGroup}
+    return {eachUserGroup, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose,}
 }
 export { filterComision, filterGroupComision, filterEachUser }

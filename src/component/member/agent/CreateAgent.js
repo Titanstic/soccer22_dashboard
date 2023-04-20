@@ -20,6 +20,7 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
             console.log("insertUser", error);
         },
         onCompleted: (result) => {
+            console.log(result);
             addModalHandle();
             showAlert("Create Successfully", false);
             usersResult.refetch();
@@ -40,11 +41,11 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
     const addAgentData = () => {
         setLoading(true);
 
-        let {errorExist, tempError} = checkInputData(userData.username, userData.contactName, userData.password)
+        let {errorExist, tempError} = checkInputData(userData.username, userData.contactName, userData.password, userData.commission, userData.maxBet);
         if(errorExist){
-            console.log("error");
             setError(tempError);
         }else{
+            console.log(userData);
             try{
                 insertUser({variables: userData});
             }catch (e) {
@@ -56,7 +57,7 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
 
     return (
         <div className="w-full sm:w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0">
-            <div className="w-10/12 bg-white rounded shadow shadow-gray-400 mx-auto py-5 px-3">
+            <div className="w-10/12 bg-white rounded shadow shadow-gray-400 mx-auto py-10 px-4">
                 <div>
                     <p className="text-3xl font-bold leading-4">Create Agent</p>
                 </div>
@@ -83,6 +84,26 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
                         </div>
                         {
                             error.contact_name && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.contact_name}</span></div>
+                        }
+                    </div>
+
+                    <div className="col-span-4 sm:col-span-2 relative">
+                        <div className="flex shadow rounded-md shadow-sm">
+                            <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Commission</span>
+                            <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.commission ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={userData.commission} onChange={(e) => inputHandle(e, "commission")} placeholder="Enter your Commission" />
+                        </div>
+                        {
+                            error.commission && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.commission}</span></div>
+                        }
+                    </div>
+
+                    <div className="col-span-4 sm:col-span-2 relative">
+                        <div className="flex shadow rounded-md shadow-sm">
+                            <span className="w-24 inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 py-3 text-sm text-gray-500">Max Bet</span>
+                            <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.maxBet ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm pl-3 py-3`} value={userData.maxBet} onChange={(e) => inputHandle(e, "maxBet")} placeholder="Enter your Max Bet" />
+                        </div>
+                        {
+                            error.maxBet && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.maxBet}</span></div>
                         }
                     </div>
 

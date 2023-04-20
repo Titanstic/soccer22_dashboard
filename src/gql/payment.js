@@ -9,10 +9,10 @@ const PAYMENT_HISTORY = gql`
                 transfer_amount
                 created_at
                 receiver_old_balance
-                user {
-                      username
+                receiver {
+                    username
                 }
-                userBySenderId {
+                sender {
                      username
                 }
           }
@@ -34,10 +34,10 @@ const EACH_USER_PAYMENT_HISTORY = gql`
             transfer_amount
             created_at
             receiver_old_balance
-            user {
+            receiver {
                 username
             }
-            userBySenderId {
+            sender {
                 username
             }
         }

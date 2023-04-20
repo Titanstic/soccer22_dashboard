@@ -69,6 +69,7 @@ const PaymentHistoryView = () => {
     }, [selectUser, fromDate, toDate, offset])
 
     useEffect(() => {
+        console.log(resultHistory);
         if(resultHistory.data){
             setTotalCount(resultHistory.data.balance_transfer_history_aggregate.aggregate.count);
             setCount(Math.ceil(resultHistory.data.balance_transfer_history_aggregate.aggregate.count / 10));
@@ -95,7 +96,7 @@ const PaymentHistoryView = () => {
         // to modify "to date" less than "from date"
         if(getToDate < selectDate){
             setToDate(e.target.value);
-            setEndDate(`${e.target.value}T00:00:00+00:00`);
+            setEndDate(`${e.target.value}T24:00:00+00:00`);
         }
 
         setFromDate(e.target.value);
@@ -134,7 +135,7 @@ const PaymentHistoryView = () => {
             {
                 <div className="w-full my-10 mx-auto md:w-11/12">
                     <div className="flex justify-between items-center ml-5 mb-10 md:ml-0">
-                        <select className="bg-blue-600 text-white px-4 py-2 rounded cursor-pointer mr-5" onChange={changeUser} defaultValue={"0"}>
+                        <select className="bg-blue-600 text-sm text-white px-2 py-1 rounded cursor-pointer md:text-base md:px-4 md:py-2 md:mr-5 " onChange={changeUser} defaultValue={"0"}>
                             <option value={"0"} disabled>Choose User</option>
                             {
                                 allUser &&
@@ -146,13 +147,13 @@ const PaymentHistoryView = () => {
 
                         <div>
                             <div className="md:inline-block mb-2 md:mb-0">
-                                <label htmlFor="fromDate" className="font-bold mr-3">From :</label>
-                                <input type="date" id="fromDate" className="border px-4 py-2 mr-5" value={fromDate} onChange={fromDateHandle}/>
+                                <label htmlFor="fromDate" className="md:font-bold mr-3">From :</label>
+                                <input type="date" id="fromDate" className="border mr-1 px-2 py-1 md:px-4 md:py-2 md:mr-5" value={fromDate} onChange={fromDateHandle}/>
                             </div>
 
                             <div  className="md:inline-block">
-                                <label htmlFor="toDate" className="font-bold mr-8 md:mr-2">To :</label>
-                                <input type="date" id="toDate" className="border px-4 py-2" value={toDate} onChange={toDateHandle} min={fromDate}/>
+                                <label htmlFor="toDate" className="md:font-bold mr-8 md:mr-2">To :</label>
+                                <input type="date" id="toDate" className="border mr-1 px-2 py-1 md:px-4 md:py-2 md:mr-5" value={toDate} onChange={toDateHandle} min={fromDate}/>
                             </div>
                         </div>
                     </div>
@@ -161,7 +162,7 @@ const PaymentHistoryView = () => {
                         {/*Start Payment History Data*/}
                         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                             <thead className="bg-gray-50">
-                            <tr className="text-lg font-medium text-gray-900">
+                            <tr className="md:text-lg font-medium text-gray-900">
                                 <th scope="col" className="px-6 py-4">Id</th>
                                 <th scope="col" className="px-6 py-4">Sender Name</th>
                                 <th scope="col" className="px-6 py-4">Receiver Name</th>
@@ -181,8 +182,8 @@ const PaymentHistoryView = () => {
                                         paymentHistory.map((payment, index) => (
                                             <tr className="hover:bg-gray-50" key={payment.id}>
                                                 <td className="px-6 py-4">{customizeId + index}</td>
-                                                <td className="px-6 py-4">{payment.userBySenderId.username}</td>
-                                                <td className="px-6 py-4">{payment.user.username}</td>
+                                                <td className="px-6 py-4">{payment.sender.username}</td>
+                                                <td className="px-6 py-4">{payment.receiver.username}</td>
                                                 <td className="text-green-500 font-bold px-6 py-4">{payment.receiver_id === user.id ? payment.transfer_amount : "0"} </td>
                                                 <td className="text-red-500 font-bold px-6 py-4">{payment.sender_id === user.id ? payment.transfer_amount : "0"}</td>
                                                 <td className="px-6 py-4">{payment.receiver_old_balance}</td>

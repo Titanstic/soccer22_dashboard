@@ -8,6 +8,7 @@ const Profile = () => {
     const [accountBalance, setAccountBalance] = useState(null);
     const [cashBalance, setCashBalance] = useState(null);
     const [memberBalance, setMemberBalance] = useState(null);
+    const [totalMember, setTotalMember] = useState(null);
     // useContext
     const {user, where, whereArr, loadAllUsers, allUsersResult} = useContext(AuthContext);
 
@@ -19,12 +20,13 @@ const Profile = () => {
 
     useEffect(() => {
         if(allUsersResult.data){
-            console.log(allUsersResult.data.users);
-            let {superAcc, seniorAcc, masterAcc, agentAcc, userAcc, totalBalance} = accountCount(allUsersResult.data.users);
+            let {superAcc, seniorAcc, masterAcc, agentAcc, userAcc, totalBalance, totalMember} = accountCount(allUsersResult.data.users, whereArr.length);
+
             setAccCount({superAcc, seniorAcc, masterAcc, agentAcc, userAcc});
-            setCashBalance(user.balance);
-            setAccountBalance(totalBalance);
-            setMemberBalance(totalBalance - user.balance);
+            setCashBalance(user.balance.toFixed(2));
+            setAccountBalance(totalBalance.toFixed(2));
+            setTotalMember(totalMember);
+            setMemberBalance((totalBalance - user.balance).toFixed(2));
          }
     }, [allUsersResult])
 
@@ -118,7 +120,7 @@ const Profile = () => {
                         <dl>
                             <div className="bg-white sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 px-4 py-5">
                                 <dt className="text-sm font-medium text-gray-500">Total Member Account</dt>
-                                <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">0</dd>
+                                <dd className="text-sm text-gray-900 sm:col-span-2 sm:mt-0 mt-1">{totalMember}</dd>
                             </div>
                         </dl>
                 </div>

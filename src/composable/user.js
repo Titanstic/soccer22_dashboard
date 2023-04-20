@@ -26,7 +26,7 @@ let whereUserRow = (userRow) => {
     return {tempWhere, tempRowKey, tempRowValue};
 };
 
-const accountCount = (data) => {
+const accountCount = (data, whereArrLength) => {
     let superAcc = 0,
         seniorAcc =0,
         masterAcc =0,
@@ -59,7 +59,22 @@ const accountCount = (data) => {
         totalBalance += u.balance;
     });
 
-    return {superAcc, seniorAcc, masterAcc, agentAcc, userAcc, totalBalance};
+    switch (whereArrLength){
+        case 0:
+            totalMember += seniorAcc + masterAcc + agentAcc + userAcc;
+            break;
+        case 1:
+            totalMember += masterAcc + agentAcc + userAcc;
+            break;
+        case 2:
+            totalMember += agentAcc + userAcc;
+            break;
+        case 3:
+            totalMember += userAcc;
+            break;
+    }
+
+    return {superAcc, seniorAcc, masterAcc, agentAcc, userAcc, totalBalance, totalMember};
 }
 
 export { checkUserRow, whereUserRow, accountCount };

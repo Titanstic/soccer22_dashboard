@@ -43,7 +43,7 @@ const DeductAllPayment = ({deductAllModal, resultPayment, userCode, userBalance}
 
                 <div className="w-full bg-gray-200 flex justify-end py-3">
                     <button className="text-sm bg-white font-medium shadow border rounded mr-4 px-5 py-2 hover:bg-gray-50 sm:text-base" onClick={() => deductAllModal(null, null)}>Cancel</button>
-                    <button className="text-sm bg-red-600 text-white font-medium shadow border rounded mr-4 px-5 py-2 hover:bg-red-500 sm:text-base" onClick={deductAll}>Deduct All</button>
+                    <button className="text-sm bg-red-600 text-white font-medium shadow border rounded mr-4 px-5 py-2 hover:bg-red-500 sm:text-base" onClick={deductAll}>Remove All</button>
                 </div>
             </div>
         </div>

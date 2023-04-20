@@ -150,9 +150,9 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
                     <button className="bg-red-500 text-sm text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-2 sm:py-3 sm:text-base" onClick={() => updateModalHandle(null, null, null, null, null)}>Cancel</button>
                     {
                         action === "transfer" ?
-                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-sm text-white rounded shadow hover:bg-blue-400 px-4 py-2 sm:py-3 sm:text-base`} onClick={updateBalance} disabled={loading}>Transfer</button>
+                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-sm text-white rounded shadow hover:bg-blue-400 px-4 py-2 sm:py-3 sm:text-base`} onClick={updateBalance} disabled={loading}>Add</button>
                             :
-                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-sm text-white rounded shadow hover:bg-blue-400 px-4 py-2 sm:py-3 sm:text-base`} onClick={deductBalance} disabled={loading}>Deduct</button>
+                            <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-sm text-white rounded shadow hover:bg-blue-400 px-4 py-2 sm:py-3 sm:text-base`} onClick={deductBalance} disabled={loading}>Remove</button>
                     }
                 </div>
             </div>

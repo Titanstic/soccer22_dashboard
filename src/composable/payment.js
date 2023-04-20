@@ -4,9 +4,8 @@ const filterTransferUsers = (data, arr) => {
     if(arr.length > 0){
         data.forEach(u => {
             let code = `${u.super_code ? u.super_code : ""}${u.senior_code ? u.senior_code : ""}${u.master_code ? u.master_code : ""}${u.agent_code ? u.agent_code : ""}${u.user_code ? u.user_code : ""}`;
-
             // to check each length and return
-            if(code.length === (arr.length * 3) * 2){
+            if(code.length === (arr.length * 3) + 3){
                 filterUser.push(u);
             }
         });

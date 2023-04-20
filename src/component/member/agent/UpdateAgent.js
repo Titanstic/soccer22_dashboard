@@ -43,7 +43,7 @@ const UpdateAgent = ({updateModalHandle, eachUser, usersResult}) => {
             setError(tempError);
         }else{
             try{
-                updateUserPk({variables: {id: user.id, contact_name: user.contact_name, username: user.username}});
+                updateUserPk({variables: {id: user.id, password: user.password}});
             }catch (e) {
                 console.log("updateUserdata", e.message);
             }

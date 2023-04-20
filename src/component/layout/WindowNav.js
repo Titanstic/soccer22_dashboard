@@ -139,7 +139,7 @@ const WindowNav = () => {
                 {/*end report dropdown*/}
 
                 {/*Start Logout */}
-                <button type="button" className="w-full bg-red-500 rounded-md inline-flex items-center justify-between hover:bg-red-400 focus:outline-none py-3 " aria-expanded="true" aria-haspopup="true" onClick={logoutHandle}>
+                <button type="button" className="w-full bg-red-500 rounded-md inline-flex items-center justify-between hover:bg-red-400 focus:outline-none py-3" aria-expanded="true" aria-haspopup="true" onClick={logoutHandle}>
                     <span><i className="text-center fa-solid fa-right-to-bracket mx-4"></i> <span>Logout</span></span>
                 </button>
             </div>

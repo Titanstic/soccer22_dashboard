@@ -5,6 +5,7 @@ import {getCurrentDate} from "../../composable/payment";
 import {useLazyQuery} from "@apollo/client";
 import {COMMISION_HISTORY} from "../../gql/report";
 import {filterComision, filterEachUser, filterGroupComision} from "../../composable/report";
+import NavContext from "../../context/NavContext";
 
 
 const ReportView = () => {
@@ -21,15 +22,17 @@ const ReportView = () => {
     const [totalCompany, setTotalCompany] = useState(null);
     const [betSlip, setBetSlip] = useState(null);
     const [comision, setComision] = useState(null);
+    const [total, setTotal] = useState(null);
     // useContext
     const {where} = useContext(AuthContext);
+    const {setNavActive, setMainNav} = useContext(NavContext);
     // useLazyQuery
     const [loadComHistory, resultComHistory] = useLazyQuery(COMMISION_HISTORY);
 
     // Start UseEffect
     useEffect(() => {
-            // setNavActive("history");
-            // setMainNav("payment");
+            setNavActive("report");
+            setMainNav("reports");
             setLoading(true);
 
             // to get Current Date
@@ -47,7 +50,7 @@ const ReportView = () => {
     // --- start to get bet slip
     useEffect(() => {
         if(user){
-            loadComHistory({variables: {user}});
+            loadComHistory({variables: {user, startDate, endDate}});
         }
     }, [user, fromDate, toDate])
 
@@ -55,12 +58,19 @@ const ReportView = () => {
         if(resultComHistory.data){
             let comisionHistorys = resultComHistory.data.commision_history;
             let {newComisionHistorys} = filterComision(comisionHistorys);
-            let {newGroups, newCompanyGroups} = filterGroupComision(newComisionHistorys, key);
+            let {newGroups,totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, newCompanyGroups, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose} = filterGroupComision(newComisionHistorys, key);
 
+            console.log(newGroups)
             setComision(newComisionHistorys);
             setTotalCompany(newCompanyGroups);
             setBetSlip(newGroups);
-            setLoading(false);
+            if(newGroups.length > 0){
+                setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose});
+            }else{
+                setKey(1);
+                setTotal(null);
+            }
+            setLoading(resultComHistory.loading);
         }
     }, [resultComHistory])
     // --- end to get bet slip
@@ -76,32 +86,60 @@ const ReportView = () => {
         // to modify "to date" less than "from date"
         if(getToDate < selectDate){
             setToDate(e.target.value);
-            setEndDate(`${e.target.value}T00:00:00+00:00`);
+            setEndDate(`${e.target.value}T24:00:00+00:00`);
         }
 
         setFromDate(e.target.value);
         setStartDate(`${e.target.value}T00:00:00+00:00`);
-        // setPaymentHistory(null);
     };
 
     const toDateHandle = (e) => {
         setToDate(e.target.value);
         setEndDate(`${e.target.value}T24:00:00+00:00`);
-        // setPaymentHistory(null);
     }
 
-    const detailMember = (currentIndex) => {
-        if(key < 5){
-            setKey(currentIndex + 1);
+    const backDetailMemberBtn = () => {
+        const backIndex = key - 1 ;
 
-            const {newGroups, newCompanyGroups} = filterGroupComision(comision, currentIndex + 1);
+        if(backIndex >= 1) {
+            setKey(backIndex);
+            const {
+                newGroups,
+                totalNewGroupComission,
+                totalNewGroupBalance,
+                totalNewGroupWinLose,
+                newCompanyGroups,
+                totalNewCompanyComission,
+                totalNewCompanyBalance,
+                totalNewCompanyWinLose
+            } = filterGroupComision(comision, backIndex);
             setShowEachUser(false);
             setTotalCompany(newCompanyGroups);
             setBetSlip(newGroups);
-        }else{
-            const {eachUserGroup} = filterEachUser(comision, 5);
-            console.log(eachUserGroup);
+            setTotal({
+                totalNewGroupComission,
+                totalNewGroupBalance,
+                totalNewGroupWinLose,
+                totalNewCompanyComission,
+                totalNewCompanyBalance,
+                totalNewCompanyWinLose
+            });
+        }
+    }
 
+    const detailMember = (currentIndex, userId) => {
+        setKey(currentIndex + 1);
+
+        if(key < 5){
+            const {newGroups,totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, newCompanyGroups, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose} = filterGroupComision(comision, currentIndex + 1);
+
+            setShowEachUser(false);
+            setTotalCompany(newCompanyGroups);
+            setBetSlip(newGroups);
+            setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose});
+        }else{
+            const {eachUserGroup, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose,} = filterEachUser(comision, 5, userId);
+            setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose});
             setShowEachUser(true);
             setBetSlip(eachUserGroup);
         }
@@ -112,7 +150,14 @@ const ReportView = () => {
         <LayoutView>
             <div className="w-full my-10 mx-auto md:w-11/12">
                 <div className="flex justify-between items-center ml-5 mb-10 md:ml-0">
-                    <div>
+                    {/*Start Back Btn*/}
+                            <div>
+                                <button className={`${key > 1 ? "visible" : "invisible"} font-bold border border-gray-200 shadow-md rounded px-4 py-1 hover:bg-gray-50`} onClick={backDetailMemberBtn}>Back</button>
+                            </div>
+                    {/*End Back Btn*/}
+
+                    {/*Start Control Date*/}
+                    <div className="justify-self-end">
                         <div className="md:inline-block mb-2 md:mb-0 ">
                             <label htmlFor="fromDate" className="font-bold mr-3">From :</label>
                             <input type="date" id="fromDate" className="border px-4 py-2 mr-5" value={fromDate} onChange={fromDateHandle}/>
@@ -123,6 +168,7 @@ const ReportView = () => {
                             <input type="date" id="toDate" className="border px-4 py-2" value={toDate} onChange={toDateHandle} min={fromDate}/>
                         </div>
                     </div>
+                    {/*End Control Date*/}
                 </div>
 
                 <div className="rounded-lg border border-gray-200 shadow-md mx-2 sm:mx-0">
@@ -132,13 +178,13 @@ const ReportView = () => {
                                 <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                                     <thead className="bg-gray-50">
                                         <tr className="text-lg font-medium text-gray-900">
-                                            <th scope="col" className="px-6 py-4">Account</th>
-                                            <th scope="col" className="px-6 py-4">Date</th>
-                                            <th scope="col" className="px-6 py-4">Event</th>
-                                            <th scope="col" className="text-center px-6 py-4">Detail</th>
-                                            <th scope="col" className="px-6 py-1">W/L</th>
-                                            <th scope="col" className="px-6 py-1">Com</th>
-                                            <th scope="col" className="px-6 py-1">W/L + Com</th>
+                                            <th scope="col" className="px-4 py-4">Account</th>
+                                            <th scope="col" className="px-4 py-4">Date</th>
+                                            <th scope="col" className="px-4 py-4">Event</th>
+                                            <th scope="col" className="text-center px-4 py-4">Detail</th>
+                                            <th scope="col" className="px-4 py-1">W/L</th>
+                                            <th scope="col" className="px-4 py-1">Com</th>
+                                            <th scope="col" className="px-4 py-1">W/L + Com</th>
                                         </tr>
                                     </thead>
 
@@ -148,15 +194,15 @@ const ReportView = () => {
                                             betSlip.length > 0 ?
                                             betSlip.map(slip => (
                                             <tr className="hover:bg-gray-50" key={slip.id}>
-                                                <td className="px-6 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer">{slip.bet_slip.user.username}</span></td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-4 py-4"><span>{slip.user.username}</span></td>
+                                                <td className="px-4 py-4">
                                                     {new Date(slip.created_at).toISOString().split("T")[0]}
                                                     <br/>
                                                     {new Date(slip.created_at).toISOString().split("T")[1]}
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-4 py-4">
                                                     <span className="font-bold">{slip.bet_slip.match.home_team} </span>
-                                                    <span className="text-sm">VS</span>
+                                                    <span className="text-sm">vs</span>
                                                     <span className="font-bold"> {slip.bet_slip.match.away_team} </span>
                                                     <span className="">
                                                         {
@@ -168,7 +214,7 @@ const ReportView = () => {
                                                         }
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-4 py-4">
                                                     {
                                                         slip.bet_slip.bet_team ?
                                                             `Body ${slip.bet_slip.body} (${slip.bet_slip.bet_team})`
@@ -176,14 +222,31 @@ const ReportView = () => {
                                                             `${slip.bet_slip.over_under} (${slip.bet_slip.goal_paung})`
                                                     }
                                                 </td>
-                                                <td className="px-6 py-4">{slip.bet_slip.win_lose_cash}</td>
-                                                <td className="px-6 py-4">{slip.actual_commision}</td>
-                                                <td className="px-6 py-4">{slip.bet_slip.win_lose_cash + slip.actual_commision}</td>
+                                                <td className="px-4 py-4">{slip.bet_slip.win_lose_cash * 0.95}</td>
+                                                <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.actual_commision : slip.actual_commision/100}</td>
+                                                <td className="px-4 py-4">
+                                                    {
+                                                        slip.actual_commision === 0 ?
+                                                            slip.bet_slip.win_lose_cash * 0.95
+                                                            :
+                                                            (slip.bet_slip.win_lose_cash * (0.95 + slip.actual_commision/100)).toFixed(2)
+                                                    }
+                                                </td>
                                             </tr>
                                             ))
                                             :
                                             <tr>
-                                                <td className="text-center text-red-600 px-6 py-4" colSpan="8">No Data</td>
+                                                <td className="text-center text-red-600 px-4 py-4" colSpan="8">No Data</td>
+                                            </tr>
+                                    }
+
+                                    {
+                                        total &&
+                                            <tr className="font-bold">
+                                                <td className="text-center px-4 py-4" colSpan="4">Total</td>
+                                                <td className="px-4 py-4">{(total.totalNewGroupWinLose * 0.95).toFixed(2)}</td>
+                                                <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(3) / 100}</td>
+                                                <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
                                             </tr>
                                     }
                                     </tbody>
@@ -192,20 +255,20 @@ const ReportView = () => {
                                 <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                                     <thead className="bg-gray-50">
                                     <tr className="text-lg font-medium text-gray-900">
-                                        <th scope="col" className="px-6 py-4">Account</th>
-                                        <th scope="col" className="px-6 py-4">Amount</th>
-                                        <th scope="col" className="text-center px-6 py-4" colSpan="3">Member</th>
-                                        <th scope="col" className="text-center px-6 py-4" colSpan="3">Company</th>
+                                        <th scope="col" className="px-4 py-4">Account</th>
+                                        <th scope="col" className="px-4 py-4">Amount</th>
+                                        <th scope="col" className="text-center px-4 py-4" colSpan="3">Member</th>
+                                        <th scope="col" className="text-center px-4 py-4" colSpan="3">Company</th>
                                     </tr>
                                     <tr>
-                                        <th scope="col" className="px-6 py-1"></th>
-                                        <th scope="col" className="px-6 py-1"></th>
-                                        <th scope="col" className="px-6 py-1">W/L</th>
-                                        <th scope="col" className="px-6 py-1">Com</th>
-                                        <th scope="col" className="px-6 py-1">W/L + Com</th>
-                                        <th scope="col" className="px-6 py-1">W/L</th>
-                                        <th scope="col" className="px-6 py-1">Com</th>
-                                        <th scope="col" className="px-6 py-1">W/L + Com</th>
+                                        <th scope="col" className="px-4 py-1"></th>
+                                        <th scope="col" className="px-4 py-1"></th>
+                                        <th scope="col" className="px-4 py-1">W/L</th>
+                                        <th scope="col" className="px-4 py-1">Com</th>
+                                        <th scope="col" className="px-4 py-1">W/L + Com</th>
+                                        <th scope="col" className="px-4 py-1">W/L</th>
+                                        <th scope="col" className="px-4 py-1">Com</th>
+                                        <th scope="col" className="px-4 py-1">W/L + Com</th>
                                     </tr>
                                     </thead>
 
@@ -213,27 +276,47 @@ const ReportView = () => {
                                     {
                                         loading ?
                                             <tr>
-                                                <td className="text-center text-red-600 px-6 py-4" colSpan="8">Loading ...</td>
+                                                <td className="text-center text-red-600 px-4 py-4" colSpan="8">Loading ...</td>
                                             </tr>
                                             :
                                             betSlip &&
                                                 betSlip.length > 0 ?
                                                     betSlip.map((slip, slipkey) => (
                                                         <tr className="hover:bg-gray-50" key={slip.id}>
-                                                            <td className="px-6 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => detailMember(key)}>{slip.user.username}</span></td>
-                                                            <td className="px-6 py-4">{slip.bet_slip.balance}</td>
-                                                            <td className="px-6 py-4">{slip.bet_slip.win_lose_cash}</td>
-                                                            <td className="px-6 py-4">{slip.actual_commision}</td>
-                                                            <td className="px-6 py-4">{slip.bet_slip.win_lose_cash + slip.actual_commision}</td>
-                                                            <td className="px-6 py-4">{totalCompany[slipkey].bet_slip.win_lose_cash}</td>
-                                                            <td className="px-6 py-4">{totalCompany[slipkey].actual_commision}</td>
-                                                            <td className="px-6 py-4">{totalCompany[slipkey].bet_slip.win_lose_cash + totalCompany[slipkey].actual_commision}</td>
+                                                            <td className="px-4 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => detailMember(key, slip.user.id)}>{slip.user.username}</span></td>
+                                                            <td className="px-4 py-4">{slip.bet_slip.balance}</td>
+                                                            <td className="px-4 py-4">{(slip.bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
+                                                            <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.actual_commision.toFixed(3) : slip.actual_commision.toFixed(3)/100}</td>
+                                                            <td className="px-4 py-4">
+                                                                {
+                                                                    slip.actual_commision === 0 ?
+                                                                        (slip.bet_slip.win_lose_cash * 0.95).toFixed(2)
+                                                                        :
+                                                                        (slip.bet_slip.win_lose_cash * (0.95 + slip.actual_commision/100)).toFixed(2)
+                                                                }
+                                                            </td>
+                                                            <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
+                                                            <td className="px-4 py-4">{totalCompany[slipkey].actual_commision.toFixed(3) / 100}</td>
+                                                            <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * (0.95 + totalCompany[slipkey].actual_commision.toFixed(3)/100)).toFixed(2)}</td>
                                                         </tr>
                                                     ))
                                                     :
                                                     <tr>
-                                                        <td className="text-center text-red-600 px-6 py-4" colSpan="8">No Data</td>
+                                                        <td className="text-center text-red-600 px-4 py-4" colSpan="8">No Data</td>
                                                     </tr>
+                                    }
+                                    {
+                                        total &&
+                                            <tr className="font-bold">
+                                                <td className="px-4 py-4">Total</td>
+                                                <td className="px-4 py-4">{total.totalNewGroupBalance}</td>
+                                                <td className="px-4 py-4">{(total.totalNewGroupWinLose * 0.95).toFixed(2)}</td>
+                                                <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(3) / 100}</td>
+                                                <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                                <td className="px-4 py-4">{(total.totalNewCompanyWinLose * 0.95).toFixed(2)}</td>
+                                                <td className="px-4 py-4">{total.totalNewCompanyComission.toFixed(3) / 100}</td>
+                                                <td className="px-4 py-4">{(total.totalNewCompanyWinLose * (0.95 + total.totalNewCompanyComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                            </tr>
                                     }
                                     </tbody>
                                 </table>

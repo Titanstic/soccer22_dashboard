@@ -1,14 +1,17 @@
 import {useMutation} from "@apollo/client";
 import {GET_SLIP} from "../../gql/match";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import AlertContext from "../../context/AlertContext";
 
 const CalculateBetSlips = ({calBetSlipsModal, matchId, matchResult}) => {
     const [loading, setLoading] = useState(false);
+    //useContext
+    const {showAlert} = useContext(AlertContext);
 
     // Start Mutation
     const [getSlip] = useMutation(GET_SLIP, {
         onError: (error) => {
-            console.log("Get Slip", "You Don't have no bet slip");
+            console.log("You Don't have no bet slip", error);
         },
         onCompleted: (result) => {
             console.log(result);
@@ -21,8 +24,8 @@ const CalculateBetSlips = ({calBetSlipsModal, matchId, matchResult}) => {
     // Start Function
     const calculateBetSlips = () => {
         setLoading(true);
+
         if(matchId){
-            console.log("work");
             try{
                 getSlip({ variables: {matchId}});
             }catch (e) {

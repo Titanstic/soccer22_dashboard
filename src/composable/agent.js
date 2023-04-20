@@ -1,4 +1,4 @@
-const checkInputData = (username, contactName, password) => {
+const checkInputData = (username, contactName, password, commission, maxBet) => {
     let errorExist = false;
     let tempError = {};
 
@@ -14,6 +14,15 @@ const checkInputData = (username, contactName, password) => {
         tempError.password = "Password field is required";
         errorExist = true;
     }
+    if(!commission){
+        tempError.commission = "Commission field is required";
+        errorExist = true;
+    }
+    if(!maxBet){
+        tempError.maxBet = "Max Bet field is required";
+        errorExist = true;
+    }
+
     return {errorExist, tempError};
 };
 

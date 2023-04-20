@@ -1,4 +1,4 @@
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import AlertContext from "../context/AlertContext";
 import ShowAlert from "../component/alert/ShowAlert";
@@ -10,11 +10,14 @@ import AuthContext from "../context/AuthContext";
 import {checkUserRow, whereUserRow} from "../composable/user";
 import Loading from "../component/Loading";
 import WindowNav from "../component/layout/WindowNav";
+import {SwitchTransition, CSSTransition} from "react-transition-group";
+import "../css/style.css";
 
 const LayoutView = ({children}) => {
     const [showNav, setShowNav] = useState(false);
     // useNavigate
     const navigate = useNavigate();
+    const location = useLocation();
     // useContext
     const {alert} = useContext(AlertContext);
     const {user, setUser, setSingleBet, setMaxBet, setDecodeToken, setUserRow, setWhere, setWhereArr} = useContext(AuthContext);
@@ -49,44 +52,47 @@ const LayoutView = ({children}) => {
     // End useEffect
 
     const navHandle = () => {
-        console.log('working');
         setShowNav(!showNav);
     }
 
     return (
         <div className="w-full h-screen flex overflow-hidden">
-            {/*<div className=" h-full">*/}
-                {
-                    user ?
-                        <>
-                            {/*Start PhoneNav Bar*/}
-                            <PhoneNav showNav={showNav} navHandle={navHandle}/>
-                            <WindowNav/>
+            {
+                user ?
+                    <>
+                        {/*Start PhoneNav Bar*/}
+                        <PhoneNav showNav={showNav} navHandle={navHandle}/>
+                        <WindowNav/>
 
-                            {/*End PhoneNav Bar*/}
+                        {/*End PhoneNav Bar*/}
 
-                            {/*Start Show Data */}
-                            <div className="w-full h-full overflow-y-auto md:w-10/12">
-                                <div className="w-full flex justify-between items-center shadow px-2 py-5">
-                                    <div className="flex">
-                                        <button className="block border mr-3 px-3 py-1 hover:bg-gray-50 md:hidden" onClick={navHandle}><i className="fa-solid fa-bars"></i></button>
-                                        <p className="text-sm md:text-md font-bold pt-2 md:pt-0">Welcome Back, {user.username}</p>
+                        {/*Start Show Data */}
+
+                        <SwitchTransition>
+                            <CSSTransition timeout={200} classNames="fade" key={location.pathname}>
+                                <div className="w-full h-full overflow-y-auto md:w-10/12">
+                                    <div className="w-full flex justify-between items-center shadow px-2 py-5">
+                                        <div className="flex">
+                                            <button className="block border mr-3 px-3 py-1 hover:bg-gray-50 md:hidden" onClick={navHandle}><i className="fa-solid fa-bars"></i></button>
+                                            <p className="text-sm md:text-md font-bold pt-2 md:pt-0">Welcome Back, {user.username}</p>
+                                        </div>
+
+                                        <div className="md:mr-5">
+                                            <p className="text-sm md:text-md font-bold">Balance - {user.balance}</p>
+                                        </div>
                                     </div>
-
-                                    <div className="md:mr-5">
-                                        <p className="text-sm md:text-md font-bold">Balance - {user.balance}</p>
-                                    </div>
+                                    {/*Start Children */}
+                                            {children}
+                                    {/*End Children */}
                                 </div>
-                                {/*Start Children */}
-                                {children}
-                                {/*End Children */}
-                            </div>
-                            {/*End Show Data */}
-                        </>
-                        :
-                        <Loading/>
-                }
-            {/*</div>*/}
+                                {/*End Show Data */}
+                            </CSSTransition>
+                        </SwitchTransition>
+                    </>
+                    :
+                    <Loading/>
+            }
+
             {/*Start Alert Modal */}
             {
                 alert && <ShowAlert/>

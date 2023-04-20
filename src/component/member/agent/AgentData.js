@@ -98,7 +98,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, check
                                                         <td className="px-6 py-4">{userData[0].contact_name}</td>
                                                         <td className="px-6 py-4">{userData[0].balance}</td>
                                                         <td className='px-6 py-4'>
-                                                            <button className={`w-20 ${userData[0].active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} shadow rounded text-white py-2`} onClick={() => updateActiveHandle(userData)}>{userData[0].active ? "Activate" : "Deactivate"}</button>
+                                                            <button className={`w-20 ${userData[0].active ? "bg-green-500 hover:bg-green-600" : "bg-red-500 hover:bg-red-600"} shadow rounded text-white py-2`} onClick={() => updateActiveHandle(userData[0])}>{userData[0].active ? "Activate" : "Deactivate"}</button>
                                                         </td>
                                                         <td className="text-lg px-6 py-2">
                                                             <i className="text-blue-600 fa-solid fa-pen-to-square cursor-pointer hover:text-blue-400 mr-4" onClick={() => updateModalHandle(userData[0])}></i>

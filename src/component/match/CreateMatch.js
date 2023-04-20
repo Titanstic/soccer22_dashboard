@@ -3,6 +3,7 @@ import {eachInputValidation, inputErrorValidation} from "../../composable/match"
 import {useMutation} from "@apollo/client";
 import {INSERT_FULL_MATCH, INSERT_HALF_MATCH} from "../../gql/match";
 import AlertContext from "../../context/AlertContext";
+import Select from "react-select/base";
 
 const CreateMatch = ({addModalHandle, matchResult}) => {
     // useState
@@ -45,25 +46,35 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
     const [insertHalfMatch] = useMutation(INSERT_HALF_MATCH, {
         onError: (error) => {
             console.log("Insert Match", error);
+            showAlert("Something wrong. Please Try again", true);
         },
         onCompleted: (result) => {
             showAlert("Create Match Successfully", false);
             addModalHandle();
+            matchResult.refetch();
         }
     });
 
     const [insertFullMatch] = useMutation(INSERT_FULL_MATCH, {
         onError: (error) => {
             console.log("Insert Match", error);
+            showAlert("Something wrong. Please Try again", true);
         },
         onCompleted: (result) => {
             showAlert("Create Match Successfully", false);
             addModalHandle();
+            matchResult.refetch();
         }
     });
     // End Mutation
 
     // Start Function
+    const options = [
+        { value: 'chocolate', label: 'Chocolate' },
+        { value: 'strawberry', label: 'Strawberry' },
+        { value: 'vanilla', label: 'Vanilla' }
+    ]
+
     // control form input
     const inputHandle = (e, input) => {
         // validation input for rate1, rate2 and match
@@ -126,7 +137,6 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                 });
                 setError({});
                 matchResult.refetch();
-                console.log("work");
             }catch (e){
                 console.log("add Match Data", e.message);
             }
