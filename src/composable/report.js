@@ -1,4 +1,4 @@
-const filterComision = (comisionHistorys) => {
+const filterComision = (comisionHistorys, whereArr) => {
     let newComisionHistorys = [];
     let newItem = false;
 
@@ -22,6 +22,12 @@ const filterComision = (comisionHistorys) => {
             }
         }
     });
+
+    if(whereArr.length > 0){
+        newComisionHistorys.map(history => {
+            history.splice(0, whereArr.length);
+        })
+    }
 
     return {newComisionHistorys};
 };
@@ -50,8 +56,6 @@ const filterGroupComision = (newComisionHistorys, key) => {
                              win_lose_cash: group.bet_slip.win_lose_cash + each[key].bet_slip.win_lose_cash
                          }
                      };
-
-                     // console.log(newGroups);
 
                      // for total company
                     newCompanyGroups[index] = {...newCompanyGroups[index],
@@ -96,6 +100,7 @@ const filterEachUser = (newComisionHistorys, key, userID) => {
     let totalNewGroupBalance = 0;
     let totalNewGroupWinLose = 0;
 
+    console.log(key);
     newComisionHistorys.map(comision => {
         if(comision[key].user.id === userID) {
             eachUserGroup.push(comision[key]);

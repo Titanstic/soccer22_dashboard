@@ -103,22 +103,27 @@ const PaymentData = ({updateModalHandle, deductAllModal, loadPayment, resultPaym
                     <tbody className="text-sm divide-y divide-gray-100 border-t border-gray-100 md:text-base">
                     {
                         paymentData ?
-                            paymentData.map( (pay, index) => (
-                                <tr className="hover:bg-gray-50" key={pay.id}>
-                                    <td className="px-6 py-4">{index + 1}</td>
-                                    <td className="px-6 py-4">{pay.username}</td>
-                                    <td className="px-6 py-4">{pay.contact_name}</td>
-                                    <td className="px-6 py-4">{pay.balance}</td>
-                                    <td className="px-6 py-2 flex">
-                                        <button className={`${pay.active ? "bg-blue-600 cursor-pointer" : "bg-blue-400"} text-white border shadow rounded mr-3 px-2 md:px-3 md:py-2 hover:bg-blue-400 md:mr-8`} onClick={() => balanceWithDraw(pay)} disabled={!pay.active}>Add</button>
-                                        <button className={`${pay.active ? "bg-red-600 cursor-pointer" : "bg-red-400"} text-white border shadow rounded mr-3 px-2 md:px-3 md:py-2 hover:bg-red-400 md:mr-8`} onClick={() => balanceDeduct(pay)} disabled={!pay.active}>Remove</button>
-                                        <button className={`${pay.active ? "bg-red-600 cursor-pointer" : "bg-red-400"} text-white border shadow rounded mr-3 px-2 md:px-3 md:py-2 hover:bg-red-400`} onClick={() => balanceDeductAll(pay)} disabled={!pay.active}>Remove All</button>
-                                    </td>
+                            paymentData.length > 0 ?
+                                paymentData.map( (pay, index) => (
+                                    <tr className="hover:bg-gray-50" key={pay.id}>
+                                        <td className="px-6 py-4">{index + 1}</td>
+                                        <td className="px-6 py-4">{pay.username}</td>
+                                        <td className="px-6 py-4">{pay.contact_name}</td>
+                                        <td className="px-6 py-4">{pay.balance}</td>
+                                        <td className="px-6 py-2 flex">
+                                            <button className={`${pay.active ? "bg-blue-600 cursor-pointer" : "bg-blue-400"} text-white border shadow rounded mr-3 px-2 md:px-3 md:py-2 hover:bg-blue-400 md:mr-8`} onClick={() => balanceWithDraw(pay)} disabled={!pay.active}>Add</button>
+                                            <button className={`${pay.active ? "bg-red-600 cursor-pointer" : "bg-red-400"} text-white border shadow rounded mr-3 px-2 md:px-3 md:py-2 hover:bg-red-400 md:mr-8`} onClick={() => balanceDeduct(pay)} disabled={!pay.active}>Remove</button>
+                                            <button className={`${pay.active ? "bg-red-600 cursor-pointer" : "bg-red-400"} text-white border shadow rounded mr-3 px-2 md:px-3 md:py-2 hover:bg-red-400`} onClick={() => balanceDeductAll(pay)} disabled={!pay.active}>Remove All</button>
+                                        </td>
+                                    </tr>
+                                ))
+                                :
+                                <tr>
+                                    <td className="text-center px-6 py-2" colSpan="4">No Data</td>
                                 </tr>
-                            ))
                             :
                             <tr>
-                                <td className="text-center px-6 py-2" colSpan="4">Loading</td>
+                                <td className="text-center text-red-500 px-6 py-2" colSpan="4">Loading....</td>
                             </tr>
                     }
                     </tbody>

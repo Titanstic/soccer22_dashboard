@@ -7,8 +7,10 @@ import {COMMISION_HISTORY} from "../../gql/report";
 import {filterComision, filterEachUser, filterGroupComision} from "../../composable/report";
 import NavContext from "../../context/NavContext";
 
-
 const ReportView = () => {
+    // useContext
+    const {where, whereArr} = useContext(AuthContext);
+    const {setNavActive, setMainNav} = useContext(NavContext);
     // useState
     const [loading, setLoading] = useState(false);
     const [showEachUser, setShowEachUser] = useState(false);
@@ -23,9 +25,6 @@ const ReportView = () => {
     const [betSlip, setBetSlip] = useState(null);
     const [comision, setComision] = useState(null);
     const [total, setTotal] = useState(null);
-    // useContext
-    const {where} = useContext(AuthContext);
-    const {setNavActive, setMainNav} = useContext(NavContext);
     // useLazyQuery
     const [loadComHistory, resultComHistory] = useLazyQuery(COMMISION_HISTORY);
 
@@ -57,13 +56,13 @@ const ReportView = () => {
     useEffect(() => {
         if(resultComHistory.data){
             let comisionHistorys = resultComHistory.data.commision_history;
-            let {newComisionHistorys} = filterComision(comisionHistorys);
+            let {newComisionHistorys} = filterComision(comisionHistorys, whereArr);
             let {newGroups,totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, newCompanyGroups, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose} = filterGroupComision(newComisionHistorys, key);
 
-            console.log(newGroups)
             setComision(newComisionHistorys);
             setTotalCompany(newCompanyGroups);
             setBetSlip(newGroups);
+
             if(newGroups.length > 0){
                 setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose});
             }else{
@@ -77,12 +76,13 @@ const ReportView = () => {
 
     // End UseEffect
 
-
     // Start Function
     const fromDateHandle = (e) => {
         let selectDate = new Date(e.target.value),
             getToDate = new Date(toDate);
 
+        setLoading(true);
+        setTotal(null);
         // to modify "to date" less than "from date"
         if(getToDate < selectDate){
             setToDate(e.target.value);
@@ -94,6 +94,8 @@ const ReportView = () => {
     };
 
     const toDateHandle = (e) => {
+        setLoading(true);
+        
         setToDate(e.target.value);
         setEndDate(`${e.target.value}T24:00:00+00:00`);
     }
@@ -130,7 +132,7 @@ const ReportView = () => {
     const detailMember = (currentIndex, userId) => {
         setKey(currentIndex + 1);
 
-        if(key < 5){
+        if(key + whereArr.length < 5){
             const {newGroups,totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, newCompanyGroups, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose} = filterGroupComision(comision, currentIndex + 1);
 
             setShowEachUser(false);
@@ -138,7 +140,7 @@ const ReportView = () => {
             setBetSlip(newGroups);
             setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose});
         }else{
-            const {eachUserGroup, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose,} = filterEachUser(comision, 5, userId);
+            const {eachUserGroup, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose,} = filterEachUser(comision, whereArr.length - 1, userId);
             setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose});
             setShowEachUser(true);
             setBetSlip(eachUserGroup);
@@ -175,64 +177,65 @@ const ReportView = () => {
                     {/*Start Payment History Data*/}
                         {
                             showEachUser ?
+                                // Stat Each User Data Report
                                 <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                                     <thead className="bg-gray-50">
-                                        <tr className="text-lg font-medium text-gray-900">
-                                            <th scope="col" className="px-4 py-4">Account</th>
-                                            <th scope="col" className="px-4 py-4">Date</th>
-                                            <th scope="col" className="px-4 py-4">Event</th>
-                                            <th scope="col" className="text-center px-4 py-4">Detail</th>
-                                            <th scope="col" className="px-4 py-1">W/L</th>
-                                            <th scope="col" className="px-4 py-1">Com</th>
-                                            <th scope="col" className="px-4 py-1">W/L + Com</th>
-                                        </tr>
+                                    <tr className="text-lg font-medium text-gray-900">
+                                        <th scope="col" className="px-4 py-4">Account</th>
+                                        <th scope="col" className="px-4 py-4">Date</th>
+                                        <th scope="col" className="px-4 py-4">Event</th>
+                                        <th scope="col" className="text-center px-4 py-4">Detail</th>
+                                        <th scope="col" className="px-4 py-1">W/L</th>
+                                        <th scope="col" className="px-4 py-1">Com</th>
+                                        <th scope="col" className="px-4 py-1">W/L + Com</th>
+                                    </tr>
                                     </thead>
 
                                     <tbody className="divide-y divide-gray-100 border-t border-gray-100">
                                     {
                                         betSlip &&
-                                            betSlip.length > 0 ?
+                                        betSlip.length > 0 ?
                                             betSlip.map(slip => (
-                                            <tr className="hover:bg-gray-50" key={slip.id}>
-                                                <td className="px-4 py-4"><span>{slip.user.username}</span></td>
-                                                <td className="px-4 py-4">
-                                                    {new Date(slip.created_at).toISOString().split("T")[0]}
-                                                    <br/>
-                                                    {new Date(slip.created_at).toISOString().split("T")[1]}
-                                                </td>
-                                                <td className="px-4 py-4">
-                                                    <span className="font-bold">{slip.bet_slip.match.home_team} </span>
-                                                    <span className="text-sm">vs</span>
-                                                    <span className="font-bold"> {slip.bet_slip.match.away_team} </span>
-                                                    <span className="">
+                                                <tr className="hover:bg-gray-50" key={slip.id}>
+                                                    <td className="px-4 py-4"><span>{slip.user.username}</span></td>
+                                                    <td className="px-4 py-4">
+                                                        {new Date(slip.created_at).toISOString().split("T")[0]}
+                                                        <br/>
+                                                        {new Date(slip.created_at).toISOString().split("T")[1]}
+                                                    </td>
+                                                    <td className="px-4 py-4">
+                                                        <span className="font-bold">{slip.bet_slip.match.home_team} </span>
+                                                        <span className="text-sm">vs</span>
+                                                        <span className="font-bold"> {slip.bet_slip.match.away_team} </span>
+                                                        <span className="">
+                                    {
+                                        slip.bet_slip.match.half_score_1
+                                            ?
+                                            `(${slip.bet_slip.match.half_score_1} - ${slip.bet_slip.match.half_score_2})`
+                                            :
+                                            `(${slip.bet_slip.match.score_1} - ${slip.bet_slip.match.score_2})`
+                                    }
+                                </span>
+                                                    </td>
+                                                    <td className="px-4 py-4">
                                                         {
-                                                            slip.bet_slip.match.half_score_1
-                                                                ?
-                                                                `(${slip.bet_slip.match.half_score_1} - ${slip.bet_slip.match.half_score_2})`
+                                                            slip.bet_slip.bet_team ?
+                                                                `Body ${slip.bet_slip.body} (${slip.bet_slip.bet_team})`
                                                                 :
-                                                                `(${slip.bet_slip.match.score_1} - ${slip.bet_slip.match.score_2})`
+                                                                `${slip.bet_slip.over_under} (${slip.bet_slip.goal_paung})`
                                                         }
-                                                    </span>
-                                                </td>
-                                                <td className="px-4 py-4">
-                                                    {
-                                                        slip.bet_slip.bet_team ?
-                                                            `Body ${slip.bet_slip.body} (${slip.bet_slip.bet_team})`
-                                                            :
-                                                            `${slip.bet_slip.over_under} (${slip.bet_slip.goal_paung})`
-                                                    }
-                                                </td>
-                                                <td className="px-4 py-4">{slip.bet_slip.win_lose_cash * 0.95}</td>
-                                                <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.actual_commision : slip.actual_commision/100}</td>
-                                                <td className="px-4 py-4">
-                                                    {
-                                                        slip.actual_commision === 0 ?
-                                                            slip.bet_slip.win_lose_cash * 0.95
-                                                            :
-                                                            (slip.bet_slip.win_lose_cash * (0.95 + slip.actual_commision/100)).toFixed(2)
-                                                    }
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td className="px-4 py-4">{slip.bet_slip.win_lose_cash * 0.95}</td>
+                                                    <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.actual_commision : slip.actual_commision/100}</td>
+                                                    <td className="px-4 py-4">
+                                                        {
+                                                            slip.actual_commision === 0 ?
+                                                                slip.bet_slip.win_lose_cash * 0.95
+                                                                :
+                                                                (slip.bet_slip.win_lose_cash * (0.95 + slip.actual_commision/100)).toFixed(2)
+                                                        }
+                                                    </td>
+                                                </tr>
                                             ))
                                             :
                                             <tr>
@@ -242,16 +245,18 @@ const ReportView = () => {
 
                                     {
                                         total &&
-                                            <tr className="font-bold">
-                                                <td className="text-center px-4 py-4" colSpan="4">Total</td>
-                                                <td className="px-4 py-4">{(total.totalNewGroupWinLose * 0.95).toFixed(2)}</td>
-                                                <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(3) / 100}</td>
-                                                <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
-                                            </tr>
+                                        <tr className="font-bold">
+                                            <td className="text-center px-4 py-4" colSpan="4">Total</td>
+                                            <td className="px-4 py-4">{(total.totalNewGroupWinLose * 0.95).toFixed(2)}</td>
+                                            <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(3) / 100}</td>
+                                            <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                        </tr>
                                     }
                                     </tbody>
                                 </table>
+                                // End Each User Data Report
                                 :
+                                // Stat All User Data Report
                                 <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
                                     <thead className="bg-gray-50">
                                     <tr className="text-lg font-medium text-gray-900">
@@ -280,46 +285,47 @@ const ReportView = () => {
                                             </tr>
                                             :
                                             betSlip &&
-                                                betSlip.length > 0 ?
-                                                    betSlip.map((slip, slipkey) => (
-                                                        <tr className="hover:bg-gray-50" key={slip.id}>
-                                                            <td className="px-4 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => detailMember(key, slip.user.id)}>{slip.user.username}</span></td>
-                                                            <td className="px-4 py-4">{slip.bet_slip.balance}</td>
-                                                            <td className="px-4 py-4">{(slip.bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
-                                                            <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.actual_commision.toFixed(3) : slip.actual_commision.toFixed(3)/100}</td>
-                                                            <td className="px-4 py-4">
-                                                                {
-                                                                    slip.actual_commision === 0 ?
-                                                                        (slip.bet_slip.win_lose_cash * 0.95).toFixed(2)
-                                                                        :
-                                                                        (slip.bet_slip.win_lose_cash * (0.95 + slip.actual_commision/100)).toFixed(2)
-                                                                }
-                                                            </td>
-                                                            <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
-                                                            <td className="px-4 py-4">{totalCompany[slipkey].actual_commision.toFixed(3) / 100}</td>
-                                                            <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * (0.95 + totalCompany[slipkey].actual_commision.toFixed(3)/100)).toFixed(2)}</td>
-                                                        </tr>
-                                                    ))
-                                                    :
-                                                    <tr>
-                                                        <td className="text-center text-red-600 px-4 py-4" colSpan="8">No Data</td>
+                                            betSlip.length > 0 ?
+                                                betSlip.map((slip, slipkey) => (
+                                                    <tr className="hover:bg-gray-50" key={slip.id}>
+                                                        <td className="px-4 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => detailMember(key, slip.user.id)}>{slip.user.username}</span></td>
+                                                        <td className="px-4 py-4">{slip.bet_slip.balance}</td>
+                                                        <td className="px-4 py-4">{(slip.bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
+                                                        <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.actual_commision.toFixed(3) : slip.actual_commision.toFixed(3)/100}</td>
+                                                        <td className="px-4 py-4">
+                                                            {
+                                                                slip.actual_commision === 0 ?
+                                                                    (slip.bet_slip.win_lose_cash * 0.95).toFixed(2)
+                                                                    :
+                                                                    (slip.bet_slip.win_lose_cash * (0.95 + slip.actual_commision/100)).toFixed(2)
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
+                                                        <td className="px-4 py-4">{totalCompany[slipkey].actual_commision.toFixed(3) / 100}</td>
+                                                        <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * (0.95 + totalCompany[slipkey].actual_commision.toFixed(3)/100)).toFixed(2)}</td>
                                                     </tr>
+                                                ))
+                                                :
+                                                <tr>
+                                                    <td className="text-center text-red-600 px-4 py-4" colSpan="8">No Data</td>
+                                                </tr>
                                     }
                                     {
                                         total &&
-                                            <tr className="font-bold">
-                                                <td className="px-4 py-4">Total</td>
-                                                <td className="px-4 py-4">{total.totalNewGroupBalance}</td>
-                                                <td className="px-4 py-4">{(total.totalNewGroupWinLose * 0.95).toFixed(2)}</td>
-                                                <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(3) / 100}</td>
-                                                <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
-                                                <td className="px-4 py-4">{(total.totalNewCompanyWinLose * 0.95).toFixed(2)}</td>
-                                                <td className="px-4 py-4">{total.totalNewCompanyComission.toFixed(3) / 100}</td>
-                                                <td className="px-4 py-4">{(total.totalNewCompanyWinLose * (0.95 + total.totalNewCompanyComission.toFixed(3) / 100)).toFixed(2)}</td>
-                                            </tr>
+                                        <tr className="font-bold">
+                                            <td className="px-4 py-4">Total</td>
+                                            <td className="px-4 py-4">{total.totalNewGroupBalance}</td>
+                                            <td className="px-4 py-4">{(total.totalNewGroupWinLose * 0.95).toFixed(2)}</td>
+                                            <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(3) / 100}</td>
+                                            <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                            <td className="px-4 py-4">{(total.totalNewCompanyWinLose * 0.95).toFixed(2)}</td>
+                                            <td className="px-4 py-4">{total.totalNewCompanyComission.toFixed(3) / 100}</td>
+                                            <td className="px-4 py-4">{(total.totalNewCompanyWinLose * (0.95 + total.totalNewCompanyComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                        </tr>
                                     }
                                     </tbody>
                                 </table>
+                                // End All User Data Report
                         }
                 </div>
             </div>

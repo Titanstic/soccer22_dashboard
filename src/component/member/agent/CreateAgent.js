@@ -11,7 +11,7 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
     const [userData, setUserData] = useState({});
     const [error, setError] = useState({});
     // useContext
-    const {allUsersResult} = useContext(AuthContext);
+    const {allUsersResult, whereArr, singleBet, maxBet} = useContext(AuthContext);
     const {showAlert} = useContext(AlertContext);
 
     // Start Mutation
@@ -45,7 +45,6 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
         if(errorExist){
             setError(tempError);
         }else{
-            console.log(userData);
             try{
                 insertUser({variables: userData});
             }catch (e) {
@@ -59,7 +58,14 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
         <div className="w-full sm:w-10/12 h-screen bg-gray-200 flex justify-center items-center bg-opacity-90 fixed top-0">
             <div className="w-10/12 bg-white rounded shadow shadow-gray-400 mx-auto py-10 px-4">
                 <div>
-                    <p className="text-3xl font-bold leading-4">Create Agent</p>
+                    <p className="text-3xl font-bold leading-4">
+                        Create
+                        {whereArr.length === 0 && " Super"}
+                        {whereArr.length === 1 && " Senior"}
+                        {whereArr.length === 2 && " Master"}
+                        {whereArr.length === 3 && " Agent"}
+                        {whereArr.length === 4 && " User"}
+                    </p>
                 </div>
 
                 <hr className="my-5"/>
@@ -95,6 +101,7 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
                         {
                             error.commission && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.commission}</span></div>
                         }
+                        <span className="absolute top-full left-1 text-sm text-gray-500">max Commission : {singleBet}</span>
                     </div>
 
                     <div className="col-span-4 sm:col-span-2 relative">
@@ -105,6 +112,7 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
                         {
                             error.maxBet && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.maxBet}</span></div>
                         }
+                        <span className="absolute top-full left-1 text-sm text-gray-500">max Bet : {maxBet}</span>
                     </div>
 
                     <div className="col-span-4 sm:col-span-2 relative">
@@ -118,7 +126,7 @@ const CreateAgent = ({addModalHandle, usersResult}) => {
                     </div>
 
                     <div className="col-span-4 sm:col-span-2 justify-self-end">
-                        <button className="bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3" onClick={addModalHandle}>Cancel</button>
+                        <button className="bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3" onClick={addModalHandle} disabled={loading}>Cancel</button>
                         <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-white rounded shadow hover:bg-blue-400 px-4 py-3`} onClick={addAgentData} disabled={loading}>Create</button>
                     </div>
                 </div>

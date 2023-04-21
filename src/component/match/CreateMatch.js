@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
 import {eachInputValidation, inputErrorValidation} from "../../composable/match";
-import {useMutation} from "@apollo/client";
-import {INSERT_FULL_MATCH, INSERT_HALF_MATCH} from "../../gql/match";
+import {useLazyQuery, useMutation} from "@apollo/client";
+import {getTeam, INSERT_FULL_MATCH, INSERT_HALF_MATCH} from "../../gql/match";
 import AlertContext from "../../context/AlertContext";
 import Select from "react-select/base";
 
@@ -28,12 +28,23 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
         match: "true",
         halfScore1: "",
         halfScore2: "",
-        status: "false"
+        status: "false",
+        live: "true"
     });
     // useContext
     const {showAlert} = useContext(AlertContext);
+    // useLazyQuery
+    const [loadTeam, resultTeam] = useLazyQuery(getTeam);
 
     // Start UseEffect
+    // useEffect(() => {
+    //     loadTeam();
+    // })
+    //
+    // useEffect(() => {
+    //     console.log(resultTeam);
+    // }, [resultTeam])
+
     // have match 1, half score value to ""
     useEffect(() => {
         if(form.match === "true"){
@@ -69,12 +80,6 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
     // End Mutation
 
     // Start Function
-    const options = [
-        { value: 'chocolate', label: 'Chocolate' },
-        { value: 'strawberry', label: 'Strawberry' },
-        { value: 'vanilla', label: 'Vanilla' }
-    ]
-
     // control form input
     const inputHandle = (e, input) => {
         // validation input for rate1, rate2 and match
@@ -320,7 +325,17 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                         }
                     </div>
 
-                    <div className="col-span-4 sm:col-span-2 justify-self-end">
+                    {/*<div className="col-span-4 sm:col-span-2 relative">*/}
+                    {/*    <div className="flex shadow rounded-md">*/}
+                    {/*        <span className="w-24 sm:w-28 text-xs sm:text-base  inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-2 sm:pl-3 py-3 text-gray-500">Live</span>*/}
+                    {/*        <input type="datetime-local" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.live ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3`} value={form.live} onChange={(e) => inputHandle(e, "live")}/>*/}
+                    {/*    </div>*/}
+                    {/*    {*/}
+                    {/*        error.live && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.live}</span></div>*/}
+                    {/*    }*/}
+                    {/*</div>*/}
+
+                    <div className="col-span-4 sm:col-span-4 justify-self-end">
                         <button className="text-sm bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3 sm:text-base" onClick={cancelMatch} disabled={loading}>Cancel</button>
                         <button className={`${loading ? "bg-blue-400" : "bg-blue-500"} text-sm text-white rounded shadow hover:bg-blue-400 px-4 py-3  sm:text-base`} onClick={createMatch} disabled={loading}>{loading ? "loading ..." : "Create"}</button>
                     </div>

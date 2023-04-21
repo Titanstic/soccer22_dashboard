@@ -34,6 +34,17 @@ const MATCH = gql`
           }
     }
 `;
+
+const getTeam = gql`
+    query GETTEAM {
+          team {
+                id
+                team_name_en
+                team_name_mm
+          }
+    }
+`
+
 const   INSERT_HALF_MATCH = gql`
     mutation INSERT_HALF_MATCH($awayTeam: String!, $match: Boolean!, $goPaung: String!, $homeTeam: String!, $rate1: String, $rate2: String,  $halfScore2: Int, $halfScore1: Int, $link1: String, $link2: String, $link3: String, $link4: String, $link5: String, $matchTime: timestamptz, $league: Int!, $status: String!) {
           insert_match_one(object: {away_team: $awayTeam, full_match: $match, goal_paung: $goPaung, home_team: $homeTeam, rate_1: $rate1, rate_2: $rate2, half_score_2: $halfScore2, half_score_1: $halfScore1, link_1: $link1, link_2: $link2, link_3: $link3, link_4: $link4, link_5: $link5, match_time: $matchTime, league_id: $league, status: $status}) {
@@ -88,4 +99,4 @@ const GET_SLIP = gql`
     }
 `;
 
-export {MATCH, INSERT_HALF_MATCH, INSERT_FULL_MATCH, INSERT_TEAM, UPDATE_SCORE_MATCH, UPDATE_STATUS_MATCH, GET_SLIP};
+export {MATCH, getTeam, INSERT_HALF_MATCH, INSERT_FULL_MATCH, INSERT_TEAM, UPDATE_SCORE_MATCH, UPDATE_STATUS_MATCH, GET_SLIP};

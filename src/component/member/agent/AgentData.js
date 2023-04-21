@@ -91,7 +91,7 @@ const AgentData = ({addModalHandle, updateModalHandle, updateActiveHandle, check
                                 <tbody className="divide-y divide-gray-100 border-t border-gray-100">
                                     {
                                         !loading ?
-                                            usersData ?
+                                            usersData.length > 0 ?
                                                 usersData.map( userData => (
                                                     <tr className="hover:bg-gray-50" key={userData[0].id} onClick={(e) => userClickHandle(e, userData)}>
                                                         <td className="px-6 py-4">{userData[0].username}</td>
