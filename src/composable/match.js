@@ -56,6 +56,10 @@ const inputErrorValidation = (form) => {
         errorDetail.matchTime = "Please Choose Match Time";
         errors = true;
     }
+    if(form.live === ""){
+        errorDetail.live = "Please Choose Live";
+        errors = true;
+    }
 
     return {errorDetail, errors};
 };
@@ -115,6 +119,12 @@ let eachInputValidation = (input, e, disable, error, formStatus) => {
         delete disable["halfScore"];
         eachDisable = {...disable};
         status = "true";
+    }
+
+    // for live control
+    if(input === "live"){
+        delete error['live'];
+        eachError = {...error};
     }
 
     return {eachError, eachDisable, status};

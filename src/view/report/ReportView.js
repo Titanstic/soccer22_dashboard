@@ -140,7 +140,7 @@ const ReportView = () => {
             setBetSlip(newGroups);
             setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose});
         }else{
-            const {eachUserGroup, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose,} = filterEachUser(comision, whereArr.length - 1, userId);
+            const {eachUserGroup, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose,} = filterEachUser(comision, userId);
             setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose});
             setShowEachUser(true);
             setBetSlip(eachUserGroup);

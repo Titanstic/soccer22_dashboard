@@ -94,20 +94,19 @@ const filterGroupComision = (newComisionHistorys, key) => {
     return {newGroups, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, newCompanyGroups, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose};
 };
 
-const filterEachUser = (newComisionHistorys, key, userID) => {
+const filterEachUser = (newComisionHistorys, userID) => {
     let eachUserGroup = [];
     let totalNewGroupComission = 0;
     let totalNewGroupBalance = 0;
     let totalNewGroupWinLose = 0;
 
-    console.log(key);
     newComisionHistorys.map(comision => {
-        if(comision[key].user.id === userID) {
-            eachUserGroup.push(comision[key]);
+        if(comision[comision.length - 1].user.id === userID) {
+            eachUserGroup.push(comision[comision.length - 1]);
 
-            totalNewGroupComission += comision[key].actual_commision;
-            totalNewGroupBalance += comision[key].bet_slip.balance;
-            totalNewGroupWinLose += comision[key].bet_slip.win_lose_cash;
+            totalNewGroupComission += comision[comision.length - 1].actual_commision;
+            totalNewGroupBalance += comision[comision.length - 1].bet_slip.balance;
+            totalNewGroupWinLose += comision[comision.length - 1].bet_slip.win_lose_cash;
         }
     });
     return {eachUserGroup, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose,}

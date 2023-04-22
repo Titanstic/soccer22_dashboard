@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
 import {eachInputValidation, inputErrorValidation} from "../../composable/match";
 import {useLazyQuery, useMutation} from "@apollo/client";
-import {getTeam, INSERT_FULL_MATCH, INSERT_HALF_MATCH} from "../../gql/match";
+import {getLeague, getTeam, INSERT_FULL_MATCH, INSERT_HALF_MATCH} from "../../gql/match";
 import AlertContext from "../../context/AlertContext";
 import Select from "react-select/base";
 
@@ -29,21 +29,31 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
         halfScore1: "",
         halfScore2: "",
         status: "false",
-        live: "true"
+        live: ""
     });
+    const [team, setTeam] = useState(null);
+    const [league, setLeague] = useState(null);
     // useContext
     const {showAlert} = useContext(AlertContext);
     // useLazyQuery
     const [loadTeam, resultTeam] = useLazyQuery(getTeam);
+    const [loadLeague, resultLeague] = useLazyQuery(getLeague);
 
     // Start UseEffect
-    // useEffect(() => {
-    //     loadTeam();
-    // })
-    //
-    // useEffect(() => {
-    //     console.log(resultTeam);
-    // }, [resultTeam])
+    useEffect(() => {
+        loadTeam();
+        loadLeague();
+    }, []);
+
+    useEffect(() => {
+        if(resultTeam.data){
+            setTeam(resultTeam.data.team);
+        }
+
+        if(resultLeague.data){
+            setLeague(resultLeague.data.league);
+        }
+    }, [resultTeam, resultLeague])
 
     // have match 1, half score value to ""
     useEffect(() => {
@@ -190,7 +200,18 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                     <div className="col-span-4 sm:col-span-2 relative">
                         <div className="flex shadow rounded-md">
                             <span className="w-24 sm:w-28 text-xs sm:text-base inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-2 sm:pl-3 py-3 text-gray-500">Home Team</span>
-                            <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.homeTeam ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base pl-3 py-3`} value={form.homeTeam} onChange={(e) => inputHandle(e, "homeTeam")}/>
+                            <select className={`block w-full flex-1 rounded-none rounded-r-md border ${error.homeTeam ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3 py-3`} value={form.homeTeam} onChange={(e) => inputHandle(e, "homeTeam")}>
+                                <option value="" selected>Please Choose Home Team</option>
+                                {
+                                    team ?
+                                        team.length > 0 ?
+                                            team.map(t => (<option value={t.team_name_en} key={t.id}>{t.team_name_en}</option>))
+                                            :
+                                            <option value="" disabled>No Data</option>
+                                        :
+                                        <option disabled>Loading ...</option>
+                                }
+                            </select>
                         </div>
                         {
                             error.homeTeam && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.homeTeam}</span></div>
@@ -200,7 +221,18 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                     <div className="col-span-4 sm:col-span-2 relative">
                         <div className="flex shadow rounded-md">
                             <span className="w-24 sm:w-28 text-xs sm:text-base  inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-2 sm:pl-3 py-3 text-gray-500">Away Team</span>
-                            <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.awayTeam ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base pl-3 py-3`} value={form.awayTeam} onChange={(e) => inputHandle(e, "awayTeam")}/>
+                            <select className={`block w-full flex-1 rounded-none rounded-r-md border ${error.awayTeam ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3 py-3`} value={form.awayTeam} onChange={(e) => inputHandle(e, "awayTeam")}>
+                                <option value="" selected>Please Choose Away Team</option>
+                                {
+                                    team ?
+                                        team.length > 0 ?
+                                            team.map(t => (<option value={t.team_name_en} key={t.id}>{t.team_name_en}</option>))
+                                            :
+                                            <option value="" disabled>No Data</option>
+                                        :
+                                        <option disabled>Loading ...</option>
+                                }
+                            </select>
                         </div>
                         {
                             error.awayTeam && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.awayTeam}</span></div>
@@ -210,7 +242,18 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                     <div className="col-span-4 sm:col-span-2 relative">
                         <div className="flex shadow rounded-md">
                             <span className="w-24 sm:w-28 text-xs sm:text-base  inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-2 sm:pl-3 py-3 text-gray-500">League</span>
-                            <input type="text" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.league ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base pl-3 py-3`} value={form.league} onChange={(e) => inputHandle(e, "league")}/>
+                            <select className={`block w-full flex-1 rounded-none rounded-r-md border ${error.league ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3 py-3`} value={form.league} onChange={(e) => inputHandle(e, "league")}>
+                                <option value="" selected>Please Choose League</option>
+                                {
+                                    league ?
+                                        league.length > 0 ?
+                                            league.map(l => (<option value={l.id} key={l.id}>{l.league_name_en}</option>))
+                                            :
+                                            <option value="" disabled>No Data</option>
+                                        :
+                                        <option disabled>Loading ...</option>
+                                }
+                            </select>
                         </div>
                         {
                             error.league && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.league}</span></div>
@@ -318,22 +361,28 @@ const CreateMatch = ({addModalHandle, matchResult}) => {
                     <div className="col-span-4 sm:col-span-2 relative">
                         <div className="flex shadow rounded-md">
                             <span className="w-24 sm:w-28 text-xs sm:text-base  inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-2 sm:pl-3 py-3 text-gray-500">Match Time</span>
-                            <input type="datetime-local" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.matchTime ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3`} value={form.matchTime} onChange={(e) => inputHandle(e, "matchTime")}/>
+                            <input type="datetime-local" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.matchTime ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3 py-3`} value={form.matchTime} onChange={(e) => inputHandle(e, "matchTime")}/>
                         </div>
                         {
                             error.matchTime && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.matchTime}</span></div>
                         }
                     </div>
 
-                    {/*<div className="col-span-4 sm:col-span-2 relative">*/}
-                    {/*    <div className="flex shadow rounded-md">*/}
-                    {/*        <span className="w-24 sm:w-28 text-xs sm:text-base  inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-2 sm:pl-3 py-3 text-gray-500">Live</span>*/}
-                    {/*        <input type="datetime-local" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.live ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3`} value={form.live} onChange={(e) => inputHandle(e, "live")}/>*/}
-                    {/*    </div>*/}
-                    {/*    {*/}
-                    {/*        error.live && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.live}</span></div>*/}
-                    {/*    }*/}
-                    {/*</div>*/}
+                    <div className="col-span-4 sm:col-span-2 relative">
+                        <div className="flex shadow rounded-md">
+                            <span className="w-24 sm:w-28 text-xs sm:text-base  inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-2 sm:pl-3 py-3 text-gray-500">Live</span>
+                            {/*<input type="datetime-local" className={`block w-full flex-1 rounded-none rounded-r-md border ${error.live ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3`} value={form.live} onChange={(e) => inputHandle(e, "live")}/>*/}
+                            <div className={`block w-full flex-1 rounded-none rounded-r-md border ${error.live ? "border-red-400" : "border-gray-400"} focus:border-indigo-500 focus:ring-indigo-500 text-sm sm:text-base px-3 py-3`}>
+                                <input type="radio" id="true" className="mr-1" name="live" value="true" onChange={(e) => inputHandle(e, "live")} checked={form.live === "true" && "true"}/>
+                                <label htmlFor="true" className="mr-3">True</label>
+                                <input type="radio" id="false" className="mr-1" name="live" value="false" onChange={(e) => inputHandle(e, "live")} checked={form.live === "false" && "true"}/>
+                                <label htmlFor="false">False</label>
+                            </div>
+                        </div>
+                        {
+                            error.live && <div className="absolute top-full right-0"><span className="text-sm text-red-400">{error.live}</span></div>
+                        }
+                    </div>
 
                     <div className="col-span-4 sm:col-span-4 justify-self-end">
                         <button className="text-sm bg-red-500 text-white rounded shadow hover:bg-red-400 mr-3 px-4 py-3 sm:text-base" onClick={cancelMatch} disabled={loading}>Cancel</button>
