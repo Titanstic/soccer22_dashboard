@@ -208,14 +208,14 @@ const ReportView = () => {
                                                         <span className="text-sm">vs</span>
                                                         <span className="font-bold"> {slip.bet_slip.match.away_team} </span>
                                                         <span className="">
-                                    {
-                                        slip.bet_slip.match.half_score_1
-                                            ?
-                                            `(${slip.bet_slip.match.half_score_1} - ${slip.bet_slip.match.half_score_2})`
-                                            :
-                                            `(${slip.bet_slip.match.score_1} - ${slip.bet_slip.match.score_2})`
-                                    }
-                                </span>
+                                                        {
+                                                            slip.bet_slip.match.half_score_1
+                                                                ?
+                                                                `(${slip.bet_slip.match.half_score_1} - ${slip.bet_slip.match.half_score_2})`
+                                                                :
+                                                                `(${slip.bet_slip.match.score_1} - ${slip.bet_slip.match.score_2})`
+                                                        }
+                                                    </span>
                                                     </td>
                                                     <td className="px-4 py-4">
                                                         {
@@ -225,14 +225,21 @@ const ReportView = () => {
                                                                 `${slip.bet_slip.over_under} (${slip.bet_slip.goal_paung})`
                                                         }
                                                     </td>
-                                                    <td className="px-4 py-4">{slip.bet_slip.win_lose_cash * 0.95}</td>
-                                                    <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.actual_commision : slip.actual_commision/100}</td>
                                                     <td className="px-4 py-4">
                                                         {
-                                                            slip.actual_commision === 0 ?
+                                                            Math.sign(slip.bet_slip.win_lose_cash) === -1 ?
                                                                 slip.bet_slip.win_lose_cash * 0.95
                                                                 :
-                                                                (slip.bet_slip.win_lose_cash * (0.95 + slip.actual_commision/100)).toFixed(2)
+                                                                slip.bet_slip.win_lose_cash
+                                                        }
+                                                    </td>
+                                                    <td className="px-4 py-4">{slip.percent_commision === 0 ? slip.percent_commision : slip.percent_commision/100}</td>
+                                                    <td className="px-4 py-4">
+                                                        {
+                                                            slip.percent_commision === 0 ?
+                                                                slip.bet_slip.win_lose_cash * 0.95
+                                                                :
+                                                                (slip.bet_slip.win_lose_cash * (0.95 + slip.percent_commision/100)).toFixed(2)
                                                         }
                                                     </td>
                                                 </tr>
@@ -290,19 +297,41 @@ const ReportView = () => {
                                                     <tr className="hover:bg-gray-50" key={slip.id}>
                                                         <td className="px-4 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => detailMember(key, slip.user.id)}>{slip.user.username}</span></td>
                                                         <td className="px-4 py-4">{slip.bet_slip.balance}</td>
-                                                        <td className="px-4 py-4">{(slip.bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
-                                                        <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.bet_slip.win_lose_cash * slip.actual_commision.toFixed(3) : slip.bet_slip.win_lose_cash * (slip.actual_commision.toFixed(3)/100)}</td>
                                                         <td className="px-4 py-4">
                                                             {
-                                                                slip.actual_commision === 0 ?
-                                                                    (slip.bet_slip.win_lose_cash * 0.95).toFixed(2)
+                                                                Math.sign(slip.bet_slip.win_lose_cash) === -1 ?
+                                                                    slip.bet_slip.win_lose_cash
                                                                     :
-                                                                    (slip.bet_slip.win_lose_cash * (0.95 + slip.actual_commision/100)).toFixed(2)
+                                                                    (slip.bet_slip.win_lose_cash * 0.95).toFixed(2)
+
                                                             }
                                                         </td>
-                                                        <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
-                                                        <td className="px-4 py-4">{totalCompany[slipkey].bet_slip.win_lose_cash * (totalCompany[slipkey].actual_commision.toFixed(3) / 100)}</td>
-                                                        <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * (0.95 + totalCompany[slipkey].actual_commision.toFixed(3)/100)).toFixed(2)}</td>
+                                                        <td className="px-4 py-4">{slip.percent_commision === 0 ? slip.bet_slip.win_lose_cash * slip.percent_commision.toFixed(3) : slip.bet_slip.win_lose_cash * (slip.percent_commision.toFixed(3)/100)}</td>
+                                                        <td className="px-4 py-4">
+                                                            {
+                                                                slip.percent_commision === 0 ?
+                                                                    (slip.bet_slip.win_lose_cash * 0.95).toFixed(2)
+                                                                    :
+                                                                    (slip.bet_slip.win_lose_cash * (0.95 + slip.percent_commision/100)).toFixed(2)
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-4">
+                                                            {
+                                                                Math.sign(totalCompany[slipkey].bet_slip.win_lose_cash) === -1 ?
+                                                                    totalCompany[slipkey].bet_slip.win_lose_cash
+                                                                    :
+                                                                    (totalCompany[slipkey].bet_slip.win_lose_cash * 0.95).toFixed(2)
+                                                            }
+                                                        </td>
+                                                        <td className="px-4 py-4">{totalCompany[slipkey].bet_slip.win_lose_cash * (totalCompany[slipkey].percent_commision.toFixed(3) / 100)}</td>
+                                                        <td className="px-4 py-4">
+                                                            {
+                                                                Math.sign(totalCompany[slipkey].bet_slip.win_lose_cash) === -1 ?
+                                                                    (totalCompany[slipkey].bet_slip.win_lose_cash * (totalCompany[slipkey].percent_commision.toFixed(3)/100)).toFixed(2)
+                                                                    :
+                                                                    (totalCompany[slipkey].bet_slip.win_lose_cash * (0.95 + totalCompany[slipkey].percent_commision.toFixed(3)/100)).toFixed(2)
+                                                            }
+                                                        </td>
                                                     </tr>
                                                 ))
                                                 :
