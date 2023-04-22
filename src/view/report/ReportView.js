@@ -248,7 +248,7 @@ const ReportView = () => {
                                         <tr className="font-bold">
                                             <td className="text-center px-4 py-4" colSpan="4">Total</td>
                                             <td className="px-4 py-4">{(total.totalNewGroupWinLose * 0.95).toFixed(2)}</td>
-                                            <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(3) / 100}</td>
+                                            <td className="px-4 py-4">{total.totalNewGroupWinLose * total.totalNewGroupComission.toFixed(3) / 100}</td>
                                             <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
                                         </tr>
                                     }
@@ -291,7 +291,7 @@ const ReportView = () => {
                                                         <td className="px-4 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => detailMember(key, slip.user.id)}>{slip.user.username}</span></td>
                                                         <td className="px-4 py-4">{slip.bet_slip.balance}</td>
                                                         <td className="px-4 py-4">{(slip.bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
-                                                        <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.actual_commision.toFixed(3) : slip.actual_commision.toFixed(3)/100}</td>
+                                                        <td className="px-4 py-4">{slip.actual_commision === 0 ? slip.bet_slip.win_lose_cash * slip.actual_commision.toFixed(3) : slip.bet_slip.win_lose_cash * (slip.actual_commision.toFixed(3)/100)}</td>
                                                         <td className="px-4 py-4">
                                                             {
                                                                 slip.actual_commision === 0 ?
@@ -301,7 +301,7 @@ const ReportView = () => {
                                                             }
                                                         </td>
                                                         <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * 0.95).toFixed(2)}</td>
-                                                        <td className="px-4 py-4">{totalCompany[slipkey].actual_commision.toFixed(3) / 100}</td>
+                                                        <td className="px-4 py-4">{totalCompany[slipkey].bet_slip.win_lose_cash * (totalCompany[slipkey].actual_commision.toFixed(3) / 100)}</td>
                                                         <td className="px-4 py-4">{(totalCompany[slipkey].bet_slip.win_lose_cash * (0.95 + totalCompany[slipkey].actual_commision.toFixed(3)/100)).toFixed(2)}</td>
                                                     </tr>
                                                 ))
@@ -316,10 +316,10 @@ const ReportView = () => {
                                             <td className="px-4 py-4">Total</td>
                                             <td className="px-4 py-4">{total.totalNewGroupBalance}</td>
                                             <td className="px-4 py-4">{(total.totalNewGroupWinLose * 0.95).toFixed(2)}</td>
-                                            <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(3) / 100}</td>
+                                            <td className="px-4 py-4">{total.totalNewGroupWinLose * (total.totalNewGroupComission.toFixed(3) / 100)}</td>
                                             <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
                                             <td className="px-4 py-4">{(total.totalNewCompanyWinLose * 0.95).toFixed(2)}</td>
-                                            <td className="px-4 py-4">{total.totalNewCompanyComission.toFixed(3) / 100}</td>
+                                            <td className="px-4 py-4">{total.totalNewCompanyWinLose * total.totalNewCompanyComission.toFixed(3) / 100}</td>
                                             <td className="px-4 py-4">{(total.totalNewCompanyWinLose * (0.95 + total.totalNewCompanyComission.toFixed(3) / 100)).toFixed(2)}</td>
                                         </tr>
                                     }
