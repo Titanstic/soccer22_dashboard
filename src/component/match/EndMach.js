@@ -3,6 +3,7 @@ import {inputEndMatchValidation} from "../../composable/match";
 import {useMutation} from "@apollo/client";
 import {UPDATE_SCORE_MATCH} from "../../gql/match";
 import AlertContext from "../../context/AlertContext";
+import GqlContext from "../../context/GqlContext";
 
 const EndMach = ({endModalHandle, matchId, matchResult}) => {
     // useState
@@ -14,6 +15,7 @@ const EndMach = ({endModalHandle, matchId, matchResult}) => {
     const [error, setError] = useState({});
     // useContext
     const {showAlert} = useContext(AlertContext);
+    const {resultComHistory} = useContext(GqlContext);
 
     // Start Mutation
     const [updateScoreMatch] = useMutation(UPDATE_SCORE_MATCH, {
@@ -24,6 +26,7 @@ const EndMach = ({endModalHandle, matchId, matchResult}) => {
             showAlert("Added Score Successfully", false);
             endModalHandle(null);
             matchResult.refetch();
+            resultComHistory.refetch();
         }
     });
     // End Mutation

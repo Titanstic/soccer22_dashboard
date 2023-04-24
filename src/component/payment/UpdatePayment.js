@@ -3,7 +3,7 @@ import {useMutation} from "@apollo/client";
 import {checkBalanceInput} from "../../composable/payment";
 import {BALANCE_DEDUCT, BALANCE_DEPOSIT, BALANCE_WITHDRAW} from "../../gql/payment";
 import AlertContext from "../../context/AlertContext";
-import PaymentGqlContext from "../../context/PaymentGqlContext";
+import GqlContext from "../../context/GqlContext";
 
 const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, userBalance, accStatus, action}) => {
     // useState
@@ -12,7 +12,7 @@ const UpdatePayment = ({updateModalHandle, resultPayment, balance, userCode, use
     const [addBalance, setAddBalance] = useState(null);
     // useContext
     const {showAlert} = useContext(AlertContext);
-    const { resultHistory, eachHistoryResult } = useContext(PaymentGqlContext);
+    const { resultHistory, eachHistoryResult } = useContext(GqlContext);
 
     // Start Mutation
     const [balanceWithDraw] = useMutation(BALANCE_WITHDRAW, {

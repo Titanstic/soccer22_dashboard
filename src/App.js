@@ -6,7 +6,7 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "./hasura/config";
 import {AlertContextProvider} from "./context/AlertContext";
 import {AuthContextProvider} from "./context/AuthContext";
-import {PaymentGqlContextProvider} from "./context/PaymentGqlContext";
+import {PaymentGqlContextProvider} from "./context/GqlContext";
 
 function App() {
     return (

@@ -2,12 +2,12 @@ import {useMutation} from "@apollo/client";
 import {BALANCE_DEDUCT} from "../../gql/payment";
 import {useContext} from "react";
 import AlertContext from "../../context/AlertContext";
-import PaymentGqlContext from "../../context/PaymentGqlContext";
+import GqlContext from "../../context/GqlContext";
 
 const DeductAllPayment = ({deductAllModal, resultPayment, userCode, userBalance}) => {
     // useContext
     const {showAlert} = useContext(AlertContext);
-    const { resultHistory } = useContext(PaymentGqlContext);
+    const { resultHistory } = useContext(GqlContext);
 
     //Start Mutation
     const [balanceDeduct] = useMutation(BALANCE_DEDUCT, {

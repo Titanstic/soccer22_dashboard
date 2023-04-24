@@ -1,7 +1,7 @@
 import LayoutView from "../LayoutView";
 import {useContext, useEffect, useState} from "react";
 import AuthContext from "../../context/AuthContext";
-import PaymentGqlContext from "../../context/PaymentGqlContext";
+import GqlContext from "../../context/GqlContext";
 import NavContext from "../../context/NavContext";
 import {useLazyQuery} from "@apollo/client";
 import {ALL_USER} from "../../gql/user";
@@ -28,7 +28,7 @@ const PaymentHistoryView = () => {
     const [loadUsers, usersResult] = useLazyQuery(ALL_USER);
     // useContext
     const {user, where, whereArr}  = useContext(AuthContext);
-    const {loadHistory, resultHistory, loadEachHistory, eachHistoryResult} = useContext(PaymentGqlContext);
+    const {loadHistory, resultHistory, loadEachHistory, eachHistoryResult} = useContext(GqlContext);
     const {setNavActive, setMainNav} = useContext(NavContext);
 
     // Start useEffect

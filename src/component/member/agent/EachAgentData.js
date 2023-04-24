@@ -5,8 +5,7 @@ const EachAgentData = ({userBackClickHandle, eachUser}) =>{
     const [users, setUser] = useState([]);
 
     useMemo(() => {
-        console.log(eachUser);
-        const result = eachUser.filter((u, index) => index !== 0);
+        const result = eachUser.filter((u, index) => index === 1);
         setUser(result);
     }, [eachUser])
 

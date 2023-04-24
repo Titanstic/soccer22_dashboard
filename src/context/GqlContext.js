@@ -1,19 +1,21 @@
 import {createContext} from "react";
 import {useLazyQuery} from "@apollo/client";
 import {EACH_USER_PAYMENT_HISTORY, PAYMENT_HISTORY} from "../gql/payment";
+import {COMMISION_HISTORY} from "../gql/report";
 
-const PaymentGqlContext = createContext();
+const GqlContext = createContext();
 
 const PaymentGqlContextProvider = ({children}) => {
     const [loadHistory, resultHistory] = useLazyQuery(PAYMENT_HISTORY);
     const [loadEachHistory, eachHistoryResult] = useLazyQuery(EACH_USER_PAYMENT_HISTORY);
+    const [loadComHistory, resultComHistory] = useLazyQuery(COMMISION_HISTORY);
 
     return (
-        <PaymentGqlContext.Provider value={{ loadHistory, resultHistory, loadEachHistory, eachHistoryResult}}>
+        <GqlContext.Provider value={{ loadHistory, resultHistory, loadEachHistory, eachHistoryResult, loadComHistory, resultComHistory}}>
             {children}
-        </PaymentGqlContext.Provider>
+        </GqlContext.Provider>
     )
 };
 
 export { PaymentGqlContextProvider };
-export default PaymentGqlContext;
+export default GqlContext;
