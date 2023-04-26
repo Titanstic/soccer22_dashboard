@@ -60,7 +60,7 @@ const ReportView = () => {
             let {newGroups,totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, newCompanyGroups, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose} = filterGroupComision(newComisionHistorys, key);
             let {showComapny} = checkCompany(newComisionHistorys.length, key, whereArr.length);
 
-            console.log(showComapny);
+            // console.log(showComapny);
             setComision(newComisionHistorys);
             setTotalCompany(newCompanyGroups);
             setBetSlip(newGroups);
@@ -145,6 +145,7 @@ const ReportView = () => {
             setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose});
         }else{
             const {eachUserGroup, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose,} = filterEachUser(comision, userId);
+            console.log(eachUserGroup);
             setTotal({totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose});
             setShowEachUser(true);
             setBetSlip(eachUserGroup);
@@ -224,17 +225,17 @@ const ReportView = () => {
                                                                 Math.sign(slip.bet_slip.win_lose_cash) === -1 ?
                                                                     <span className="text-red-500">{slip.bet_slip.win_lose_cash.toFixed(2)}</span>
                                                                     :
-                                                                    (slip.bet_slip.win_lose_cash * 0.95).toFixed(2)
+                                                                    slip.bet_slip.win_lose_cash.toFixed(2)
 
                                                             }
                                                         </td>
-                                                        <td className="px-4 py-4">{slip.percent_commision === 0 ? slip.bet_slip.win_lose_cash * slip.percent_commision.toFixed(3) : slip.bet_slip.win_lose_cash * (slip.percent_commision.toFixed(3)/100)}</td>
+                                                        <td className="px-4 py-4">{Math.abs(slip.real_win_lose_cash * (slip.percent_commision.toFixed(3)/100)).toFixed(2)}</td>
                                                         <td className="px-4 py-4">
                                                             {
                                                                 Math.sign(slip.bet_slip.win_lose_cash) === -1 ?
-                                                                    <span className="text-red-500">{(slip.bet_slip.win_lose_cash).toFixed(2) * (slip.percent_commision/100).toFixed(2)}</span>
+                                                                    <span className="text-red-500">{(slip.bet_slip.win_lose_cash - (slip.real_win_lose_cash * (slip.percent_commision.toFixed(3)/100)).toFixed(2)).toFixed(2)}</span>
                                                                     :
-                                                                    (slip.bet_slip.win_lose_cash * (0.95 + slip.percent_commision / 100)).toFixed(2)
+                                                                    (slip.bet_slip.win_lose_cash + (Math.abs(slip.real_win_lose_cash) * (slip.percent_commision / 100))).toFixed(2)
                                                             }
                                                         </td>
                                                         <td className="px-4 py-4">
@@ -242,16 +243,16 @@ const ReportView = () => {
                                                                 Math.sign(totalCompany[slipkey].bet_slip.win_lose_cash) === -1 ?
                                                                     <span className="text-red-500">{totalCompany[slipkey].bet_slip.win_lose_cash.toFixed(2)}</span>
                                                                     :
-                                                                    (totalCompany[slipkey].bet_slip.win_lose_cash * 0.95).toFixed(2)
+                                                                    totalCompany[slipkey].bet_slip.win_lose_cash.toFixed(2)
                                                             }
                                                         </td>
-                                                        <td className="px-4 py-4">{totalCompany[slipkey].bet_slip.win_lose_cash * (totalCompany[slipkey].percent_commision.toFixed(3) / 100)}</td>
+                                                        <td className="px-4 py-4">{Math.abs(totalCompany[slipkey].real_win_lose_cash * (totalCompany[slipkey].percent_commision.toFixed(3) / 100)).toFixed(2)}</td>
                                                         <td className="px-4 py-4">
                                                             {
                                                                 Math.sign(totalCompany[slipkey].bet_slip.win_lose_cash) === -1 ?
-                                                                    <span className="text-red-500">{(totalCompany[slipkey].bet_slip.win_lose_cash.toFixed(2) * (totalCompany[slipkey].percent_commision.toFixed(3)/100))}</span>
+                                                                    <span className="text-red-500">{(totalCompany[slipkey].bet_slip.win_lose_cash - ((totalCompany[slipkey].real_win_lose_cash.toFixed(2) * (totalCompany[slipkey].percent_commision.toFixed(3)/100)))).toFixed(2)}</span>
                                                                     :
-                                                                    (totalCompany[slipkey].bet_slip.win_lose_cash * (0.95 + totalCompany[slipkey].percent_commision.toFixed(3) / 100)).toFixed(2)
+                                                                    (totalCompany[slipkey].bet_slip.win_lose_cash + (Math.abs(totalCompany[slipkey].real_win_lose_cash) * (totalCompany[slipkey].percent_commision.toFixed(3) / 100))).toFixed(2)
                                                             }
                                                         </td>
                                                     </tr>
@@ -265,27 +266,41 @@ const ReportView = () => {
                                         total &&
                                         <tr className="font-bold">
                                             <td className="px-4 py-4">Total</td>
-                                            <td className="px-4 py-4">{total.totalNewGroupBalance}</td>
+                                            <td className="px-4 py-4">{Math.abs(total.totalNewGroupBalance)}</td>
                                             <td className="px-4 py-4">
                                                 {
                                                     Math.sign(total.totalNewGroupWinLose) === -1 ?
                                                         <span className="text-red-500">{total.totalNewGroupWinLose.toFixed(2)}</span>
                                                         :
-                                                        (total.totalNewGroupWinLose * 0.95).toFixed(2)
+                                                        total.totalNewGroupWinLose.toFixed(2)
                                                 }
                                             </td>
-                                            <td className="px-4 py-4">{total.totalNewGroupWinLose * (total.totalNewGroupComission.toFixed(3) / 100)}</td>
-                                            <td className="px-4 py-4">{(total.totalNewGroupWinLose * (0.95 + total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                            <td className="px-4 py-4">{Math.abs(total.totalNewGroupWinLose * (total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                            <td className="px-4 py-4">
+                                                {
+                                                    Math.sign(total.totalNewGroupWinLose) === -1 ?
+                                                        <span className="text-red-500">{total.totalNewGroupWinLose * (total.totalNewGroupComission.toFixed(3) / 100).toFixed(2)}</span>
+                                                    :
+                                                        total.totalNewGroupWinLose * (total.totalNewGroupComission.toFixed(3) / 100).toFixed(2)
+                                                }
+                                            </td>
                                             <td className="px-4 py-4">
                                                 {
                                                     Math.sign(total.totalNewCompanyWinLose) === -1 ?
-                                                        <span className="text-red-500">{total.totalNewCompanyWinLose}</span>
+                                                        <span className="text-red-500">{total.totalNewCompanyWinLose.toFixed(2)}</span>
                                                         :
-                                                        (total.totalNewCompanyWinLose * 0.95).toFixed(2)
+                                                        (total.totalNewCompanyWinLose).toFixed(2)
                                                 }
                                             </td>
-                                            <td className="px-4 py-4">{total.totalNewCompanyWinLose * total.totalNewCompanyComission.toFixed(3) / 100}</td>
-                                            <td className="px-4 py-4">{(total.totalNewCompanyWinLose * (0.95 + total.totalNewCompanyComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                            <td className="px-4 py-4">{Math.abs(total.totalNewCompanyWinLose * total.totalNewCompanyComission.toFixed(3) / 100)}</td>
+                                            <td className="px-4 py-4">
+                                                {
+                                                    Math.sign(total.totalNewCompanyWinLose) === -1 ?
+                                                        <span className="text-red-500">{total.totalNewCompanyWinLose * (total.totalNewCompanyComission.toFixed(3) / 100).toFixed(2)}</span>
+                                                    :
+                                                        total.totalNewCompanyWinLose * (total.totalNewCompanyComission.toFixed(3) / 100).toFixed(2)
+                                                }
+                                            </td>
                                         </tr>
                                     }
                                     </tbody>
