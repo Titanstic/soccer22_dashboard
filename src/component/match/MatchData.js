@@ -79,7 +79,7 @@ const MatchData = ({addModalHandle, addSecondModalHandle, endModalHandle, calBet
                                                     <p className={`w-20 text-center shadow bg-blue-400 rounded mr-4 text-white py-2`}>Finish</p>
                                         }
                                         {
-                                            match.score_1 ?
+                                            match.score_1 >= 0 ?
                                                 (match.bet_slips.length > 0 && !match.bet_slips[0].status_slip) ?
                                                         <button className={`w-20 text-center shadow bg-blue-500 rounded text-white mr-4 py-2 hover:bg-blue-400`} onClick={() => calBetSlipsModal(match.id)}>Calc Bet Slip</button>
                                                         :

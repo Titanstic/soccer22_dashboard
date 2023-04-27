@@ -44,7 +44,8 @@ const filterGroupComision = (newComisionHistorys, key) => {
     let newItem = false;
 
      newComisionHistorys.forEach((each, index) => {
-        if(newGroups.length > 0){
+         let alreadyAdd = false;
+            if(newGroups.length > 0){
             newGroups.forEach((group, index) => {
                 if(group.user.id === each[key].user.id){
                     // start for total member
@@ -55,7 +56,16 @@ const filterGroupComision = (newComisionHistorys, key) => {
                                 balance: group.bet_slip.balance + each[key].bet_slip.balance,
                                 win_lose_cash: group.bet_slip.win_lose_cash - Math.abs(each[key].bet_slip.win_lose_cash)
                             },
-                            real_win_lose_cash: each[key].bet_slip.win_lose_cash
+                            percent_commision: group.percent_commision + (Math.abs(each[key].bet_slip.win_lose_cash) * (each[key].percent_commision.toFixed(3)/100))
+                        };
+
+                        newCompanyGroups[index] = {...newCompanyGroups[index],
+                            bet_slip: {
+                                ...newCompanyGroups[index].bet_slip,
+                                balance: newCompanyGroups[index].bet_slip.balance + each[key-1].bet_slip.balance,
+                                win_lose_cash: newCompanyGroups[index].bet_slip.win_lose_cash - Math.abs(each[key-1].bet_slip.win_lose_cash)
+                            },
+                            percent_commision: newCompanyGroups[index].percent_commision + (Math.abs(each[key-1].bet_slip.win_lose_cash) * (each[key-1].percent_commision.toFixed(3)/100))
                         };
                     }else{
                         newGroups[index] = {...group,
@@ -64,37 +74,26 @@ const filterGroupComision = (newComisionHistorys, key) => {
                                 balance: group.bet_slip.balance + each[key].bet_slip.balance,
                                 win_lose_cash: group.bet_slip.win_lose_cash + (each[key].bet_slip.win_lose_cash * 0.95)
                             },
-                            real_win_lose_cash: each[key].bet_slip.win_lose_cash
-
+                            percent_commision: group.percent_commision + (Math.abs(each[key].bet_slip.win_lose_cash) * (each[key].percent_commision.toFixed(3)/100))
                         };
-                    }
-                    // end for total member
 
-                    // start for total company
-                    if(Math.sign(each[key-1].bet_slip.win_lose_cash) === -1){
-                        newCompanyGroups[index] = {...newCompanyGroups[index],
-                            bet_slip: {
-                                ...newCompanyGroups[index].bet_slip,
-                                balance: newCompanyGroups[index].bet_slip.balance + each[key-1].bet_slip.balance,
-                                win_lose_cash: newCompanyGroups[index].bet_slip.win_lose_cash - Math.abs(each[key-1].bet_slip.win_lose_cash)
-                            },
-                            real_win_lose_cash: each[key-1].bet_slip.win_lose_cash
-                        };
-                    }else {
                         newCompanyGroups[index] = {...newCompanyGroups[index],
                             bet_slip: {
                                 ...newCompanyGroups[index].bet_slip,
                                 balance: newCompanyGroups[index].bet_slip.balance + each[key-1].bet_slip.balance,
                                 win_lose_cash: newCompanyGroups[index].bet_slip.win_lose_cash + (each[key-1].bet_slip.win_lose_cash *0.95)
                             },
-                            real_win_lose_cash: each[key-1].bet_slip.win_lose_cash
+                            percent_commision: newCompanyGroups[index].percent_commision + (Math.abs(each[key-1].bet_slip.win_lose_cash) * (each[key-1].percent_commision.toFixed(3)/100))
                         };
                     }
-                    // end for total company
+                    // end for total member
 
+                    alreadyAdd = true;
                     newItem = false;
-                }else{
-                    newItem = true
+                }
+
+                if(newGroups.length -1 === index && !alreadyAdd){
+                        newItem = true
                 }
             })
 
@@ -105,32 +104,20 @@ const filterGroupComision = (newComisionHistorys, key) => {
                             ...each[key].bet_slip,
                             win_lose_cash: each[key].bet_slip.win_lose_cash * 0.95
                         },
-                        real_win_lose_cash: each[key].bet_slip.win_lose_cash
+                        percent_commision: Math.abs(each[key].bet_slip.win_lose_cash) * (each[key].percent_commision.toFixed(3)/100)
                     };
-                }else{
-                    newGroups[newGroups.length] = {...each[key], real_win_lose_cash: each[key].bet_slip.win_lose_cash};
-                }
 
-                if(Math.sign(each[key-1].bet_slip.win_lose_cash) !== -1) {
                     newCompanyGroups[newCompanyGroups.length] = {
                         ...each[key-1],
                         bet_slip: {
-                            ...each[key].bet_slip,
+                            ...each[key-1].bet_slip,
                             win_lose_cash: each[key-1].bet_slip.win_lose_cash * 0.95
                         },
-                        real_win_lose_cash: each[key-1].bet_slip.win_lose_cash
+                        percent_commision: Math.abs(each[key-1].bet_slip.win_lose_cash) * (each[key-1].percent_commision.toFixed(3)/100)
                     };
                 }else{
-                    newGroups[newCompanyGroups.length] = {...each[key-1], real_win_lose_cash: each[key-1].bet_slip.win_lose_cash};
-                }
-
-                totalNewGroupComission += Math.abs(each[key].percent_commision);
-                totalNewCompanyComission += Math.abs(each[key - 1].percent_commision);
-            }else{
-                // for total comission
-                if(totalNewGroupComission === 0 && totalNewCompanyComission === 0){
-                    totalNewGroupComission = each[key].percent_commision;
-                    totalNewCompanyComission = each[key - 1].percent_commision;
+                    newGroups[newGroups.length] = {...each[key], percent_commision: Math.abs(each[key].bet_slip.win_lose_cash) * (each[key].percent_commision.toFixed(3)/100)};
+                    newCompanyGroups[newCompanyGroups.length] = {...each[key-1], percent_commision: Math.abs(each[key-1].bet_slip.win_lose_cash) * (each[key-1].percent_commision.toFixed(3)/100)};
                 }
             }
         }else{
@@ -140,23 +127,20 @@ const filterGroupComision = (newComisionHistorys, key) => {
                         ...each[key].bet_slip,
                         win_lose_cash: each[key].bet_slip.win_lose_cash * 0.95
                     },
-                    real_win_lose_cash: each[key].bet_slip.win_lose_cash
+                    percent_commision: Math.abs(each[key].bet_slip.win_lose_cash) * (each[key].percent_commision.toFixed(3)/100)
                 };
-            }else{
-                newGroups[0] = {...each[key], real_win_lose_cash: each[key].bet_slip.win_lose_cash};
-            }
 
-            if(Math.sign(each[key-1].bet_slip.win_lose_cash) !== -1) {
                 newCompanyGroups[0] = {
                     ...each[key-1],
                     bet_slip: {
                         ...each[key-1].bet_slip,
                         win_lose_cash: each[key-1].bet_slip.win_lose_cash * 0.95
                     },
-                    real_win_lose_cash: each[key-1].bet_slip.win_lose_cash
+                    percent_commision: Math.abs(each[key-1].bet_slip.win_lose_cash) * (each[key-1].percent_commision.toFixed(3)/100)
                 };
             }else{
-                newCompanyGroups[0] = {...each[key - 1], real_win_lose_cash: each[key-1].bet_slip.win_lose_cash};
+                newGroups[0] = {...each[key], percent_commision: Math.abs(each[key].bet_slip.win_lose_cash) * (each[key].percent_commision.toFixed(3)/100)};
+                newCompanyGroups[0] = {...each[key - 1], percent_commision: Math.abs(each[key-1].bet_slip.win_lose_cash) * (each[key-1].percent_commision.toFixed(3)/100)};
             }
         }
 
@@ -166,17 +150,18 @@ const filterGroupComision = (newComisionHistorys, key) => {
 
          if(Math.sign(each[key].bet_slip.win_lose_cash) === -1){
              totalNewGroupWinLose -= Math.abs(each[key].bet_slip.win_lose_cash);
-         }else{
-             totalNewGroupWinLose += each[key].bet_slip.win_lose_cash * 0.95;
-         }
-
-         if(Math.sign(each[key - 1].bet_slip.win_lose_cash) === -1){
              totalNewCompanyWinLose -= Math.abs(each[key - 1].bet_slip.win_lose_cash);
          }else{
+             totalNewGroupWinLose += each[key].bet_slip.win_lose_cash * 0.95;
              totalNewCompanyWinLose += each[key - 1].bet_slip.win_lose_cash * 0.95;
          }
          // End Total Group and Company
     });
+
+     newGroups.forEach((each, index) => {
+         totalNewGroupComission += newGroups[index].percent_commision;
+         totalNewCompanyComission += newCompanyGroups[index].percent_commision;
+     })
 
     return {newGroups, totalNewGroupComission, totalNewGroupBalance, totalNewGroupWinLose, newCompanyGroups, totalNewCompanyComission, totalNewCompanyBalance, totalNewCompanyWinLose};
 };
@@ -189,7 +174,6 @@ const filterEachUser = (newComisionHistorys, userID) => {
 
     newComisionHistorys.forEach(comision => {
         if(comision[comision.length - 1].user.id === userID) {
-            console.log(comision[comision.length-1].bet_slip.win_lose_cash);
             eachUserGroup.push(comision[comision.length - 1]);
             totalNewGroupComission += Math.abs(comision[comision.length - 1].bet_slip.win_lose_cash.toFixed(2) * comision[comision.length - 1].percent_commision.toFixed(3)/100);
             totalNewGroupBalance += comision[comision.length - 1].bet_slip.balance;

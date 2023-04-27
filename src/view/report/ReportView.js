@@ -107,7 +107,7 @@ const ReportView = () => {
 
     const backDetailMemberBtn = () => {
         const backIndex = key - 1 ;
-
+        console.log("back button", backIndex);
         if(backIndex >= 1) {
             setKey(backIndex);
             const {
@@ -193,7 +193,10 @@ const ReportView = () => {
                                         <th scope="col" className="px-4 py-4">Account</th>
                                         <th scope="col" className="px-4 py-4">Amount</th>
                                         <th scope="col" className="text-center px-4 py-4" colSpan="3">Member</th>
-                                        <th scope="col" className="text-center px-4 py-4" colSpan="3">Company</th>
+                                        {
+                                            whereArr && whereArr.length === 0 && key > 1 &&
+                                                <th scope="col" className="text-center px-4 py-4" colSpan="3">Company</th>
+                                        }
                                     </tr>
                                     <tr>
                                         <th scope="col" className="px-4 py-1"></th>
@@ -201,9 +204,14 @@ const ReportView = () => {
                                         <th scope="col" className="px-4 py-1">W/L</th>
                                         <th scope="col" className="px-4 py-1">Com</th>
                                         <th scope="col" className="px-4 py-1">W/L + Com</th>
-                                        <th scope="col" className="px-4 py-1">W/L</th>
-                                        <th scope="col" className="px-4 py-1">Com</th>
-                                        <th scope="col" className="px-4 py-1">W/L + Com</th>
+                                        {
+                                            whereArr && whereArr.length === 0 && key > 1 &&
+                                            <>
+                                                <th scope="col" className="px-4 py-1">W/L</th>
+                                                <th scope="col" className="px-4 py-1">Com</th>
+                                                <th scope="col" className="px-4 py-1">W/L + Com</th>
+                                            </>
+                                        }
                                     </tr>
                                     </thead>
 
@@ -219,42 +227,47 @@ const ReportView = () => {
                                                 betSlip.map((slip, slipkey) => (
                                                     <tr className="hover:bg-gray-50" key={slip.id}>
                                                         <td className="px-4 py-4"><span className="text-blue-700 hover:text-blue-400 cursor-pointer" onClick={() => detailMember(key, slip.user.id)}>{slip.user.username}</span></td>
-                                                        <td className="px-4 py-4">{slip.bet_slip.balance}</td>
+                                                        <td className="px-4 py-4">{slip.bet_slip.balance.toLocaleString("en-US")}</td>
                                                         <td className="px-4 py-4">
                                                             {
                                                                 Math.sign(slip.bet_slip.win_lose_cash) === -1 ?
-                                                                    <span className="text-red-500">{slip.bet_slip.win_lose_cash.toFixed(2)}</span>
+                                                                    <span className="text-red-500">{slip.bet_slip.win_lose_cash.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                                                     :
-                                                                    slip.bet_slip.win_lose_cash.toFixed(2)
+                                                                    slip.bet_slip.win_lose_cash.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
 
                                                             }
                                                         </td>
-                                                        <td className="px-4 py-4">{Math.abs(slip.real_win_lose_cash * (slip.percent_commision.toFixed(3)/100)).toFixed(2)}</td>
+                                                        <td className="px-4 py-4">{slip.percent_commision.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                                                         <td className="px-4 py-4">
                                                             {
                                                                 Math.sign(slip.bet_slip.win_lose_cash) === -1 ?
-                                                                    <span className="text-red-500">{(slip.bet_slip.win_lose_cash - (slip.real_win_lose_cash * (slip.percent_commision.toFixed(3)/100)).toFixed(2)).toFixed(2)}</span>
+                                                                    <span className="text-red-500">{(slip.bet_slip.win_lose_cash + slip.percent_commision).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                                                     :
-                                                                    (slip.bet_slip.win_lose_cash + (Math.abs(slip.real_win_lose_cash) * (slip.percent_commision / 100))).toFixed(2)
+                                                                    (slip.bet_slip.win_lose_cash + slip.percent_commision).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                                                             }
                                                         </td>
-                                                        <td className="px-4 py-4">
-                                                            {
-                                                                Math.sign(totalCompany[slipkey].bet_slip.win_lose_cash) === -1 ?
-                                                                    <span className="text-red-500">{totalCompany[slipkey].bet_slip.win_lose_cash.toFixed(2)}</span>
-                                                                    :
-                                                                    totalCompany[slipkey].bet_slip.win_lose_cash.toFixed(2)
-                                                            }
-                                                        </td>
-                                                        <td className="px-4 py-4">{Math.abs(totalCompany[slipkey].real_win_lose_cash * (totalCompany[slipkey].percent_commision.toFixed(3) / 100)).toFixed(2)}</td>
-                                                        <td className="px-4 py-4">
-                                                            {
-                                                                Math.sign(totalCompany[slipkey].bet_slip.win_lose_cash) === -1 ?
-                                                                    <span className="text-red-500">{(totalCompany[slipkey].bet_slip.win_lose_cash - ((totalCompany[slipkey].real_win_lose_cash.toFixed(2) * (totalCompany[slipkey].percent_commision.toFixed(3)/100)))).toFixed(2)}</span>
-                                                                    :
-                                                                    (totalCompany[slipkey].bet_slip.win_lose_cash + (Math.abs(totalCompany[slipkey].real_win_lose_cash) * (totalCompany[slipkey].percent_commision.toFixed(3) / 100))).toFixed(2)
-                                                            }
-                                                        </td>
+                                                        {
+                                                            whereArr && whereArr.length === 0 && key > 1 &&
+                                                                <>
+                                                                    <td className="px-4 py-4">
+                                                                        {
+                                                                            Math.sign(totalCompany[slipkey].bet_slip.win_lose_cash) === -1 ?
+                                                                                <span className="text-red-500">{totalCompany[slipkey].bet_slip.win_lose_cash.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                                                                                :
+                                                                                totalCompany[slipkey].bet_slip.win_lose_cash.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
+                                                                        }
+                                                                    </td>
+                                                                    <td className="px-4 py-4">{totalCompany[slipkey].percent_commision.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                                                    <td className="px-4 py-4">
+                                                                        {
+                                                                            Math.sign(totalCompany[slipkey].bet_slip.win_lose_cash) === -1 ?
+                                                                                <span className="text-red-500">{(totalCompany[slipkey].bet_slip.win_lose_cash + totalCompany[slipkey].percent_commision).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                                                                                :
+                                                                                (totalCompany[slipkey].bet_slip.win_lose_cash + (totalCompany[slipkey].percent_commision)).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
+                                                                        }
+                                                                    </td>
+                                                                </>
+                                                        }
                                                     </tr>
                                                 ))
                                                 :
@@ -266,41 +279,46 @@ const ReportView = () => {
                                         total &&
                                         <tr className="font-bold">
                                             <td className="px-4 py-4">Total</td>
-                                            <td className="px-4 py-4">{Math.abs(total.totalNewGroupBalance)}</td>
+                                            <td className="px-4 py-4">{total.totalNewGroupBalance.toLocaleString("en-US")}</td>
                                             <td className="px-4 py-4">
                                                 {
                                                     Math.sign(total.totalNewGroupWinLose) === -1 ?
-                                                        <span className="text-red-500">{total.totalNewGroupWinLose.toFixed(2)}</span>
+                                                        <span className="text-red-500">{total.totalNewGroupWinLose.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                                         :
-                                                        total.totalNewGroupWinLose.toFixed(2)
+                                                        total.totalNewGroupWinLose.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                                                 }
                                             </td>
-                                            <td className="px-4 py-4">{Math.abs(total.totalNewGroupWinLose * (total.totalNewGroupComission.toFixed(3) / 100)).toFixed(2)}</td>
+                                            <td className="px-4 py-4">{total.totalNewGroupComission.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                                             <td className="px-4 py-4">
                                                 {
                                                     Math.sign(total.totalNewGroupWinLose) === -1 ?
-                                                        <span className="text-red-500">{total.totalNewGroupWinLose * (total.totalNewGroupComission.toFixed(3) / 100).toFixed(2)}</span>
+                                                        <span className="text-red-500">{(total.totalNewGroupWinLose + (total.totalNewGroupComission)).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                                     :
-                                                        total.totalNewGroupWinLose * (total.totalNewGroupComission.toFixed(3) / 100).toFixed(2)
+                                                        (total.totalNewGroupWinLose + (total.totalNewGroupComission)).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                                                 }
                                             </td>
-                                            <td className="px-4 py-4">
+                                            {
+                                                whereArr && whereArr.length === 0 && key > 1 &&
+                                                <>
+                                                    <td className="px-4 py-4">
                                                 {
                                                     Math.sign(total.totalNewCompanyWinLose) === -1 ?
-                                                        <span className="text-red-500">{total.totalNewCompanyWinLose.toFixed(2)}</span>
+                                                        <span className="text-red-500">{total.totalNewCompanyWinLose.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                                         :
-                                                        (total.totalNewCompanyWinLose).toFixed(2)
+                                                        total.totalNewCompanyWinLose.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                                                 }
                                             </td>
-                                            <td className="px-4 py-4">{Math.abs(total.totalNewCompanyWinLose * total.totalNewCompanyComission.toFixed(3) / 100)}</td>
-                                            <td className="px-4 py-4">
+                                                    <td className="px-4 py-4">{total.totalNewCompanyComission.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                                    <td className="px-4 py-4">
                                                 {
                                                     Math.sign(total.totalNewCompanyWinLose) === -1 ?
-                                                        <span className="text-red-500">{total.totalNewCompanyWinLose * (total.totalNewCompanyComission.toFixed(3) / 100).toFixed(2)}</span>
+                                                        <span className="text-red-500">{(total.totalNewCompanyWinLose + (total.totalNewCompanyComission)).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                                     :
-                                                        total.totalNewCompanyWinLose * (total.totalNewCompanyComission.toFixed(3) / 100).toFixed(2)
+                                                        (total.totalNewCompanyWinLose + (total.totalNewCompanyComission)).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                                                 }
                                             </td>
+                                                </>
+                                            }
                                         </tr>
                                     }
                                     </tbody>

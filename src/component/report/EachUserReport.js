@@ -58,18 +58,18 @@ const EachUserReport = ({betSlip, total}) => {
                             <td className="px-4 py-4">
                                 {
                                     Math.sign(slip.bet_slip.win_lose_cash) === -1 ?
-                                        <span className="text-red-500">{slip.bet_slip.win_lose_cash.toFixed(2)}</span>
+                                        <span className="text-red-500">{slip.bet_slip.win_lose_cash.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                         :
-                                        (slip.bet_slip.win_lose_cash * 0.95).toFixed(2)
+                                        (slip.bet_slip.win_lose_cash * 0.95).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                                 }
                             </td>
-                            <td className="px-4 py-4">{Math.abs(slip.bet_slip.win_lose_cash.toFixed(2) * (slip.percent_commision).toFixed(3)/100).toFixed(2)}</td>
+                            <td className="px-4 py-4">{Math.abs(slip.bet_slip.win_lose_cash.toFixed(2) * (slip.percent_commision).toFixed(3)/100).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                             <td className="px-4 py-4">
                                 {
                                     Math.sign(slip.bet_slip.win_lose_cash) === -1 ?
-                                        <span className="text-red-500">{(slip.bet_slip.win_lose_cash - (slip.bet_slip.win_lose_cash * Math.abs(slip.percent_commision).toFixed(3)/100)).toFixed(2)}</span>
+                                        <span className="text-red-500">{(slip.bet_slip.win_lose_cash - (slip.bet_slip.win_lose_cash * Math.abs(slip.percent_commision).toFixed(3)/100)).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                     :
-                                        (slip.bet_slip.win_lose_cash * (0.95 + slip.percent_commision.toFixed(3)/100)).toFixed(2)
+                                        (slip.bet_slip.win_lose_cash * (0.95 + slip.percent_commision.toFixed(3)/100)).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                                 }
                             </td>
                         </tr>
@@ -87,18 +87,18 @@ const EachUserReport = ({betSlip, total}) => {
                     <td className="px-4 py-4">
                         {
                             Math.sign(total.totalNewGroupWinLose) === -1 ?
-                                <span className="text-red-500">{total.totalNewGroupWinLose.toFixed(2)}</span>
+                                <span className="text-red-500">{total.totalNewGroupWinLose.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                                 :
-                                total.totalNewGroupWinLose.toFixed(2)
+                                total.totalNewGroupWinLose.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                         }
                     </td>
-                    <td className="px-4 py-4">{total.totalNewGroupComission.toFixed(2)}</td>
+                    <td className="px-4 py-4">{total.totalNewGroupComission.toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     <td className="px-4 py-4">
                         {
                             Math.sign(total.totalNewGroupWinLose) === -1 ?
-                                <span className="text-red-500">-{(Math.abs(total.totalNewGroupWinLose).toFixed(2) - total.totalNewGroupComission.toFixed(2)).toFixed(2)}</span>
+                                <span className="text-red-500">-{(Math.abs(total.totalNewGroupWinLose).toFixed(2) - total.totalNewGroupComission.toFixed(2)).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                             :
-                                (total.totalNewGroupWinLose + total.totalNewGroupComission).toFixed(2)
+                                (total.totalNewGroupWinLose + total.totalNewGroupComission).toLocaleString("en-US",{minimumFractionDigits: 2, maximumFractionDigits: 2})
                         }
                     </td>
                 </tr>
